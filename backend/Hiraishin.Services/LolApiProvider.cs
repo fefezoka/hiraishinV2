@@ -45,18 +45,17 @@ public class LolApiProvider : ILolApiProvider
 
     public async Task<List<SummonerDTO>> GetAllPlayers()
     {
-        var players = new List<SummonerDTO>();
-        
-        foreach (var accountId in PlayerAccountIds.Ids)
+        var tasks = PlayerAccountIds.Ids
+        .Select(async accountId =>
         {
-            var player = await GetUser(accountId);
-            if (player != null)
-            {
-                players.Add(player);
-            }
-            
             await Task.Delay(100);
-        }
-        return players;
+            return await GetUser(accountId);
+        });
+
+        var results = await Task.WhenAll(tasks); // faz todas requisições ao mesmo tempo
+
+        return results
+            .Where(player => player != null)
+            .ToList();
     }
 }
