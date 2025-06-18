@@ -38,4 +38,10 @@ public class PlayersController : ControllerBase
             return StatusCode(500, $"Erro ao buscar jogadores: {ex.Message}");
         }
     }
+    [HttpGet("match-history")]
+    public async Task<IActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
+    {
+        var result = await _lolApiProvider.GetMatchHistoryAsync(puuid, queue);
+        return Ok(result);
+    }
 }

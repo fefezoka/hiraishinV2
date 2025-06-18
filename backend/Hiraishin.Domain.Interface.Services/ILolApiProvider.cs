@@ -7,5 +7,6 @@ namespace Hiraishin.Domain.Interface.Services
         Task<Summoner> GetUser(string accountId);
         Task<List<Summoner>> GetAllPlayers();
         Task<List<PlayerInfoDTO>> GetAllPlayersDetailed();
+        Task<List<Match>> GetMatchHistoryAsync(string puuid, string queue);
     }
 }
