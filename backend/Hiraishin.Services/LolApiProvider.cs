@@ -198,9 +198,7 @@ public class LolApiProvider : ILolApiProvider
                     }
 
                     var matchContent = await matchResponse.Content.ReadAsStringAsync(); 
-                    var match = JsonSerializer.Deserialize<Match>(matchContent);;
-
-                    return match;
+                    return JsonSerializer.Deserialize<Match>(matchContent);
                 }
                 catch (Exception ex)
                 {
