@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.36105.23
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiraishin.API", "Hiraishin.API\Hiraishin.API.csproj", "{BD32AC96-B719-4E15-9235-421125808093}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC} = {3DBCE07A-2AE6-49BE-B795-A250ECB37EBC}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Application", "0 - Application", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
