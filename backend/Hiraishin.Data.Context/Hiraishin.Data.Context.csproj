@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.17" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hiraishin.Domain.Entities\Hiraishin.Domain.Entities.csproj" />
+  </ItemGroup>
+
 </Project>
