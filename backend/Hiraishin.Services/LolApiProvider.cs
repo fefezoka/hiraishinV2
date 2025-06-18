@@ -78,25 +78,22 @@ public class LolApiProvider : ILolApiProvider
 
                 await Task.Delay(500);
 
-                var account = JsonSerializer.Deserialize<AccountDTO>(await accountResponse.Content.ReadAsStringAsync());
+                var account = JsonSerializer.Deserialize<Account>(await accountResponse.Content.ReadAsStringAsync());
 
                 var leaguesResponse = await _httpClient.GetAsync($"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{player.Id}");
                 if (!leaguesResponse.IsSuccessStatusCode) return null;
 
-                var leagues = JsonSerializer.Deserialize<List<LeagueDTO>>(await leaguesResponse.Content.ReadAsStringAsync());
+                var leagues = JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
 
                 var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
                 var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
 
-                //var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
-                //{
-                    //if (league == null) return null;
+                var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
+                {
+                    if (league == null) return null;
 
-                    //league.Winrate = (int)Math.Round((double)league.Wins / (league.Wins + league.Losses) * 100);
-                    //league.TotalLP = LeagueUtils.GetTotalLP(league); // seu método auxiliar
-
-                    //return league;
-                // }).ToList();
+                    return new LeagueDTO(league);
+                }).ToList();
 
                 return new PlayerInfoDTO()
                 {
@@ -106,7 +103,7 @@ public class LolApiProvider : ILolApiProvider
                     TagLine = account.TagLine,
                     Id = player.Id,
                     Puuid = player.Puuid,
-                    Leagues = new[] { rankedSolo, rankedFlex }
+                    Leagues = allLeagues,
                     // ... outros campos que quiser mesclar
                 };
             }
@@ -148,7 +145,7 @@ public class LolApiProvider : ILolApiProvider
     // Anexa o índice do ranking de volta ao DTO
     foreach (var player in allPlayers)
     {
-        for (int i = 0; i < player.Leagues.Length; i++)
+        for (int i = 0; i < player.Leagues.Count; i++)
         {
             var league = player.Leagues[i];
             if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var rankingInfo))

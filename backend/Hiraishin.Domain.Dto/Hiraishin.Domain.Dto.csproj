@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Hiraishin.Domain.Utility\Hiraishin.Domain.Utility.csproj" />
+  </ItemGroup>
+
 </Project>
