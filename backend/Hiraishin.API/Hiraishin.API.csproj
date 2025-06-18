@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hiraishin.Data.Context\Hiraishin.Data.Context.csproj" />
+    <ProjectReference Include="..\Hiraishin.Services\Hiraishin.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

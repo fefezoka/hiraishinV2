@@ -1,4 +1,6 @@
 using Hiraishin.Data.Context;
+using Hiraishin.Domain.Interface.Services;
+using Hiraishin.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Npgsql;
@@ -19,6 +21,14 @@ var connectionString = new NpgsqlConnectionStringBuilder
 
 builder.Services.AddDbContext<HiraishinContext>(options =>
     options.UseNpgsql(connectionString.ConnectionString));
+
+builder.Services.AddHttpClient<ILolApiProvider, LolApiProvider>(client => 
+{
+    client.BaseAddress = new Uri("https://br1.api.riotgames.com");
+    client.DefaultRequestHeaders.Add("X-Riot-Token", builder.Configuration["RiotGamesApi:ApiKey"]);
+});
+
+
 
 builder.Services.AddSwaggerGen(swagger =>
 {
