@@ -12,13 +12,13 @@ public class LolApiProvider : ILolApiProvider
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<LolApiProvider> _logger;
-    
+
     public LolApiProvider(HttpClient httpClient, ILogger<LolApiProvider> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
     }
-    
+
     public async Task<Summoner> GetUser(string accountId)
     {
         try
@@ -31,6 +31,7 @@ public class LolApiProvider : ILolApiProvider
                 _logger.LogError($"Falha ao obter usuário {accountId}. Status: {response.StatusCode}");
                 return null;
             }
+
             var content = await response.Content.ReadAsStringAsync();
             var playerInfo = JsonSerializer.Deserialize<Summoner>(content);
 
@@ -41,17 +42,17 @@ public class LolApiProvider : ILolApiProvider
             _logger.LogError(e, $"Erro ao obter usuário {accountId}");
             return null;
         }
-        
+
     }
 
     public async Task<List<Summoner>> GetAllPlayers()
     {
         var tasks = PlayerAccountIds.Ids
-        .Select(async accountId =>
-        {
-            await Task.Delay(100);
-            return await GetUser(accountId);
-        });
+            .Select(async accountId =>
+            {
+                await Task.Delay(100);
+                return await GetUser(accountId);
+            });
 
         var results = await Task.WhenAll(tasks); // faz todas requisições ao mesmo tempo
 
@@ -66,24 +67,31 @@ public class LolApiProvider : ILolApiProvider
         {
             try
             {
-                var playerResponse = await _httpClient.GetAsync($"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/{info.AccountId}");
+                var playerResponse =
+                    await _httpClient.GetAsync(
+                        $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/{info.AccountId}");
                 if (!playerResponse.IsSuccessStatusCode) return null;
 
                 await Task.Delay(500);
 
                 var summoner = JsonSerializer.Deserialize<Summoner>(await playerResponse.Content.ReadAsStringAsync());
 
-                var accountResponse = await _httpClient.GetAsync($"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{summoner.Puuid}");
+                var accountResponse =
+                    await _httpClient.GetAsync(
+                        $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{summoner.Puuid}");
                 if (!accountResponse.IsSuccessStatusCode) return null;
 
                 await Task.Delay(500);
 
                 var account = JsonSerializer.Deserialize<Account>(await accountResponse.Content.ReadAsStringAsync());
 
-                var leaguesResponse = await _httpClient.GetAsync($"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner.Id}");
+                var leaguesResponse =
+                    await _httpClient.GetAsync(
+                        $"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner.Id}");
                 if (!leaguesResponse.IsSuccessStatusCode) return null;
 
-                var leagues = JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
+                var leagues =
+                    JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
 
                 var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
                 var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
@@ -109,8 +117,8 @@ public class LolApiProvider : ILolApiProvider
             }
             catch (Exception ex)
             {
-            _logger.LogError(ex, $"Erro ao buscar info do jogador: {info.AccountId}");
-            return null;
+                _logger.LogError(ex, $"Erro ao buscar info do jogador: {info.AccountId}");
+                return null;
             }
         }
 
@@ -134,7 +142,8 @@ public class LolApiProvider : ILolApiProvider
                             x.Player.Leagues[index].Tier,
                             x.Player.Leagues[index].Rank,
                             x.Player.Leagues[index].LeaguePoints
-                        }});
+                        }
+                    });
         }).ToList();
 
         foreach (var player in allPlayers)
@@ -150,5 +159,62 @@ public class LolApiProvider : ILolApiProvider
         }
 
         return allPlayers;
+    }
+
+    public async Task<List<Match>> GetMatchHistoryAsync(string puuid, string queue)
+    {
+        try
+        {
+
+            var idsUrl =
+                $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5";
+            var idsResponse = await _httpClient.GetAsync(idsUrl);
+
+            if (!idsResponse.IsSuccessStatusCode)
+            {
+                _logger.LogError(
+                    $"Erro ao buscar match IDs para PUUID {puuid}, Queue {queue}: {idsResponse.StatusCode}");
+                return new List<Match>();
+            }
+
+            var idsContent = await idsResponse.Content.ReadAsStringAsync();
+            var matchIds = JsonSerializer.Deserialize<List<string>>(idsContent);
+
+            if (matchIds == null || matchIds.Count == 0)
+                return new List<Match>();
+
+
+            var MatchTasks = matchIds.Select(async matchId =>
+            {
+                try
+                {
+                    var matchUrl = $"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}";
+                    var matchResponse = await _httpClient.GetAsync(matchUrl);
+
+                    if (!matchResponse.IsSuccessStatusCode)
+                    {
+                        _logger.LogWarning($"Erro ao buscar detalhes da partida {matchId}: {matchResponse.StatusCode}");
+                        return null;
+                    }
+
+                    var matchContent = await matchResponse.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<Match>(matchContent);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Erro ao buscar detalhes da partida {matchId}");
+                    return null;
+                }
+            });
+
+            var Matchs = await Task.WhenAll(MatchTasks);
+
+            return Matchs.Where(m => m != null).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Erro ao buscar histórico de partidas para o PUUID {puuid}");
+            return new List<Match>();
+        }
     }
 }
