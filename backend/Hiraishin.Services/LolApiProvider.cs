@@ -137,18 +137,18 @@ public class LolApiProvider : ILolApiProvider
                         }});
         }).ToList();
 
-    foreach (var player in allPlayers)
-    {
-        for (int i = 0; i < player.Leagues.Count; i++)
+        foreach (var player in allPlayers)
         {
-            var league = player.Leagues[i];
-            if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var rankingInfo))
+            for (int i = 0; i < player.Leagues.Count; i++)
             {
-                league.Index = rankingInfo.Index;
+                var league = player.Leagues[i];
+                if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var rankingInfo))
+                {
+                    league.Index = rankingInfo.Index;
+                }
             }
         }
-    }
 
-    return allPlayers;
+        return allPlayers;
     }
 }
