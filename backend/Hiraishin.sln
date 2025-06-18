@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiraishin.Ioc", "Hiraishin.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiraishin.Middleware", "Hiraishin.Middleware\Hiraishin.Middleware.csproj", "{DBC41808-B23C-4975-9555-6AE1B10C3BBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiraishin.Data.Context", "Hiraishin.Data.Context\Hiraishin.Data.Context.csproj", "{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{DBC41808-B23C-4975-9555-6AE1B10C3BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBC41808-B23C-4975-9555-6AE1B10C3BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBC41808-B23C-4975-9555-6AE1B10C3BBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{73989A81-9FFC-4824-BE21-38573A5E341C} = {FBA7229F-C547-4532-8477-892CA8317492}
 		{29A50F72-523A-454A-999A-30C0BDADCEB8} = {12BF0206-3CE0-41D3-85F6-0582338D71D6}
 		{DBC41808-B23C-4975-9555-6AE1B10C3BBB} = {12BF0206-3CE0-41D3-85F6-0582338D71D6}
+		{3DBCE07A-2AE6-49BE-B795-A250ECB37EBC} = {33E24C72-416D-4C52-9EAF-614A888E1E15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AD967419-1633-46B1-B873-09A80F6FA5F7}
