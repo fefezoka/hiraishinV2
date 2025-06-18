@@ -13,6 +13,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Hiraishin.API/Hiraishin.API.csproj", "Hiraishin.API/"]
+COPY ["Hiraishin.Data.Context/Hiraishin.Data.Context.csproj", "Hiraishin.Data.Context/"]
+COPY ["Hiraishin.Domain.Entities/Hiraishin.Domain.Entities.csproj", "Hiraishin.Domain.Entities/"]
+COPY ["Hiraishin.Services/Hiraishin.Services.csproj", "Hiraishin.Services/"]
+COPY ["Hiraishin.Domain.Dto/Hiraishin.Domain.Dto.csproj", "Hiraishin.Domain.Dto/"]
+COPY ["Hiraishin.Domain.Interface.Services/Hiraishin.Domain.Interface.Services.csproj", "Hiraishin.Domain.Interface.Services/"]
+COPY ["Hiraishin.Domain.Utility/Hiraishin.Domain.Utility.csproj", "Hiraishin.Domain.Utility/"]
 RUN dotnet restore "./Hiraishin.API/Hiraishin.API.csproj"
 COPY . .
 WORKDIR "/src/Hiraishin.API"
