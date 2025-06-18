@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Hiraishin.Domain.Dto.Hiraishin;
 using Hiraishin.Domain.Interface.Services;
+using Hiraishin.Domain.Utility;
 using Microsoft.Extensions.Logging;
 
 namespace Hiraishin.Services;
