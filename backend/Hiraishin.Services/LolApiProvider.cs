@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Hiraishin.Domain.Dto.Hiraishin;
 using Hiraishin.Domain.Interface.Services;
 using Microsoft.Extensions.Logging;
 
@@ -16,12 +17,11 @@ public class LolApiProvider : ILolApiProvider
         _logger = logger;
     }
     
-    public async Task<PlayerInfo?> GetUser(string accountId)
+    public async Task<SummonerDTO> GetUser(string accountId)
     {
         try
         {
-            var requestUrl = $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/${accountId}";
-        
+            var requestUrl = $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/{accountId}";
             var response = await _httpClient.GetAsync(requestUrl);
 
             if (!response.IsSuccessStatusCode)
@@ -30,7 +30,7 @@ public class LolApiProvider : ILolApiProvider
                 return null;
             }
             var content = await response.Content.ReadAsStringAsync();
-            var playerInfo = JsonSerializer.Deserialize<PlayerInfo>(content);
+            var playerInfo = JsonSerializer.Deserialize<SummonerDTO>(content);
 
             return playerInfo;
         }
@@ -42,9 +42,9 @@ public class LolApiProvider : ILolApiProvider
         
     }
 
-    public async Task<List<PlayerInfo>> GetAllPlayers()
+    public async Task<List<SummonerDTO>> GetAllPlayers()
     {
-        var players = new List<PlayerInfo>();
+        var players = new List<SummonerDTO>();
         
         foreach (var accountId in PlayerAccountIds.Ids)
         {
@@ -56,7 +56,6 @@ public class LolApiProvider : ILolApiProvider
             
             await Task.Delay(100);
         }
-        
         return players;
     }
 }

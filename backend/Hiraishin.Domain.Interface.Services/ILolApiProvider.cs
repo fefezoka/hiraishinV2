@@ -1,10 +1,10 @@
-﻿using Hiraishin.Services;
+﻿using Hiraishin.Domain.Dto.Hiraishin;
 
 namespace Hiraishin.Domain.Interface.Services
 {
     public interface ILolApiProvider
     {
-        Task<PlayerInfo?> GetUser(string accountId);
-        Task<List<PlayerInfo>> GetAllPlayers();
+        Task<SummonerDTO> GetUser(string accountId);
+        Task<List<SummonerDTO>> GetAllPlayers();
     }
 }

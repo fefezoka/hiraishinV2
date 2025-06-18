@@ -28,8 +28,6 @@ builder.Services.AddHttpClient<ILolApiProvider, LolApiProvider>(client =>
     client.DefaultRequestHeaders.Add("X-Riot-Token", builder.Configuration["RiotGamesApi:ApiKey"]);
 });
 
-
-
 builder.Services.AddSwaggerGen(swagger =>
 {
     swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "Sebo", Version = "v1" });

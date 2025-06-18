@@ -1,8 +1,13 @@
-﻿namespace Hiraishin.Services
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Hiraishin.Domain.Dto.Hiraishin
 {
-    public class PlayerInfo
+    public class SummonerDTO
     {
-        public string AccountId { get; set; } = string.Empty;
     }
     public static class PlayerAccountIds
     {
@@ -21,4 +26,3 @@
         };
     }
 }
-
