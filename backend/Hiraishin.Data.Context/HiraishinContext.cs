@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hiraishin.Data.Context.Mapping;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hiraishin.Data.Context
 {
@@ -9,6 +10,7 @@ namespace Hiraishin.Data.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            WeeklyRankingMap.Map(modelBuilder);
         }
     }
 }
