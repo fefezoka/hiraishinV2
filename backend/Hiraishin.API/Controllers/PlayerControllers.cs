@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Hiraishin.Services;
 using Hiraishin.Domain.Interface.Services;
 
 namespace Hiraishin.Controllers;
@@ -21,7 +20,7 @@ public class PlayersController : ControllerBase
         var players = await _lolApiProvider.GetAllPlayers();
         return Ok(players);
     }
-    [HttpGet("players/detailed")]
+    [HttpGet("detailed")]
     public async Task<IActionResult> GetAllPlayersDetailed()
     {
         try

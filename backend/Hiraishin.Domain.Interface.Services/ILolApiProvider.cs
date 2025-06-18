@@ -4,8 +4,8 @@ namespace Hiraishin.Domain.Interface.Services
 {
     public interface ILolApiProvider
     {
-        Task<SummonerDTO> GetUser(string accountId);
-        Task<List<SummonerDTO>> GetAllPlayers();
+        Task<Summoner> GetUser(string accountId);
+        Task<List<Summoner>> GetAllPlayers();
         Task<List<PlayerInfoDTO>> GetAllPlayersDetailed();
     }
 }

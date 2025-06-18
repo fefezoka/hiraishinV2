@@ -13,7 +13,7 @@ public class LeagueDTO
     public int LeaguePoints { get; set; }
     public int Wins { get; set; }
     public int Losses { get; set; }
-    public int TotalLp { get; set; }
+    public int TotalLP { get; set; }
     public int? Index { get; set; }
     public int Winrate => Wins + Losses == 0 ? 0 : (int)Math.Round((double)Wins / (Wins + Losses) * 100);
 
@@ -27,6 +27,6 @@ public class LeagueDTO
         LeaguePoints = league.LeaguePoints;
         Wins = league.Wins;
         Losses = league.Losses;
-        TotalLp = LeagueUtils.GetTotalLp(league.Tier, league.Rank, league.LeaguePoints);
+        TotalLP = LeagueUtils.GetTotalLp(league.Tier, league.Rank, league.LeaguePoints);
     }
 }

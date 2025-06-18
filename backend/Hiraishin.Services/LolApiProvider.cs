@@ -19,7 +19,7 @@ public class LolApiProvider : ILolApiProvider
         _logger = logger;
     }
     
-    public async Task<SummonerDTO> GetUser(string accountId)
+    public async Task<Summoner> GetUser(string accountId)
     {
         try
         {
@@ -32,7 +32,7 @@ public class LolApiProvider : ILolApiProvider
                 return null;
             }
             var content = await response.Content.ReadAsStringAsync();
-            var playerInfo = JsonSerializer.Deserialize<SummonerDTO>(content);
+            var playerInfo = JsonSerializer.Deserialize<Summoner>(content);
 
             return playerInfo;
         }
@@ -44,7 +44,7 @@ public class LolApiProvider : ILolApiProvider
         
     }
 
-    public async Task<List<SummonerDTO>> GetAllPlayers()
+    public async Task<List<Summoner>> GetAllPlayers()
     {
         var tasks = PlayerAccountIds.Ids
         .Select(async accountId =>
@@ -69,18 +69,18 @@ public class LolApiProvider : ILolApiProvider
                 var playerResponse = await _httpClient.GetAsync($"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/{info.AccountId}");
                 if (!playerResponse.IsSuccessStatusCode) return null;
 
-                await Task.Delay(500); // delay proposital
+                await Task.Delay(500);
 
-                var player = JsonSerializer.Deserialize<SummonerDTO>(await playerResponse.Content.ReadAsStringAsync());
+                var summoner = JsonSerializer.Deserialize<Summoner>(await playerResponse.Content.ReadAsStringAsync());
 
-                var accountResponse = await _httpClient.GetAsync($"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{player.Puuid}");
+                var accountResponse = await _httpClient.GetAsync($"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{summoner.Puuid}");
                 if (!accountResponse.IsSuccessStatusCode) return null;
 
                 await Task.Delay(500);
 
                 var account = JsonSerializer.Deserialize<Account>(await accountResponse.Content.ReadAsStringAsync());
 
-                var leaguesResponse = await _httpClient.GetAsync($"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{player.Id}");
+                var leaguesResponse = await _httpClient.GetAsync($"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner.Id}");
                 if (!leaguesResponse.IsSuccessStatusCode) return null;
 
                 var leagues = JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
@@ -97,14 +97,14 @@ public class LolApiProvider : ILolApiProvider
 
                 return new PlayerInfoDTO()
                 {
-                    // Combine info + player + account + leagues
                     AccountId = info.AccountId,
                     GameName = account.GameName,
                     TagLine = account.TagLine,
-                    Id = player.Id,
-                    Puuid = player.Puuid,
+                    Id = summoner.Id,
+                    Puuid = summoner.Puuid,
                     Leagues = allLeagues,
-                    // ... outros campos que quiser mesclar
+                    ProfileIconId = summoner.ProfileIconId,
+                    SummonerLevel = summoner.SummonerLevel,
                 };
             }
             catch (Exception ex)
@@ -117,12 +117,11 @@ public class LolApiProvider : ILolApiProvider
         var tasks = PlayerAccountIds.Ids.Select(id => FetchPlayerDataAsync(new PlayerInfoDTO() { AccountId = id }));
         var allPlayers = (await Task.WhenAll(tasks)).Where(p => p != null).ToList();
 
-        // Agora monta os rankings
         var recordLeagueRanking = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" }.Select((queueType, index) =>
         {
-            var leagueRanking = allPlayers
+            return allPlayers
                 .Where(p => p.Leagues[index] != null)
-                .OrderByDescending(p => p.Leagues[index].TotalLp)
+                .OrderByDescending(p => p.Leagues[index].TotalLP)
                 .ThenByDescending(p => p.Leagues[index].Winrate)
                 .Select((player, i) => new { Player = player, Index = i + 1 })
                 .ToDictionary(
@@ -136,13 +135,8 @@ public class LolApiProvider : ILolApiProvider
                             x.Player.Leagues[index].Rank,
                             x.Player.Leagues[index].LeaguePoints
                         }});
-
-            // opcional: persistir leagueRanking em algum lugar
-
-            return leagueRanking;
         }).ToList();
 
-    // Anexa o índice do ranking de volta ao DTO
     foreach (var player in allPlayers)
     {
         for (int i = 0; i < player.Leagues.Count; i++)
