@@ -165,11 +165,11 @@ public class LolApiProvider : ILolApiProvider
     {
         try
         {
-
+// 1. Buscar os últimos 5 Match IDs
             var idsUrl =
                 $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5";
             var idsResponse = await _httpClient.GetAsync(idsUrl);
-
+            
             if (!idsResponse.IsSuccessStatusCode)
             {
                 _logger.LogError(
@@ -183,8 +183,8 @@ public class LolApiProvider : ILolApiProvider
             if (matchIds == null || matchIds.Count == 0)
                 return new List<Match>();
 
-
-            var MatchTasks = matchIds.Select(async matchId =>
+            // 2. Buscar detalhes de cada partida
+            var matchDetailTasks = matchIds.Select(async matchId =>
             {
                 try
                 {
@@ -197,23 +197,25 @@ public class LolApiProvider : ILolApiProvider
                         return null;
                     }
 
-                    var matchContent = await matchResponse.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<Match>(matchContent);
+                    var matchContent = await matchResponse.Content.ReadAsStringAsync(); 
+                    var match = JsonSerializer.Deserialize<Match>(matchContent);;
+
+                    return match;
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, $"Erro ao buscar detalhes da partida {matchId}");
+                    _logger.LogError(ex, $"Erro ao processar detalhes da partida {matchId}");
                     return null;
                 }
             });
 
-            var Matchs = await Task.WhenAll(MatchTasks);
+            var matchDetails = await Task.WhenAll(matchDetailTasks);
 
-            return Matchs.Where(m => m != null).ToList();
+            return matchDetails.Where(m => m != null).ToList();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Erro ao buscar histórico de partidas para o PUUID {puuid}");
+            _logger.LogError(ex, $"Erro geral ao buscar histórico de partidas para o PUUID {puuid}");
             return new List<Match>();
         }
     }
