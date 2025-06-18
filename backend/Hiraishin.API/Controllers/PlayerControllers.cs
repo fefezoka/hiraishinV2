@@ -21,4 +21,22 @@ public class PlayersController : ControllerBase
         var players = await _lolApiProvider.GetAllPlayers();
         return Ok(players);
     }
+    [HttpGet("players/detailed")]
+    public async Task<IActionResult> GetAllPlayersDetailed()
+    {
+        try
+        {
+            var players = await _lolApiProvider.GetAllPlayersDetailed();
+
+            if (players == null || !players.Any())
+                return NotFound("Nenhum jogador encontrado.");
+
+            return Ok(players);
+        }
+        catch (Exception ex)
+        {
+            // Você pode adicionar um logger aqui também
+            return StatusCode(500, $"Erro ao buscar jogadores: {ex.Message}");
+        }
+    }
 }
