@@ -7,6 +7,7 @@ public class RankSemanalModel
     public String Rank { get; set; }
     public String Tier { get; set; }
     public int Pdl { get; set; }
+    public int TotaltierLp { get; set; }
 }
 
 public static class LolUtils
@@ -15,11 +16,11 @@ public static class LolUtils
         new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
         {
             {"SILVER", 0},
-            {"GOLDEN", 1},
-            {"PLATINUM", 2},
-            {"EMERALD", 3},
-            {"DIAMOND", 4},
-            {"MASTER", 5},
+            {"GOLDEN", 400},
+            {"PLATINUM", 800},
+            {"EMERALD", 1200},
+            {"DIAMOND", 1600},
+            {"MASTER", 2000},
         };
 
     private static readonly List<string> Ranks = new List<string> { "IV", "III", "II", "I" };
