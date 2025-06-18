@@ -1,10 +1,24 @@
+using Hiraishin.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var dbConfig = builder.Configuration.GetSection("Database");
+
 var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<HiraishinContext>(options => { options.UseSqlServer(connString); });
+var connectionString = new NpgsqlConnectionStringBuilder
+{
+    Host = dbConfig["Host"],
+    Port = int.Parse(dbConfig["Port"]!),
+    Database = dbConfig["Database"],
+    Username = dbConfig["Username"],
+    Password = dbConfig["Password"]
+};
+
+builder.Services.AddDbContext<HiraishinContext>(options =>
+    options.UseNpgsql(connectionString.ConnectionString));
 
 builder.Services.AddSwaggerGen(swagger =>
 {
@@ -37,7 +51,6 @@ builder.Services.AddSwaggerGen(swagger =>
      });
 });
 
-builder.Services.StartRegisterServices(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthorization();
@@ -60,10 +73,8 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<HiraishinContext>();
-    db.Database.Migrate();
+    var context = scope.ServiceProvider.GetService<HiraishinContext>();
+    context?.Database.Migrate();
 }
-
-app.UseMiddleware<RequestMiddleware>();
 
 app.Run();
