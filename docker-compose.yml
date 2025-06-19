@@ -19,7 +19,7 @@ services:
       - Database__Port=5432
       - Database__Username=postgres
       - Database__Password=postgres
-      - RiotGamesApi__ApiKey=RGAPI-9194ed35-1490-41aa-ab3d-2a4a76443daf
+      - RiotGamesApi__ApiKey=
     volumes:
       - ./logs/backend:/app/logs
       - ./keys:/root/.aspnet/DataProtection-Keys
