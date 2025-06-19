@@ -21,12 +21,12 @@ public class Match
             public String SummonerName { get; set; }
             [JsonPropertyName("riotIdGameName")]
             public String RiotIdGameName { get; set; }
-            [JsonPropertyName("riotIdTagLine")]
-            public String RiotIdTagLine { get; set; }
+            [JsonPropertyName("riotIdTagline")]
+            public String RiotIdTagline { get; set; }
             [JsonPropertyName("championId")]
             public int ChampionId { get; set; }
-            [JsonPropertyName("championLevel")]
-            public int ChampionLevel { get; set; }
+            [JsonPropertyName("champLevel")]
+            public int ChampLevel { get; set; }
             [JsonPropertyName("summoner1Id")]
             public int Summoner1Id { get; set; }
             [JsonPropertyName("summoner2Id")]
@@ -51,8 +51,8 @@ public class Match
             public Boolean GameEndedInEarlySurrender { get; set; }
             [JsonPropertyName("kills")]
             public int Kills { get; set; }
-            [JsonPropertyName("death")]
-            public int Death { get; set; }
+            [JsonPropertyName("deaths")]
+            public int Deaths { get; set; }
             [JsonPropertyName("visionScore")]
             public int VisionScore { get; set; }
             [JsonPropertyName("assists")]
