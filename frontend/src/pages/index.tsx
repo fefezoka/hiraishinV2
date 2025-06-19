@@ -31,7 +31,7 @@ export default function Home() {
     queryKey: ['ranking'],
     queryFn: async () => {
       const { data } = await axios.get<Player[]>(
-        'http://localhost:5063/api/players/detailed'
+        'http://localhost:3001/players/detailed'
       );
 
       Array<Queue>('RANKED_SOLO_5x5', 'RANKED_FLEX_SR').map((queueType, index) => {
@@ -280,7 +280,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
     queryFn: async () =>
       (
         await axios.get(
-          `http://localhost:5063/api/players/match-history?puuid=${player.puuid}&queue=${queue}`
+          `http://localhost:3001/players/match-history?puuid=${player.puuid}&queue=${queue}`
         )
       ).data,
   });

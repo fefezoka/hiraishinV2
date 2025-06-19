@@ -4,7 +4,7 @@ using Hiraishin.Domain.Interface.Services;
 namespace Hiraishin.Controllers;
 
 [ApiController]
-[Route("api/players")]
+[Route("players")]
 public class PlayersController : ControllerBase
 {
     private readonly ILolApiProvider _lolApiProvider;

@@ -5,6 +5,7 @@ const nextConfig = {
     domains: ['opgg-static.akamaized.net', 'ddragon.leagueoflegends.com'],
     unoptimized: true,
   },
+  output: 'standalone',
 };
 
 module.exports = nextConfig;

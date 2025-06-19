@@ -11,16 +11,15 @@ services:
     depends_on:
       - postgres
     ports:
-      - '127.0.0.1:3501:3001'
+      - '127.0.0.1:3001:3001'
     environment:
-      - PathBase=/api
-      - ASPNETCORE_ENVIRONMENT
       - ASPNETCORE_URLS=http://+:3001
-      - Database__Database=mutualify
+      - Database__Database=hiraishin
       - Database__Host=postgres
       - Database__Port=5432
       - Database__Username=postgres
       - Database__Password=postgres
+      - RiotGamesApi__ApiKey=RGAPI-9194ed35-1490-41aa-ab3d-2a4a76443daf
     volumes:
       - ./logs/backend:/app/logs
       - ./keys:/root/.aspnet/DataProtection-Keys
@@ -33,7 +32,7 @@ services:
   frontend:
     build: ./frontend/.
     ports:
-      - '127.0.0.1:3500:3000'
+      - '127.0.0.1:3000:3000'
     volumes:
       - ./logs/frontend:/app/logs
     networks:
@@ -46,7 +45,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=mutualify
+      - POSTGRES_DB=hiraishin
       - PGDATA=/data/postgres
     ports:
       - '127.0.0.1:5432:5432'
