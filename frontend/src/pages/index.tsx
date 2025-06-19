@@ -134,7 +134,7 @@ export default function Home() {
                         <Collapsible.Root key={player.id}>
                           <Collapsible.CollapsibleTrigger asChild>
                             <div className="md:px-[64px] mb-2 rounded-lg px-3 py-6 cursor-pointer flex items-center overflow-hidden justify-between text-sm md:text-base relative z-10">
-                              <div className="absolute top-0 md:-top-12 left-0 right-0 bottom-0 bg-black opacity-[45%] -z-10 overflow-hidden">
+                              <div className="absolute top-0 md:-top-12 left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 overflow-hidden">
                                 <Image
                                   draggable={false}
                                   src={
