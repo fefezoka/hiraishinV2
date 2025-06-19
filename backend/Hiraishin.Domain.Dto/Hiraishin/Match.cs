@@ -47,8 +47,8 @@ public class Match
             public int Item6 { get; set; }
             [JsonPropertyName("win")]
             public Boolean Win { get; set; }
-            [JsonPropertyName("gameEndendEarlySurrender")]
-            public Boolean GameEndendEarlySurrender { get; set; }
+            [JsonPropertyName("gameEndedInEarlySurrender")]
+            public Boolean GameEndedInEarlySurrender { get; set; }
             [JsonPropertyName("kills")]
             public int Kills { get; set; }
             [JsonPropertyName("death")]
