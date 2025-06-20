@@ -55,10 +55,21 @@ if (app.Environment.IsDevelopment())
     {
         x.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
-    app.UseSwagger();
+    app.UseSwagger(c =>
+    {
+        c.RouteTemplate = "swagger/{documentName}/swagger.json";
+        c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+        {
+            var scheme = app.Environment.IsStaging() ? "https" : httpReq.Scheme;
+            swaggerDoc.Servers = new List<OpenApiServer>
+                { new() { Url = $"{scheme}://{httpReq.Host.Value}{"/api"}" } };
+        });
+    });
+    app.UseSwaggerUI();
     app.UseSwaggerUI();
 }
 
+app.UsePathBase("/api");
 app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 
