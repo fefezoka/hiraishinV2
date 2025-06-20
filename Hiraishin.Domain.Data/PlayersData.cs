@@ -1,8 +1,8 @@
-﻿namespace Hiraishin.Domain.Utility
+﻿namespace Hiraishin.Domain.Data
 {
-    public class PlayerAccountIds
+    public class PlayersData
     {
-        public static List<string> Ids = new()
+        public static List<string> AccountIds = new()
         {
             "ovsOjxRte-djtQ8ySz5uIHsjRWiaydkzHmerVntxv_C4MgQ", // Felipe
             "AXDxv0H6XL6pBxgut-TeGvE-Z3t6OqaZALlJ7tca-RxUIX8", // Ghigho

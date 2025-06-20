@@ -2,7 +2,7 @@ using System.Text.Json;
 using Hiraishin.Domain.Dto;
 using Hiraishin.Domain.Dto.Hiraishin;
 using Hiraishin.Domain.Interface.Services;
-using Hiraishin.Domain.Utility;
+using Hiraishin.Domain.Data;
 using Microsoft.Extensions.Logging;
 
 namespace Hiraishin.Services;
@@ -78,7 +78,7 @@ public class HiraishinService : IHiraishinService
             }
         }
 
-        var tasks = PlayerAccountIds.Ids.Select(id => FetchPlayerDataAsync(new PlayerInfoDTO() { AccountId = id }));
+        var tasks = PlayersData.AccountIds.Select(id => FetchPlayerDataAsync(new PlayerInfoDTO() { AccountId = id }));
         var allPlayers = (await Task.WhenAll(tasks)).Where(p => p != null).ToList();
 
         var recordLeagueRanking = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" }.Select((queueType, index) =>
