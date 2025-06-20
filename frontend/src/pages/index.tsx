@@ -13,8 +13,8 @@ import { getCookie, setCookie } from 'cookies-next';
 import { Loading } from '@/components/loading';
 import { getTotalLP } from '@/utils/league-of-legends/get-total-lp';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { playersData } from '@/commons/lol-data';
+import axios from '@/service/axios';
 
 const LOL_VERSION = '15.12.1';
 
@@ -30,9 +30,7 @@ export default function Home() {
   } = useQuery<Player[]>({
     queryKey: ['ranking'],
     queryFn: async () => {
-      const { data } = await axios.get<Player[]>(
-        'http://localhost:3001/players/detailed'
-      );
+      const { data } = await axios.get<Player[]>('hiraishin/leaderboard');
 
       Array<Queue>('RANKED_SOLO_5x5', 'RANKED_FLEX_SR').map((queueType, index) => {
         setCookie(
@@ -73,9 +71,6 @@ export default function Home() {
   if (isLoading || isRefetching) {
     return <Loading />;
   }
-
-  console.log(previousRanking);
-  console.log(players);
 
   return (
     <div className="max-w-[774px] font-medium m-auto px-3">
@@ -122,8 +117,6 @@ export default function Home() {
                       const playerData = playersData.find(
                         (x) => x.accountId === player.accountId
                       )!;
-
-                      console.log(previousRanking?.[typeIndex]?.[player.gameName]);
 
                       const lpDiff =
                         previousRanking?.[typeIndex]?.[player.gameName] &&
@@ -278,11 +271,8 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
   const { data } = useQuery<Match[]>({
     queryKey: ['match-history', player.puuid, queue],
     queryFn: async () =>
-      (
-        await axios.get(
-          `http://localhost:3001/players/match-history?puuid=${player.puuid}&queue=${queue}`
-        )
-      ).data,
+      (await axios.get(`hiraishin/match-history?puuid=${player.puuid}&queue=${queue}`))
+        .data,
   });
 
   return (

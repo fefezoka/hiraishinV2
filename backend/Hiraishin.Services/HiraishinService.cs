@@ -6,62 +6,18 @@ using Hiraishin.Domain.Utility;
 using Microsoft.Extensions.Logging;
 
 namespace Hiraishin.Services;
-
-
-public class LolApiProvider : ILolApiProvider
+public class HiraishinService : IHiraishinService
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<LolApiProvider> _logger;
+    private readonly ILogger<HiraishinService> _logger;
 
-    public LolApiProvider(HttpClient httpClient, ILogger<LolApiProvider> logger)
+    public HiraishinService(HttpClient httpClient, ILogger<HiraishinService> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
     }
 
-    public async Task<Summoner> GetUser(string accountId)
-    {
-        try
-        {
-            var requestUrl = $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/{accountId}";
-            var response = await _httpClient.GetAsync(requestUrl);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                _logger.LogError($"Falha ao obter usuário {accountId}. Status: {response.StatusCode}");
-                return null;
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-            var playerInfo = JsonSerializer.Deserialize<Summoner>(content);
-
-            return playerInfo;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, $"Erro ao obter usuário {accountId}");
-            return null;
-        }
-
-    }
-
-    public async Task<List<Summoner>> GetAllPlayers()
-    {
-        var tasks = PlayerAccountIds.Ids
-            .Select(async accountId =>
-            {
-                await Task.Delay(100);
-                return await GetUser(accountId);
-            });
-
-        var results = await Task.WhenAll(tasks); // faz todas requisições ao mesmo tempo
-
-        return results
-            .Where(player => player != null)
-            .ToList();
-    }
-
-    public async Task<List<PlayerInfoDTO>> GetAllPlayersDetailed()
+    public async Task<List<PlayerInfoDTO>> GetLeaderboard()
     {
         async Task<PlayerInfoDTO> FetchPlayerDataAsync(PlayerInfoDTO info)
         {
@@ -165,7 +121,6 @@ public class LolApiProvider : ILolApiProvider
     {
         try
         {
-// 1. Buscar os últimos 5 Match IDs
             var idsUrl =
                 $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5";
             var idsResponse = await _httpClient.GetAsync(idsUrl);
@@ -183,7 +138,6 @@ public class LolApiProvider : ILolApiProvider
             if (matchIds == null || matchIds.Count == 0)
                 return new List<Match>();
 
-            // 2. Buscar detalhes de cada partida
             var matchDetailTasks = matchIds.Select(async matchId =>
             {
                 try

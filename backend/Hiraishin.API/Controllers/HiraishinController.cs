@@ -1,31 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
 using Hiraishin.Domain.Interface.Services;
 
-namespace Hiraishin.Controllers;
+namespace Hiraishin.API.Controllers;
 
 [ApiController]
-[Route("players")]
+[Route("hiraishin")]
 public class PlayersController : ControllerBase
 {
-    private readonly ILolApiProvider _lolApiProvider;
+    private readonly IHiraishinService _lolApiProvider;
     
-    public PlayersController(ILolApiProvider lolApiProvider)
+    public PlayersController(IHiraishinService lolApiProvider)
     {
         _lolApiProvider = lolApiProvider;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetPlayers()
-    {
-        var players = await _lolApiProvider.GetAllPlayers();
-        return Ok(players);
-    }
-    [HttpGet("detailed")]
-    public async Task<IActionResult> GetAllPlayersDetailed()
+    [HttpGet("leaderboard")]
+    public async Task<IActionResult> GetLeaderboard()
     {
         try
         {
-            var players = await _lolApiProvider.GetAllPlayersDetailed();
+            var players = await _lolApiProvider.GetLeaderboard();
 
             if (players == null || !players.Any())
                 return NotFound("Nenhum jogador encontrado.");
