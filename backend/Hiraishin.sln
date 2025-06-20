@@ -46,7 +46,7 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker", "docker.dcproj", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.3 - Data", "4.3 - Data", "{1346036A-DA97-41D5-959D-31C7F5B38B66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiraishin.Domain.Data", "..\Hiraishin.Domain.Data\Hiraishin.Domain.Data.csproj", "{D3DA8FAB-DDA6-4E49-B67F-7B3FD8C8C700}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hiraishin.Domain.Data", "Hiraishin.Domain.Data\Hiraishin.Domain.Data.csproj", "{D3DA8FAB-DDA6-4E49-B67F-7B3FD8C8C700}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

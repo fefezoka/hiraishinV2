@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Hiraishin.Domain.Data\Hiraishin.Domain.Data.csproj" />
+    <ProjectReference Include="..\Hiraishin.Domain.Data\Hiraishin.Domain.Data.csproj" />
     <ProjectReference Include="..\Hiraishin.Domain.Dto\Hiraishin.Domain.Dto.csproj" />
     <ProjectReference Include="..\Hiraishin.Domain.Interface.Services\Hiraishin.Domain.Interface.Services.csproj" />
   </ItemGroup>
