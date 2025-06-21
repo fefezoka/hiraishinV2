@@ -25,7 +25,7 @@ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 # Install Docker
 sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y
+sudo add-apt-repository "deb [arch=arm64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y
 sudo apt update
 sudo apt install docker-ce -y
 
@@ -92,21 +92,14 @@ sudo systemctl stop nginx
 sudo cat > /etc/nginx/sites-available/myapp <<EOL
 limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
-# server {
-#     listen 80;
-#     server_name $DOMAIN_NAME;
-
-#     # Redirect all HTTP requests to HTTPS
-#     return 301 https://\$host\$request_uri;
-# }
-
 server {
     listen       80    default_server;
+    listen       [::]:80    default_server;
 
     # frontend proxy
     location /
     {
-        proxy_pass         http://frontend:3000;
+        proxy_pass         http://localhost:3000;
         proxy_http_version 1.1;
         proxy_set_header   Upgrade \$http_upgrade;
         proxy_set_header   Connection keep-alive;
@@ -120,7 +113,7 @@ server {
     # backend proxy
     location /api
     {
-        proxy_pass         http://backend:3001;
+        proxy_pass         http://localhost:3001;
         proxy_http_version 1.1;
         proxy_set_header   Upgrade \$http_upgrade;
         proxy_set_header   Connection keep-alive;
@@ -135,7 +128,7 @@ server {
 
     location /swagger
     {
-        proxy_pass         http://backend:3001;
+        proxy_pass         http://localhost:3001;
         proxy_http_version 1.1;
         proxy_set_header   Upgrade \$http_upgrade;
         proxy_set_header   Connection keep-alive;
