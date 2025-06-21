@@ -207,7 +207,8 @@ export default function Home() {
                                 </div>
                                 <span>
                                   {tiers.find((tier) => tier.en === league.tier)?.pt}{' '}
-                                  {league.rank} {league.leaguePoints} PDL
+                                  {league.totalLP < 2000 && league.rank}{' '}
+                                  {league.leaguePoints} PDL
                                   {lpDiff !== 0 && lpDiff !== undefined && (
                                     <span className="absolute font-semibold flex text-sm -top-2 right-0">
                                       {lpDiff > 0 ? (
