@@ -4,17 +4,22 @@ using Hiraishin.Domain.Dto.Hiraishin;
 using Hiraishin.Domain.Interface.Services;
 using Hiraishin.Domain.Data;
 using Microsoft.Extensions.Logging;
+using Hiraishin.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using Hiraishin.Domain.Entities;
 
 namespace Hiraishin.Services;
 public class HiraishinService : IHiraishinService
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<HiraishinService> _logger;
+    private readonly HiraishinContext _hiraishinContext;
 
-    public HiraishinService(HttpClient httpClient, ILogger<HiraishinService> logger)
+    public HiraishinService(HttpClient httpClient, ILogger<HiraishinService> logger, HiraishinContext hiraishinContext)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _hiraishinContext = hiraishinContext;
     }
 
     public async Task<List<PlayerInfoDTO>> GetLeaderboard()
@@ -170,5 +175,10 @@ public class HiraishinService : IHiraishinService
             _logger.LogError(ex, $"Erro geral ao buscar histórico de partidas para o PUUID {puuid}");
             return new List<Match>();
         }
+    }
+
+    public async Task<List<WeeklyRanking>> Teste()
+    {
+        return await _hiraishinContext.WeeklyRanking.ToListAsync();
     }
 }

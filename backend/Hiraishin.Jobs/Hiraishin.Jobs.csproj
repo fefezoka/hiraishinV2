@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire" Version="1.8.20" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hiraishin.Data.Context\Hiraishin.Data.Context.csproj" />
+    <ProjectReference Include="..\Hiraishin.Domain.Entities\Hiraishin.Domain.Entities.csproj" />
+    <ProjectReference Include="..\Hiraishin.Domain.Interface.Services\Hiraishin.Domain.Interface.Services.csproj" />
+  </ItemGroup>
+
+</Project>

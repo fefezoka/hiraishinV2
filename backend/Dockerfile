@@ -18,6 +18,7 @@ COPY ["Hiraishin.Services/Hiraishin.Services.csproj", "Hiraishin.Services/"]
 COPY ["Hiraishin.Domain.Dto/Hiraishin.Domain.Dto.csproj", "Hiraishin.Domain.Dto/"]
 COPY ["Hiraishin.Domain.Interface.Services/Hiraishin.Domain.Interface.Services.csproj", "Hiraishin.Domain.Interface.Services/"]
 COPY ["Hiraishin.Domain.Utility/Hiraishin.Domain.Utility.csproj", "Hiraishin.Domain.Utility/"]
+COPY ["Hiraishin.Jobs/Hiraishin.Jobs.csproj", "Hiraishin.Jobs/"]
 RUN dotnet restore "./Hiraishin.API/Hiraishin.API.csproj"
 COPY . .
 WORKDIR "/src/Hiraishin.API"
