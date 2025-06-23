@@ -14,7 +14,7 @@ public class LeagueDTO
     public int Wins { get; set; }
     public int Losses { get; set; }
     public int TotalLP { get; set; }
-    public int? Index { get; set; }
+    public int Index { get; set; }
     public int Winrate => Wins + Losses == 0 ? 0 : (int)Math.Round((double)Wins / (Wins + Losses) * 100);
 
     public LeagueDTO(League league) {

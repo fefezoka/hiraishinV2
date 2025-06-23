@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Hiraishin.Domain.Dto.Hiraishin;
 
 public class PlayerInfoDTO

@@ -1,5 +1,8 @@
+using Hangfire;
+using Hangfire.PostgreSql;
 using Hiraishin.Data.Context;
 using Hiraishin.Domain.Interface.Services;
+using Hiraishin.Jobs;
 using Hiraishin.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -27,6 +30,20 @@ builder.Services.AddHttpClient<IHiraishinService, HiraishinService>(client =>
     client.DefaultRequestHeaders.Add("X-Riot-Token", builder.Configuration["RiotGamesApi:ApiKey"]);
 });
 
+builder.Services.AddHangfire(x =>
+{
+    x.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UsePostgreSqlStorage(options => { options.UseNpgsqlConnection(connectionString.ConnectionString); },
+            new PostgreSqlStorageOptions { UseSlidingInvisibilityTimeout = true });
+});
+
+builder.Services.AddHangfireServer(options =>
+{
+    options.SchedulePollingInterval = TimeSpan.FromHours(5);
+});
+
 builder.Services.AddSwaggerGen(swagger =>
 {
     swagger.SwaggerDoc("v1", new OpenApiInfo { Title = "Hiraishin", Version = "v1" });
@@ -36,7 +53,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // URL do frontend
+        policy.WithOrigins("http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -78,10 +95,25 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetService<HiraishinContext>();
     context?.Database.Migrate();
-}*/
+}
+
+app.UseHangfireDashboard();
+app.MapHangfireDashboard();
+
+if (app.Environment.IsStaging() || app.Environment.IsProduction())
+{
+    RecurringJob.AddOrUpdate<WeeklyRankingJob>(
+        "weekly-ranking-job",
+        x => x.Run(null!, CancellationToken.None),
+        Cron.Weekly(System.DayOfWeek.Monday),
+        new RecurringJobOptions
+        {
+            TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"),
+        });
+}
 
 app.Run();

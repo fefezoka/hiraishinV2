@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Hiraishin.Domain.Interface.Services;
+using Hiraishin.Domain.Entities;
 
 namespace Hiraishin.API.Controllers;
 
@@ -7,19 +8,19 @@ namespace Hiraishin.API.Controllers;
 [Route("hiraishin")]
 public class PlayersController : ControllerBase
 {
-    private readonly IHiraishinService _lolApiProvider;
+    private readonly IHiraishinService _hiraishinService;
     
-    public PlayersController(IHiraishinService lolApiProvider)
+    public PlayersController(IHiraishinService hiraishinService)
     {
-        _lolApiProvider = lolApiProvider;
+        _hiraishinService = hiraishinService;
     }
 
     [HttpGet("leaderboard")]
-    public async Task<IActionResult> GetLeaderboard()
+    public async Task<ActionResult> GetLeaderboard()
     {
         try
         {
-            var players = await _lolApiProvider.GetLeaderboard();
+            var players = await _hiraishinService.GetLeaderboard();
 
             if (players == null || !players.Any())
                 return NotFound("Nenhum jogador encontrado.");
@@ -33,9 +34,14 @@ public class PlayersController : ControllerBase
         }
     }
     [HttpGet("match-history")]
-    public async Task<IActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
+    public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
     {
-        var result = await _lolApiProvider.GetMatchHistoryAsync(puuid, queue);
-        return Ok(result);
+        return Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
+    }
+
+    [HttpGet("weekly-ranking")]
+    public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRanking()
+    {
+        return Ok(await _hiraishinService.GetWeeklyRanking());
     }
 }
