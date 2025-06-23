@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as Collapsible from '@radix-ui/react-collapsible';
@@ -9,9 +9,7 @@ import {
   MdOutlineKeyboardDoubleArrowUp,
   MdOutlineKeyboardDoubleArrowDown,
 } from 'react-icons/md';
-import { getCookie, setCookie } from 'cookies-next';
 import { Loading } from '@/components/loading';
-import { getTotalLP } from '@/utils/league-of-legends/get-total-lp';
 import { useQuery } from '@tanstack/react-query';
 import { playersData } from '@/commons/lol-data';
 import axios from '@/service/axios';
@@ -20,7 +18,6 @@ const LOL_VERSION = '15.12.1';
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
-  const [previousRanking, setPreviousRanking] = useState<LeagueState[]>();
 
   const {
     data: players,
@@ -29,44 +26,14 @@ export default function Home() {
     refetch,
   } = useQuery<Player[]>({
     queryKey: ['ranking'],
-    queryFn: async () => {
-      const { data } = await axios.get<Player[]>('hiraishin/leaderboard');
-
-      Array<Queue>('RANKED_SOLO_5x5', 'RANKED_FLEX_SR').map((queueType, index) => {
-        setCookie(
-          `hiraishin-${queueType}`,
-          JSON.stringify(
-            data.reduce<Record<string, any>>((acc, curr) => {
-              const league = curr.leagues[index];
-
-              if (!league) return acc;
-
-              acc[curr.gameName] = {
-                index: league.index,
-                elo: {
-                  tier: league.tier,
-                  rank: league.rank,
-                  leaguePoints: league.leaguePoints,
-                },
-              };
-
-              return acc;
-            }, {}) as LeagueState
-          ),
-          { expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) }
-        );
-      });
-
-      return data;
-    },
+    queryFn: async () => (await axios.get<Player[]>('hiraishin/leaderboard')).data,
   });
 
-  useEffect(() => {
-    const previousSolo = JSON.parse(getCookie('hiraishin-RANKED_SOLO_5x5') || '{}');
-    const previousFlex = JSON.parse(getCookie('hiraishin-RANKED_FLEX_SR') || '{}');
-
-    previousSolo && previousFlex && setPreviousRanking([previousSolo, previousFlex]);
-  }, []);
+  const { data: weeklyRanking } = useQuery<WeeklyRanking[]>({
+    queryKey: ['weekly-ranking'],
+    queryFn: async () =>
+      (await axios.get<WeeklyRanking[]>('hiraishin/weekly-ranking')).data,
+  });
 
   if (isLoading || isRefetching) {
     return <Loading />;
@@ -118,10 +85,12 @@ export default function Home() {
                         (x) => x.accountId === player.accountId
                       )!;
 
+                      const previousRanking = weeklyRanking?.find(
+                        (x) => x.queueType === queueType && x.puuid === player.puuid
+                      );
+
                       const lpDiff =
-                        previousRanking?.[typeIndex]?.[player.gameName] &&
-                        league.totalLP -
-                          getTotalLP(previousRanking[typeIndex][player.gameName].elo);
+                        previousRanking && league.totalLP - previousRanking.totalLP;
 
                       return (
                         <Collapsible.Root key={player.id}>
@@ -145,11 +114,9 @@ export default function Home() {
                                   #{index + 1}
                                 </span>
                                 <div className="md:absolute md:top-0 md:-right-7">
-                                  {previousRanking?.[typeIndex]?.[player.gameName] &&
-                                    index + 1 !==
-                                      previousRanking[typeIndex][player.gameName].index &&
-                                    (index + 1 <
-                                    previousRanking[typeIndex][player.gameName].index ? (
+                                  {previousRanking &&
+                                    index + 1 !== previousRanking.index &&
+                                    (index + 1 < previousRanking.index ? (
                                       <MdOutlineKeyboardDoubleArrowUp
                                         className="text-green-500"
                                         size={'1.5em'}

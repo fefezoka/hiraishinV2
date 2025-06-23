@@ -42,9 +42,6 @@ type League = {
   index: number;
   totalLP: number;
   winrate: number;
-} & Elo;
-
-type Elo = {
   leaguePoints: number;
   tier: Tier;
   rank: Rank;
@@ -80,16 +77,20 @@ interface Match {
   };
 }
 
-type LeagueState = Record<
-  string,
-  {
-    index: number;
-    elo: Elo;
-  }
->;
-
 type Tier = 'SILVER' | 'GOLD' | 'PLATINUM' | 'EMERALD' | 'DIAMOND' | 'MASTER';
 type Rank = 'IV' | 'III' | 'II' | 'I';
+
+interface WeeklyRanking {
+  id: number;
+  puuid: string;
+  weekyStart: Date;
+  queueType: Queue;
+  tier: string;
+  rank: string;
+  leaguePoints: number;
+  totalLP: number;
+  index: number;
+}
 
 // Hiraishindle
 

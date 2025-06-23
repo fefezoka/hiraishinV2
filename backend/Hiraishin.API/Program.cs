@@ -104,16 +104,16 @@ using (var scope = app.Services.CreateScope())
 app.UseHangfireDashboard();
 app.MapHangfireDashboard();
 
-//if (app.Environment.IsStaging() || app.Environment.IsProduction())
-//{
+if (app.Environment.IsStaging() || app.Environment.IsProduction())
+{
     RecurringJob.AddOrUpdate<WeeklyRankingJob>(
         "weekly-ranking-job",
         x => x.Run(null!, CancellationToken.None),
-        Cron.Weekly(System.DayOfWeek.Monday, 2, 30),
+        Cron.Weekly(System.DayOfWeek.Monday),
         new RecurringJobOptions
         {
             TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"),
         });
-//}
+}
 
 app.Run();
