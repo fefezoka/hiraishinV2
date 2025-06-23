@@ -3,7 +3,7 @@ namespace Hiraishin.Domain.Entities;
 public class WeeklyRanking
 {
     public int Id { get; set; }
-    public string AccountId { get; set; }
+    public string Puuid { get; set; }
     public DateTime WeekStart { get; set; }
     public string QueueType { get; set; }
     public string Tier { get; set; }

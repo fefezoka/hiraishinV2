@@ -16,7 +16,7 @@ public class PlayersController : ControllerBase
     }
 
     [HttpGet("leaderboard")]
-    public async Task<IActionResult> GetLeaderboard()
+    public async Task<ActionResult> GetLeaderboard()
     {
         try
         {
@@ -34,15 +34,14 @@ public class PlayersController : ControllerBase
         }
     }
     [HttpGet("match-history")]
-    public async Task<IActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
+    public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
     {
-        var result = await _hiraishinService.GetMatchHistoryAsync(puuid, queue);
-        return Ok(result);
+        return Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
     }
 
-    [HttpGet("teste")]
-    public async Task<List<WeeklyRanking>> Teste()
+    [HttpGet("weekly-ranking")]
+    public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRanking()
     {
-        return await _hiraishinService.Teste();
+        return Ok(await _hiraishinService.GetWeeklyRanking());
     }
 }

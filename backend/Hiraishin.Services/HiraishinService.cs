@@ -24,13 +24,13 @@ public class HiraishinService : IHiraishinService
 
     public async Task<List<PlayerInfoDTO>> GetLeaderboard()
     {
-        async Task<PlayerInfoDTO> FetchPlayerDataAsync(PlayerInfoDTO info)
+        async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)
         {
             try
             {
                 var playerResponse =
                     await _httpClient.GetAsync(
-                        $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-account/{info.AccountId}");
+                        $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
                 if (!playerResponse.IsSuccessStatusCode) return null;
 
                 await Task.Delay(500);
@@ -39,7 +39,7 @@ public class HiraishinService : IHiraishinService
 
                 var accountResponse =
                     await _httpClient.GetAsync(
-                        $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{summoner.Puuid}");
+                        $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
                 if (!accountResponse.IsSuccessStatusCode) return null;
 
                 await Task.Delay(500);
@@ -48,7 +48,7 @@ public class HiraishinService : IHiraishinService
 
                 var leaguesResponse =
                     await _httpClient.GetAsync(
-                        $"https://br1.api.riotgames.com/lol/league/v4/entries/by-summoner/{summoner.Id}");
+                        $"https://br1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}");
                 if (!leaguesResponse.IsSuccessStatusCode) return null;
 
                 var leagues =
@@ -66,7 +66,7 @@ public class HiraishinService : IHiraishinService
 
                 return new PlayerInfoDTO()
                 {
-                    AccountId = info.AccountId,
+                    AccountId = summoner.AccountId,
                     GameName = account.GameName,
                     TagLine = account.TagLine,
                     Id = summoner.Id,
@@ -78,12 +78,12 @@ public class HiraishinService : IHiraishinService
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Erro ao buscar info do jogador: {info.AccountId}");
+                _logger.LogError(ex, $"Erro ao buscar info do jogador: {puuid}");
                 return null;
             }
         }
 
-        var tasks = PlayersData.AccountIds.Select(id => FetchPlayerDataAsync(new PlayerInfoDTO() { AccountId = id }));
+        var tasks = PlayersData.PUUIDS.Select(FetchPlayerDataAsync);
         var allPlayers = (await Task.WhenAll(tasks)).Where(p => p != null).ToList();
 
         var recordLeagueRanking = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" }.Select((queueType, index) =>
@@ -177,8 +177,11 @@ public class HiraishinService : IHiraishinService
         }
     }
 
-    public async Task<List<WeeklyRanking>> Teste()
+    public async Task<List<WeeklyRanking>> GetWeeklyRanking()
     {
-        return await _hiraishinContext.WeeklyRanking.ToListAsync();
+        DateTime now = DateTime.UtcNow.Date;
+        DateTime lastMonday = now.AddDays(1 - (int)now.DayOfWeek);
+
+        return await _hiraishinContext.WeeklyRanking.Where(x => x.WeekStart == lastMonday).ToListAsync();
     }
 }

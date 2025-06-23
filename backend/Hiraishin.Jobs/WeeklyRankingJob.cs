@@ -31,8 +31,7 @@ namespace Hiraishin.Jobs
 
             var snapshots = new List<WeeklyRanking>();
 
-            DateTime now = DateTime.UtcNow;
-            DateTime formattedNow = new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0, 0, now.Kind);
+            DateTime now = DateTime.UtcNow.Date;
 
             foreach (var player in players)
             {
@@ -40,14 +39,14 @@ namespace Hiraishin.Jobs
                 {
                     snapshots.Add(new WeeklyRanking
                     {
-                        AccountId = player.AccountId,
+                        Puuid = player.Puuid,
                         Index = league.Index,
                         LeaguePoints = league.LeaguePoints,
                         QueueType = league.QueueType,
                         Rank = league.Rank,
                         Tier = league.Tier,
                         TotalLP = league.TotalLP,
-                        WeekStart = formattedNow
+                        WeekStart = now
                     });
                 }
             }

@@ -2,18 +2,18 @@
 {
     public class PlayersData
     {
-        public static List<string> AccountIds = new()
+        public static List<string> PUUIDS = new()
         {
-            "ovsOjxRte-djtQ8ySz5uIHsjRWiaydkzHmerVntxv_C4MgQ", // Felipe
-            "AXDxv0H6XL6pBxgut-TeGvE-Z3t6OqaZALlJ7tca-RxUIX8", // Ghigho
-            "ZeawlYZuKOUZdh4mxJqS2HAAr1qp9CNXDdpHvAzLnIcUr8I", // David
-            "Qp-XkXVrAisdSU6FgC9nirEyjmM6YJisvLr-xnEfJufGwJU", // Neto
-            "eKH48pVRyyWjGRbyK02riejBGVWxp0mh8dLItMuP4eS2BMI", // Bruno
-            "6gdO7gMq6fGUR2WRxXJPL1ykfGe1VMjhTqToT339NUMF0IQ", // Henrique
-            "uHXnDgtj6_YFtY1xRMuAiKM3FHsJ7Cq965ZMIg9PUxC0xuw", // Paulo
-            "ETllTUNpgyOh8mJaT5Pavlf12Sz2YmevLVlymqqD8Uvbweg", // Ianguas
-            "rJeuUzDYBSxjhVMmC2213xHcqdIf6tarmWGlubQna8N_2bY", // Thiago
-            "YK9pet125SQXFCM-wys_zHWFQDfpCUaTxXuM0MZoopTx0lQ", // Verona
+            "7nDVkHJU_EUzwXv-Gx00Omv2Od0kf_cayZQbGHrDAWcUEo2aAgii3Oa9B3IxslsVkxjQr_iZ_PAn2Q", // Felipe
+            "-KTo82lkyRfxSAuggZnXY3yvBjN6qL-RHWUUu-CiaJL0y9mTocPeGoVmbgkEPSLXuwyyxcD9URKetA", // Ghigho
+            "llUIMNEhv_T2z6kCdd6JVyeKEgumv-0-3jC_M0NhoEGxWiSxuH2RoFL_jlZo6PCxJ6qTDONqYxa80A", // David
+            "OSY7lpbDqEGueNxZw2NjOXv0xCCpDZZ-Oub6jfE8JcsxJHR-hkZTHyMuCbfSKG-w2f1sEEsNiLI1nw", // Neto
+            "AWlqS2UDDZg94vG8ZDfE4MhFMqHMF-i_rsNRvuwDLjrh0nHE01TfHBeBbbqzee2Tgptn2fU9rcQAOw", // Bruno
+            "pfONoHAWCuWgRN5CEj0KbL14j4Ppc9GHXSgaCJzgbGHBE1eXGAnrt1ZVvPL3dY3J_1DJNPKvpJXT6g", // Henrique
+            "J0T0BYQXqHAEXUi8_dLhQiLwSsi5V_4o0X2GsSM-veIqV-o_9nCp9LLt2DwX-mVIQFqquGrT0EWq_w", // Paulo
+            "RH-na3OpXeDwMoiIt8o6Di1ygIO2QF3AG4QTFf01NyEIi6EQybDtRNYH2AGSzmRHoMoofwyAZszfaQ", // Ianguas
+            "awiuMM0WCsb3Ae7h10P7nTKYjpt_daiD4vZp_o9Rzx0cSaeoneXsHH2_e2NpHCXdS2yPqSZTXcP8sw", // Thiago
+            "U5UbYRf4GexyV5TZsA3eijiBl3rUGbJIBsqGu8mZa7M9CRKANu4A80YWBxB9FBrkUcIEHBmk72uzsg", // Verona
         };
     }
 }

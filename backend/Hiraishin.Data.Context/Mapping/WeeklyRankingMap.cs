@@ -8,7 +8,7 @@ namespace Hiraishin.Data.Context.Mapping
         public static void Map(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WeeklyRanking>()
-                .HasIndex(r => new { r.AccountId, r.WeekStart, r.QueueType })
+                .HasIndex(r => new { r.Puuid, r.WeekStart, r.QueueType })
                 .IsUnique();
         }
     }
