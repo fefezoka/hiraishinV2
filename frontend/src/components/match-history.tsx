@@ -53,9 +53,11 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                       spell1: summoner.summoner1Id,
                       spell2: summoner.summoner2Id,
                     }).map((spell: number) => (
-                      <div className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]">
+                      <div
+                        key={spell}
+                        className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]"
+                      >
                         <Image
-                          key={spell}
                           src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
                           alt=""
                           fill
