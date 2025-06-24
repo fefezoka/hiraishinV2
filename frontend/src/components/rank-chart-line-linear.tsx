@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/chart';
 import Image from 'next/image';
+import { tiers } from '@/commons/lol-data';
 
 export const RankChartLineLinear = ({
   chartData,
@@ -22,7 +23,7 @@ export const RankChartLineLinear = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gráfico de diferença de elo</CardTitle>
+        <CardTitle>Gráfico de elo</CardTitle>
         <CardDescription>Últimos 3 meses</CardDescription>
       </CardHeader>
       <CardContent>
@@ -57,8 +58,8 @@ export const RankChartLineLinear = ({
                       src={`https://opgg-static.akamaized.net/images/medals_new/${rank?.weeklyRanking.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
                     />
                     <div>
-                      {rank?.weeklyRanking.tier} {rank?.weeklyRanking.rank}{' '}
-                      {rank?.weeklyRanking.leaguePoints} PDL
+                      {tiers.find((tier) => tier.en === rank?.weeklyRanking.tier)?.pt}{' '}
+                      {rank?.weeklyRanking.rank} {rank?.weeklyRanking.leaguePoints} PDL
                     </div>
                   </div>
                 );
