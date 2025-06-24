@@ -101,7 +101,8 @@ export default function Home() {
                           key={player.puuid}
                           onOpenChange={(open) => {
                             setProfileOverviewOpen(open ? index : null);
-                            router.push(`#player-${player.gameName}-${player.tagLine}`);
+                            open &&
+                              router.push(`#player-${player.gameName}-${player.tagLine}`);
                           }}
                         >
                           <Collapsible.CollapsibleTrigger asChild>
