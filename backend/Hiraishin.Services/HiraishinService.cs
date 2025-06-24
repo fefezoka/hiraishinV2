@@ -180,7 +180,7 @@ public class HiraishinService : IHiraishinService
     public async Task<List<WeeklyRanking>> GetWeeklyRanking()
     {
         DateTime now = DateTime.UtcNow.Date;
-        DateTime lastMonday = now.AddDays(1 - (int)now.DayOfWeek);
+        DateTime lastMonday = now.AddDays(1 - (int)now.DayOfWeek).AddHours(3);
 
         return await _hiraishinContext.WeeklyRanking.Where(x => x.WeekStart == lastMonday).ToListAsync();
     }

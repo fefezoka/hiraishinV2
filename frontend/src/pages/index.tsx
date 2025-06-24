@@ -204,9 +204,7 @@ export default function Home() {
                                         {lpDiff > 0 ? '+' + lpDiff : lpDiff} PDL desde a
                                         última segunda feira (
                                         {new Intl.DateTimeFormat().format(
-                                          new Date(
-                                            previousRanking!.weekStart.replace('Z', '')
-                                          )
+                                          new Date(previousRanking!.weekStart)
                                         )}
                                         )
                                       </TooltipContent>

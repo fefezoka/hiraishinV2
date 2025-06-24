@@ -31,7 +31,7 @@ namespace Hiraishin.Jobs
 
             var snapshots = new List<WeeklyRanking>();
 
-            DateTime now = DateTime.UtcNow.Date;
+            DateTime now = DateTime.UtcNow.Date.AddHours(3);
 
             foreach (var player in players)
             {
