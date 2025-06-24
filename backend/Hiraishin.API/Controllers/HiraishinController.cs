@@ -26,4 +26,8 @@ public class PlayersController : ControllerBase
     [HttpGet("weekly-ranking")]
     public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRanking()
         => Ok(await _hiraishinService.GetWeeklyRanking());
+
+    [HttpGet("weekly-ranking/{puuid}")]
+    public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRankingByUser([FromRoute] string puuid)
+        => Ok(await _hiraishinService.GetWeeklyRankingByUser(puuid));
 }

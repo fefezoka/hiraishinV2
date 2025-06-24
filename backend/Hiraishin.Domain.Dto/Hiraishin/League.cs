@@ -6,8 +6,6 @@ public class League
 {
     [JsonPropertyName("leagueId")]
     public String LeagueId { get; set; }
-    [JsonPropertyName("summonerId")]
-    public String SummonerId { get; set; }
     [JsonPropertyName("puuid")]
     public String Puuid { get; set; }
     [JsonPropertyName("queueType")]

@@ -66,10 +66,8 @@ public class HiraishinService : IHiraishinService
 
                 return new PlayerInfoDTO()
                 {
-                    AccountId = summoner.AccountId,
                     GameName = account.GameName,
                     TagLine = account.TagLine,
-                    Id = summoner.Id,
                     Puuid = summoner.Puuid,
                     Leagues = allLeagues,
                     ProfileIconId = summoner.ProfileIconId,
@@ -183,5 +181,12 @@ public class HiraishinService : IHiraishinService
         DateTime lastMonday = now.AddDays(1 - (int)now.DayOfWeek).AddHours(3);
 
         return await _hiraishinContext.WeeklyRanking.Where(x => x.WeekStart == lastMonday).ToListAsync();
+    }
+
+    public async Task<List<WeeklyRanking>> GetWeeklyRankingByUser(string puuid)
+    {
+        DateTime threeMonthsAgo = DateTime.UtcNow.Date.AddDays(-90);
+
+        return await _hiraishinContext.WeeklyRanking.Where(x => x.WeekStart >= threeMonthsAgo && x.Puuid == puuid).ToListAsync();
     }
 }

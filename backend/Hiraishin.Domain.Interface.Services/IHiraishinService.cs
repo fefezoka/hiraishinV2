@@ -8,5 +8,6 @@ namespace Hiraishin.Domain.Interface.Services
         Task<List<PlayerInfoDTO>> GetLeaderboard();
         Task<List<Match>> GetMatchHistoryAsync(string puuid, string queue);
         Task<List<WeeklyRanking>> GetWeeklyRanking();
+        Task<List<WeeklyRanking>> GetWeeklyRankingByUser(string puuid);
     }
 }

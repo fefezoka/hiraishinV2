@@ -5,7 +5,6 @@ namespace Hiraishin.Domain.Dto.Hiraishin;
 public class LeagueDTO
 {
     public String LeagueId { get; set; }
-    public String SummonerId { get; set; }
     public String Puuid { get; set; }
     public String QueueType { get; set; }
     public String Tier { get; set; }
@@ -19,7 +18,6 @@ public class LeagueDTO
 
     public LeagueDTO(League league) {
         LeagueId = league.LeagueId;
-        SummonerId = league.SummonerId;
         Puuid = league.Puuid;
         QueueType = league.QueueType;
         Tier = league.Tier;

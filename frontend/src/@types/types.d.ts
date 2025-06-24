@@ -1,11 +1,9 @@
 interface Player {
-  id: string;
   summonerLevel: number;
   gameName: string;
   tagLine: string;
   puuid: string;
   profileIconId: number;
-  accountId: string;
   leagues: (League | null)[];
 }
 
