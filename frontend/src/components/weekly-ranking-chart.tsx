@@ -50,7 +50,7 @@ export const WeeklyRankingChart = ({ player, queue }: IWeeklyRankingChart) => {
           <CardTitle>Gráfico de elo</CardTitle>
           <CardDescription>Últimos 3 meses</CardDescription>
         </div>
-        {isLoading && <Image src={spinner} alt="" height={25} width={25} />}
+        {isLoading && <Image src={spinner} alt="" height={20} width={20} />}
       </CardHeader>
       <CardContent>
         {filterByQueue && (

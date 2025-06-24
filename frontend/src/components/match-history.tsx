@@ -23,7 +23,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
     <Card>
       <CardHeader className="flex gap-2">
         <CardTitle>Histórico de partidas</CardTitle>
-        {isLoading && <Image src={spinner} alt="" height={25} width={25} />}
+        {isLoading && <Image src={spinner} alt="" height={20} width={20} />}
       </CardHeader>
       <CardContent className="divide-y">
         {data &&
