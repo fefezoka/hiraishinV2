@@ -101,7 +101,12 @@ export const WeeklyRankingChart = ({ player, queue }: IWeeklyRankingChart) => {
                 type="linear"
                 stroke="var(--color-totalLP)"
                 strokeWidth={2}
-                dot={false}
+                dot={{
+                  fill: 'var(--color-totalLP)',
+                }}
+                activeDot={{
+                  r: 6,
+                }}
               />
             </LineChart>
           </ChartContainer>
