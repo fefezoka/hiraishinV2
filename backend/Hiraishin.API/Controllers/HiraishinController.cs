@@ -18,21 +18,14 @@ public class PlayersController : ControllerBase
     [HttpGet("leaderboard")]
     public async Task<ActionResult> GetLeaderboard()
     {
-        try
-        {
-            var players = await _hiraishinService.GetLeaderboard();
+        var players = await _hiraishinService.GetLeaderboard();
 
-            if (players == null || !players.Any())
-                return NotFound("Nenhum jogador encontrado.");
+        if (players == null || !players.Any())
+            return NotFound("Nenhum jogador encontrado.");
 
-            return Ok(players);
-        }
-        catch (Exception ex)
-        {
-            // Você pode adicionar um logger aqui também
-            return StatusCode(500, $"Erro ao buscar jogadores: {ex.Message}");
-        }
+        return Ok(players);
     }
+
     [HttpGet("match-history")]
     public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
     {
