@@ -1,3 +1,4 @@
+import { spinner } from '@/assets';
 import { LOL_VERSION, spells } from '@/commons/lol-data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import axios from '@/service/axios';
@@ -11,7 +12,7 @@ interface IMatchHistory {
 }
 
 export const MatchHistory = ({ player, queue }: IMatchHistory) => {
-  const { data } = useQuery<Match[]>({
+  const { data, isLoading } = useQuery<Match[]>({
     queryKey: ['match-history', player.puuid, queue],
     queryFn: async () =>
       (await axios.get(`hiraishin/match-history?puuid=${player.puuid}&queue=${queue}`))
@@ -20,11 +21,12 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex gap-2">
         <CardTitle>Histórico de partidas</CardTitle>
+        {isLoading && <Image src={spinner} alt="" height={25} width={25} />}
       </CardHeader>
       <CardContent className="divide-y">
-        {data ? (
+        {data &&
           data.map((match, index) => {
             const summoner = match.info.participants.find(
               (participant) => participant.puuid === player.puuid
@@ -154,12 +156,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                 </div>
               </div>
             );
-          })
-        ) : (
-          <div className="text-center my-4">
-            <span>Carregando histórico de partidas...</span>
-          </div>
-        )}
+          })}
       </CardContent>
     </Card>
   );
