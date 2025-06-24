@@ -34,33 +34,33 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
 
             return (
               <div
-                className="flex justify-between px-4 md:px-6 py-2 items-center text-xs"
+                className="flex justify-between  md:px-6 py-2 items-center sm:text-xs text-xxs"
                 key={index}
               >
                 <div className="flex gap-0.5">
-                  <div className="relative">
+                  <div className="relative sm:h-[48px] sm:w-[48px] h-[40px] w-[40px]">
                     <Image
                       src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${summoner.championName}.png`}
                       alt=""
-                      height={48}
-                      width={48}
+                      fill
                     />
-                    <span className="absolute left-0 bottom-0 text-xxs bg-black">
+                    <span className="absolute left-0 bottom-0 sm:text-xxs bg-black">
                       {summoner.champLevel}
                     </span>
                   </div>
-                  <div>
+                  <div className="flex flex-col">
                     {Object.values({
                       spell1: summoner.summoner1Id,
                       spell2: summoner.summoner2Id,
                     }).map((spell: number) => (
-                      <Image
-                        key={spell}
-                        src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
-                        alt=""
-                        height={24}
-                        width={24}
-                      />
+                      <div className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]">
+                        <Image
+                          key={spell}
+                          src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                          alt=""
+                          fill
+                        />
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -86,8 +86,8 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                     }).format(match.info.gameDuration * 1000)}
                   </span>
                 </div>
-                <div className="flex flex-col text-xs items-center">
-                  <span className="font-bold text-sm tracking-wider">
+                <div className="flex flex-col items-center">
+                  <span className="font-bold sm:text-sm text-xs tracking-wider">
                     {summoner.kills}/
                     <span className="text-red-500">{summoner.deaths}</span>/
                     {summoner.assists}
