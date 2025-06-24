@@ -244,7 +244,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
   });
 
   return (
-    <div className="h-full flex flex-col gap-2 divide-y py-2 bg-indigo-950 rounded-2xl mb-2 p-2">
+    <div className="h-full flex flex-col divide-y bg-indigo-950/50 rounded-2xl p-2">
       {data ? (
         data.map((match, index) => {
           const summoner = match.info.participants.find(
@@ -253,7 +253,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
 
           return (
             <div
-              className="flex justify-between px-4 md:px-6 py-2 items-center text-xs border-blue-900"
+              className="flex justify-between px-4 md:px-6 py-2 items-center text-xs border-blue-900/50"
               key={index}
             >
               <div className="flex gap-0.5">
@@ -325,7 +325,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                 }).map((item, index) => (
                   <div
                     key={index}
-                    className="w-[20px] h-[20px] md:w-[24px] md:h-[24px] relative bg-indigo-900 rounded overflow-hidden"
+                    className="w-[20px] h-[20px] md:w-[24px] md:h-[24px] relative bg-sky-950/50 rounded overflow-hidden"
                   >
                     {item !== 0 && (
                       <Image
