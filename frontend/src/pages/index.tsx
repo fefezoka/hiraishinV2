@@ -13,6 +13,7 @@ import { Loading } from '@/components/loading';
 import { useQuery } from '@tanstack/react-query';
 import { playersData } from '@/commons/lol-data';
 import axios from '@/service/axios';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 const LOL_VERSION = '15.12.1';
 
@@ -177,25 +178,39 @@ export default function Home() {
                                   {league.totalLP < 2000 && league.rank}{' '}
                                   {league.leaguePoints} PDL
                                   {lpDiff !== 0 && lpDiff !== undefined && (
-                                    <span className="absolute font-semibold flex text-sm -top-2 right-0">
-                                      {lpDiff > 0 ? (
-                                        <>
-                                          +{lpDiff} PDL
-                                          <MdOutlineKeyboardDoubleArrowUp
-                                            className="text-green-500"
-                                            size={'1.25rem'}
-                                          />
-                                        </>
-                                      ) : (
-                                        <>
-                                          {lpDiff} PDL
-                                          <MdOutlineKeyboardDoubleArrowDown
-                                            className="text-red-500"
-                                            size={'1.5em'}
-                                          />
-                                        </>
-                                      )}
-                                    </span>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <span className="absolute font-semibold flex text-sm -top-2 right-0">
+                                          {lpDiff > 0 ? (
+                                            <>
+                                              +{lpDiff} PDL
+                                              <MdOutlineKeyboardDoubleArrowUp
+                                                className="text-green-500"
+                                                size={'1.25rem'}
+                                              />
+                                            </>
+                                          ) : (
+                                            <>
+                                              {lpDiff} PDL
+                                              <MdOutlineKeyboardDoubleArrowDown
+                                                className="text-red-500"
+                                                size={'1.5em'}
+                                              />
+                                            </>
+                                          )}
+                                        </span>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        {lpDiff > 0 ? '+' + lpDiff : lpDiff} PDL desde a
+                                        última segunda feira (
+                                        {new Intl.DateTimeFormat().format(
+                                          new Date(
+                                            previousRanking!.weekStart.replace('Z', '')
+                                          )
+                                        )}
+                                        )
+                                      </TooltipContent>
+                                    </Tooltip>
                                   )}
                                 </span>
                                 <p className="text-xxs  md:text-xs">

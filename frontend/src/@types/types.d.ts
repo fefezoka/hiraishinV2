@@ -83,7 +83,7 @@ type Rank = 'IV' | 'III' | 'II' | 'I';
 interface WeeklyRanking {
   id: number;
   puuid: string;
-  weekyStart: Date;
+  weekStart: string;
   queueType: Queue;
   tier: string;
   rank: string;
