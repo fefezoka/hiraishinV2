@@ -17,24 +17,13 @@ public class PlayersController : ControllerBase
 
     [HttpGet("leaderboard")]
     public async Task<ActionResult> GetLeaderboard()
-    {
-        var players = await _hiraishinService.GetLeaderboard();
-
-        if (players == null || !players.Any())
-            return NotFound("Nenhum jogador encontrado.");
-
-        return Ok(players);
-    }
+        => Ok(await _hiraishinService.GetLeaderboard());
 
     [HttpGet("match-history")]
     public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
-    {
-        return Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
-    }
+        => Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
 
     [HttpGet("weekly-ranking")]
     public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRanking()
-    {
-        return Ok(await _hiraishinService.GetWeeklyRanking());
-    }
+        => Ok(await _hiraishinService.GetWeeklyRanking());
 }
