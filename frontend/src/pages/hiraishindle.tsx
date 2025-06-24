@@ -1,9 +1,9 @@
 import { Input } from '@/components/ui/input';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { MdSend } from 'react-icons/md';
 import { characters, properties } from '@/commons/hiraishindle-data';
 import { cn } from '@/lib/utils';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { MdArrowDownward, MdArrowUpward } from 'react-icons/md';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useOutsideClick } from '@/hooks/mouse-handler';
 
@@ -186,9 +186,9 @@ export default function Hiraishindle() {
           {value}
           {value !== chosenValue &&
             (value > chosenValue ? (
-              <ArrowDown strokeWidth={3.5} className="w-4 h-4" />
+              <MdArrowDownward className="w-4 h-4" />
             ) : (
-              <ArrowUp strokeWidth={3.5} className="w-4 h-4" />
+              <MdArrowUpward className="w-4 h-4" />
             ))}
         </div>
       );
