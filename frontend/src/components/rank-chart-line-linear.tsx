@@ -57,10 +57,8 @@ export const RankChartLineLinear = ({
                       src={`https://opgg-static.akamaized.net/images/medals_new/${rank?.weeklyRanking.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
                     />
                     <div>
-                      <div>
-                        {rank?.weeklyRanking.tier} {rank?.weeklyRanking.rank}
-                      </div>
-                      <div>{pdl} LP</div>
+                      {rank?.weeklyRanking.tier} {rank?.weeklyRanking.rank}{' '}
+                      {rank?.weeklyRanking.leaguePoints} PDL
                     </div>
                   </div>
                 );
