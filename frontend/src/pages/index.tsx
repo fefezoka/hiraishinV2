@@ -18,6 +18,7 @@ import { PlayerOverview } from '@/components/player-overview';
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
+  const [profileOverviewOpen, setProfileOverviewOpen] = useState<number | null>(null);
 
   const {
     data: players,
@@ -93,7 +94,13 @@ export default function Home() {
                         previousRanking && league.totalLP - previousRanking.totalLP;
 
                       return (
-                        <Collapsible.Root key={player.puuid}>
+                        <Collapsible.Root
+                          open={profileOverviewOpen === index}
+                          key={player.puuid}
+                          onOpenChange={(open) =>
+                            setProfileOverviewOpen(open ? index : null)
+                          }
+                        >
                           <Collapsible.CollapsibleTrigger asChild>
                             <div className="md:px-[64px] mb-2 rounded-lg px-3 py-6 cursor-pointer flex items-center overflow-hidden justify-between text-sm md:text-base relative z-10">
                               <div className="absolute top-0 md:-top-12 left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 overflow-hidden">
