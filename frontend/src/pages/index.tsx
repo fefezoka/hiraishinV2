@@ -191,7 +191,7 @@ export default function Home() {
                                 </div>
                                 <span>
                                   {tiers.find((tier) => tier.en === league.tier)?.pt}{' '}
-                                  {league.totalLP < 2000 && league.rank}{' '}
+                                  {league.totalLP < 2800 && league.rank}{' '}
                                   {league.leaguePoints} PDL
                                   {lpDiff !== 0 && lpDiff !== undefined && (
                                     <Tooltip>
