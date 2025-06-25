@@ -21,7 +21,7 @@ public static class LeagueUtils
         if (!BaseLeaguePoints.TryGetValue(tier, out int tierLp))
             return 0;
 
-        int rankIndex = tierLp >= 2000 ? 0 : Ranks.IndexOf(rank);
+        int rankIndex = tierLp >= 2800 ? 0 : Ranks.IndexOf(rank);
 
         if (rankIndex < 0)
             return 0;

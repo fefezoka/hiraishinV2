@@ -120,19 +120,21 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
 };
 
 const eloMap = [
-  { min: 0, max: 399, name: 'Prata' },
-  { min: 400, max: 799, name: 'Ouro' },
-  { min: 800, max: 1199, name: 'Platina' },
-  { min: 1200, max: 1599, name: 'Esmeralda' },
-  { min: 1600, max: 1999, name: 'Diamante' },
-  { min: 2000, max: Infinity, name: 'Mestre' },
+  { min: 0, max: 399, name: 'Ferro' },
+  { min: 400, max: 799, name: 'Bronze' },
+  { min: 800, max: 1199, name: 'Prata' },
+  { min: 1200, max: 1599, name: 'Ouro' },
+  { min: 1600, max: 1999, name: 'Platina' },
+  { min: 2000, max: 2399, name: 'Esmeralda' },
+  { min: 2400, max: 2799, name: 'Diamante' },
+  { min: 2800, max: Infinity, name: 'Mestre' },
 ];
 
 const pdlToTier = (pdl: number) => {
   const tier = eloMap.find((t) => pdl >= t.min && pdl <= t.max);
   if (!tier) return 'Unknown';
 
-  if (pdl >= 2000) {
+  if (pdl >= 2800) {
     return tier.name;
   }
 
