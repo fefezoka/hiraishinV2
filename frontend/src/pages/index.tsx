@@ -46,7 +46,10 @@ export default function Home() {
     <div className="max-w-[774px] font-medium m-auto px-3">
       <div className="relative">
         <Tabs.Root
-          onValueChange={(value) => setQueueType(value as Queue)}
+          onValueChange={(value) => {
+            setQueueType(value as Queue);
+            setProfileOverviewOpen(null);
+          }}
           defaultValue={queueType}
         >
           <Tabs.List className="flex mb-2.5 items-center gap-3 justify-center">
