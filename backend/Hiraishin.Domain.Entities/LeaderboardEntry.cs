@@ -1,6 +1,6 @@
 namespace Hiraishin.Domain.Entities;
 
-public class WeeklyRanking
+public class LeaderboardEntry
 {
     public int Id { get; set; }
     public string Puuid { get; set; }

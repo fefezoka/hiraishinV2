@@ -27,10 +27,13 @@ const chartConfig = {
 
 export const WeeklyRankingChart = ({ player, queue }: IWeeklyRankingChart) => {
   const { data, isLoading } = useQuery<WeeklyRanking[]>({
-    queryKey: ['last-month-weekly-rankings', player.puuid],
+    queryKey: ['last-3-months-leaderboard', player.puuid],
     queryFn: async () =>
-      (await axios.get<WeeklyRanking[]>('/hiraishin/weekly-ranking/' + player.puuid))
-        .data,
+      (
+        await axios.get<WeeklyRanking[]>(
+          '/hiraishin/past-leaderboard/by-user/' + player.puuid
+        )
+      ).data,
   });
 
   const filterByQueue = data

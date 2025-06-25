@@ -23,11 +23,11 @@ public class PlayersController : ControllerBase
     public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
         => Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
 
-    [HttpGet("weekly-ranking")]
-    public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRanking()
-        => Ok(await _hiraishinService.GetWeeklyRanking());
+    [HttpGet("past-leaderboard/last-week")]
+    public async Task<ActionResult<List<LeaderboardEntry>>> GetLastWeekLeaderboard()
+        => Ok(await _hiraishinService.GetLastWeekLeaderboard());
 
-    [HttpGet("weekly-ranking/{puuid}")]
-    public async Task<ActionResult<List<WeeklyRanking>>> GetWeeklyRankingByUser([FromRoute] string puuid)
-        => Ok(await _hiraishinService.GetWeeklyRankingByUser(puuid));
+    [HttpGet("past-leaderboard/by-user/{puuid}")]
+    public async Task<ActionResult<List<LeaderboardEntry>>> GetPastLeaderboardByUser([FromRoute] string puuid)
+        => Ok(await _hiraishinService.GetPastLeaderboardByUser(puuid));
 }

@@ -10,7 +10,7 @@ public class HiraishinContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        WeeklyRankingMap.Map(modelBuilder);
+        Mapping.LeaderboardEntryMap.Map(modelBuilder);
     }
-    public DbSet<WeeklyRanking> WeeklyRanking { get; set; }
+    public DbSet<LeaderboardEntry> LeaderboardEntry { get; set; }
 }

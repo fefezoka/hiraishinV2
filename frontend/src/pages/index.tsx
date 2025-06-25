@@ -35,7 +35,7 @@ export default function Home() {
   const { data: weeklyRanking } = useQuery<WeeklyRanking[]>({
     queryKey: ['weekly-ranking'],
     queryFn: async () =>
-      (await axios.get<WeeklyRanking[]>('hiraishin/weekly-ranking')).data,
+      (await axios.get<WeeklyRanking[]>('hiraishin/past-leaderboard/last-week')).data,
   });
 
   if (isLoading || isRefetching) {

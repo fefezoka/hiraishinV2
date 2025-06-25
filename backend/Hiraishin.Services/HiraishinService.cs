@@ -175,18 +175,18 @@ public class HiraishinService : IHiraishinService
         }
     }
 
-    public async Task<List<WeeklyRanking>> GetWeeklyRanking()
+    public async Task<List<LeaderboardEntry>> GetLastWeekLeaderboard()
     {
         DateTime now = DateTime.UtcNow.Date;
         DateTime lastMonday = now.AddDays(1 - (int)now.DayOfWeek).AddHours(3);
 
-        return await _hiraishinContext.WeeklyRanking.Where(x => x.WeekStart == lastMonday).ToListAsync();
+        return await _hiraishinContext.LeaderboardEntry.Where(x => x.WeekStart == lastMonday).ToListAsync();
     }
 
-    public async Task<List<WeeklyRanking>> GetWeeklyRankingByUser(string puuid)
+    public async Task<List<LeaderboardEntry>> GetPastLeaderboardByUser(string puuid)
     {
         DateTime threeMonthsAgo = DateTime.UtcNow.Date.AddDays(-90);
 
-        return await _hiraishinContext.WeeklyRanking.Where(x => x.WeekStart >= threeMonthsAgo && x.Puuid == puuid).ToListAsync();
+        return await _hiraishinContext.LeaderboardEntry.Where(x => x.WeekStart >= threeMonthsAgo && x.Puuid == puuid).ToListAsync();
     }
 }
