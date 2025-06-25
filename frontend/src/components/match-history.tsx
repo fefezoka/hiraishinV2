@@ -1,6 +1,12 @@
 import { spinner } from '@/assets';
 import { LOL_VERSION, spells } from '@/commons/lol-data';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import axios from '@/service/axios';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
