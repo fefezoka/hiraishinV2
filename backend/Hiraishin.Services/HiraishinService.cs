@@ -81,7 +81,7 @@ public class HiraishinService : IHiraishinService
             }
         }
 
-        var tasks = PlayersData.PUUIDS.Select(FetchPlayerDataAsync);
+        var tasks = PlayersData.Puuids.Select(FetchPlayerDataAsync);
         var allPlayers = (await Task.WhenAll(tasks)).Where(p => p != null).ToList();
 
         var recordLeagueRanking = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" }.Select((queueType, index) =>
@@ -93,16 +93,8 @@ public class HiraishinService : IHiraishinService
                 .Select((player, i) => new { Player = player, Index = i + 1 })
                 .ToDictionary(
                     x => x.Player.GameName,
-                    x => new
-                    {
-                        x.Index,
-                        Elo = new
-                        {
-                            x.Player.Leagues[index].Tier,
-                            x.Player.Leagues[index].Rank,
-                            x.Player.Leagues[index].LeaguePoints
-                        }
-                    });
+                    x => x.Index
+                    );
         }).ToList();
 
         foreach (var player in allPlayers)
@@ -110,9 +102,9 @@ public class HiraishinService : IHiraishinService
             for (int i = 0; i < player.Leagues.Count; i++)
             {
                 var league = player.Leagues[i];
-                if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var rankingInfo))
+                if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var index))
                 {
-                    league.Index = rankingInfo.Index;
+                    league.Index = index;
                 }
             }
         }

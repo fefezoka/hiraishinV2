@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from '@/service/axios';
 import { spinner } from '@/assets';
 
-interface IWeeklyRankingChart {
+interface ILeaderboardChart {
   player: Player;
   queue: 420 | 440;
 }
@@ -25,12 +25,12 @@ const chartConfig = {
   },
 };
 
-export const WeeklyRankingChart = ({ player, queue }: IWeeklyRankingChart) => {
-  const { data, isLoading } = useQuery<WeeklyRanking[]>({
+export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
+  const { data, isLoading } = useQuery<LeaderboardEntry[]>({
     queryKey: ['last-3-months-leaderboard', player.puuid],
     queryFn: async () =>
       (
-        await axios.get<WeeklyRanking[]>(
+        await axios.get<LeaderboardEntry[]>(
           '/hiraishin/past-leaderboard/by-user/' + player.puuid
         )
       ).data,

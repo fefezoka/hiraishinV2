@@ -7,7 +7,6 @@ const axios = instance.create();
 
 axios.interceptors.request.use((config) => {
   config.baseURL = baseURL;
-  config.headers['X-RIOT-TOKEN'] = process.env.RIOT_API_KEY;
   return config;
 });
 

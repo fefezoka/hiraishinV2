@@ -78,7 +78,7 @@ interface Match {
 type Tier = 'SILVER' | 'GOLD' | 'PLATINUM' | 'EMERALD' | 'DIAMOND' | 'MASTER';
 type Rank = 'IV' | 'III' | 'II' | 'I';
 
-interface WeeklyRanking {
+interface LeaderboardEntry {
   id: number;
   puuid: string;
   weekStart: string;

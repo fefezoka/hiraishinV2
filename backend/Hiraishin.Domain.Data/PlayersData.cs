@@ -2,7 +2,7 @@
 {
     public class PlayersData
     {
-        public static List<string> PUUIDS = new()
+        public static List<string> Puuids = new()
         {
             "7nDVkHJU_EUzwXv-Gx00Omv2Od0kf_cayZQbGHrDAWcUEo2aAgii3Oa9B3IxslsVkxjQr_iZ_PAn2Q", // Felipe
             "-KTo82lkyRfxSAuggZnXY3yvBjN6qL-RHWUUu-CiaJL0y9mTocPeGoVmbgkEPSLXuwyyxcD9URKetA", // Ghigho

@@ -32,10 +32,10 @@ export default function Home() {
     queryFn: async () => (await axios.get<Player[]>('hiraishin/leaderboard')).data,
   });
 
-  const { data: weeklyRanking } = useQuery<WeeklyRanking[]>({
-    queryKey: ['weekly-ranking'],
+  const { data: lastWeekLeaderboard } = useQuery<LeaderboardEntry[]>({
+    queryKey: ['last-week-leaderboard'],
     queryFn: async () =>
-      (await axios.get<WeeklyRanking[]>('hiraishin/past-leaderboard/last-week')).data,
+      (await axios.get<LeaderboardEntry[]>('hiraishin/past-leaderboard/last-week')).data,
   });
 
   if (isLoading || isRefetching) {
@@ -91,7 +91,7 @@ export default function Home() {
                         (x) => x.puuid === player.puuid
                       )!;
 
-                      const previousRanking = weeklyRanking?.find(
+                      const previousRanking = lastWeekLeaderboard?.find(
                         (x) => x.queueType === queueType && x.puuid === player.puuid
                       );
 

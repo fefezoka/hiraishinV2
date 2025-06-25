@@ -25,6 +25,6 @@ public class LeagueDTO
         LeaguePoints = league.LeaguePoints;
         Wins = league.Wins;
         Losses = league.Losses;
-        TotalLP = LeagueUtils.GetTotalLp(league.Tier, league.Rank, league.LeaguePoints);
+        TotalLP = LeagueUtils.GetTotalLP(league.Tier, league.Rank, league.LeaguePoints);
     }
 }
