@@ -102,8 +102,9 @@ export default function Home() {
                         <Collapsible.Root
                           open={profileOverviewOpen === index}
                           key={player.puuid}
-                          onOpenChange={(open) => {
+                          onOpenChange={async (open) => {
                             setProfileOverviewOpen(open ? index : null);
+                            await new Promise((r) => setTimeout(r, 400));
                             open &&
                               router.push(`#player-${player.gameName}-${player.tagLine}`);
                           }}
