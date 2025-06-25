@@ -22,7 +22,10 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
   return (
     <Card>
       <CardHeader className="flex gap-2">
-        <CardTitle>Histórico de partidas</CardTitle>
+        <div>
+          <CardTitle>Histórico de partidas</CardTitle>
+          <CardDescription>Ranqueada {queue === 420 ? 'Solo' : 'Flex'}</CardDescription>
+        </div>
         {isLoading && <Image src={spinner} alt="" height={20} width={20} />}
       </CardHeader>
       <CardContent className="divide-y">
