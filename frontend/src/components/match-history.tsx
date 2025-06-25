@@ -76,7 +76,9 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                   </div>
                 </div>
                 <div className="flex flex-col items-center">
-                  <span className="font-bold">Ranqueada Solo</span>
+                  <span className="font-bold">
+                    {queue === 420 ? 'Ranqueada Solo' : 'Ranqueada Flex'}
+                  </span>
                   <span
                     data-remake={summoner.gameEndedInEarlySurrender}
                     data-win={summoner.win}
