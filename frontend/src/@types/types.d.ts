@@ -43,6 +43,7 @@ type League = {
   leaguePoints: number;
   tier: Tier;
   rank: Rank;
+  arrivedOnTop: Date;
 };
 
 interface Match {
@@ -88,6 +89,7 @@ interface LeaderboardEntry {
   leaguePoints: number;
   totalLP: number;
   index: number;
+  arrivedOnTop: Date;
 }
 
 // Hiraishindle

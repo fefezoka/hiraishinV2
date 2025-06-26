@@ -44,10 +44,26 @@ namespace Hiraishin.Jobs
 
                 foreach (var league in player.Leagues)
                 {
-                    if (!weekly && lastUserLeaderboard.Find(x => x.QueueType == league.QueueType)?.LeaguePoints == league.LeaguePoints)
+                    var leagueLastUserLeaderboard = lastUserLeaderboard.Find(x => x.QueueType == league.QueueType);
+
+                    if (!weekly && leagueLastUserLeaderboard?.TotalLP == league.TotalLP)
                     {
                         _logger.LogError("O total de PDL não mudou de um dia pro outro. weekly: [{weekly}]", weekly);
                         continue;
+                    }
+
+                    DateTime? ArrivedOnTop = null;
+
+                    if (league.Index == 1)
+                    {
+                        if (leagueLastUserLeaderboard == null || leagueLastUserLeaderboard.ArrivedOnTop == null)
+                        {
+                            ArrivedOnTop = DateTime.UtcNow.Date.AddHours(3);
+                        }
+                        else
+                        {
+                            ArrivedOnTop = leagueLastUserLeaderboard.ArrivedOnTop;
+                        }
                     }
 
                     snapshots.Add(new LeaderboardEntry
@@ -59,7 +75,8 @@ namespace Hiraishin.Jobs
                         Rank = league.Rank,
                         Tier = league.Tier,
                         TotalLP = league.TotalLP,
-                        WeekStart = now
+                        WeekStart = now,
+                        ArrivedOnTop = ArrivedOnTop
                     });
                 }
             }

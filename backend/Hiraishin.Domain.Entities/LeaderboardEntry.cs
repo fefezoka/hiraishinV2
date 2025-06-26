@@ -11,4 +11,5 @@ public class LeaderboardEntry
     public int LeaguePoints { get; set; }
     public int TotalLP { get; set; }
     public int Index { get; set; }
+    public DateTime? ArrivedOnTop { get; set; }
 }

@@ -24,65 +24,8 @@ public class HiraishinService : IHiraishinService
 
     public async Task<List<PlayerInfoDTO>> GetLeaderboard()
     {
-        async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)
-        {
-            try
-            {
-                var playerResponse =
-                    await _httpClient.GetAsync(
-                        $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
-                if (!playerResponse.IsSuccessStatusCode) return null;
-
-                await Task.Delay(500);
-
-                var summoner = JsonSerializer.Deserialize<Summoner>(await playerResponse.Content.ReadAsStringAsync());
-
-                var accountResponse =
-                    await _httpClient.GetAsync(
-                        $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
-                if (!accountResponse.IsSuccessStatusCode) return null;
-
-                await Task.Delay(500);
-
-                var account = JsonSerializer.Deserialize<Account>(await accountResponse.Content.ReadAsStringAsync());
-
-                var leaguesResponse =
-                    await _httpClient.GetAsync(
-                        $"https://br1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}");
-                if (!leaguesResponse.IsSuccessStatusCode) return null;
-
-                var leagues =
-                    JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
-
-                var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
-                var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
-
-                var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
-                {
-                    if (league == null) return null;
-
-                    return new LeagueDTO(league);
-                }).ToList();
-
-                return new PlayerInfoDTO()
-                {
-                    GameName = account.GameName,
-                    TagLine = account.TagLine,
-                    Puuid = summoner.Puuid,
-                    Leagues = allLeagues,
-                    ProfileIconId = summoner.ProfileIconId,
-                    SummonerLevel = summoner.SummonerLevel,
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Erro ao buscar info do jogador: {puuid}");
-                return null;
-            }
-        }
-
         var tasks = PlayersData.Puuids.Select(FetchPlayerDataAsync);
-        var allPlayers = (await Task.WhenAll(tasks)).Where(p => p != null).ToList();
+        var allPlayers = (await Task.WhenAll(tasks)).ToList();
 
         var recordLeagueRanking = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" }.Select((queueType, index) =>
         {
@@ -105,6 +48,16 @@ public class HiraishinService : IHiraishinService
                 if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var index))
                 {
                     league.Index = index;
+
+                    if (league.Index == 1)
+                    {
+                        var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
+                            .Where(x => x.Puuid == player.Puuid && x.QueueType == league.QueueType)
+                            .OrderByDescending(x => x.WeekStart)
+                            .FirstAsync();
+
+                        league.ArrivedOnTop = lastUserLeaderboard.ArrivedOnTop;
+                    }
                 }
             }
         }
@@ -180,5 +133,62 @@ public class HiraishinService : IHiraishinService
         DateTime threeMonthsAgo = DateTime.UtcNow.Date.AddDays(-90);
 
         return await _hiraishinContext.LeaderboardEntry.Where(x => x.WeekStart >= threeMonthsAgo && x.Puuid == puuid).ToListAsync();
+    }
+
+    private async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)
+    {
+        try
+        {
+            var playerResponse =
+                await _httpClient.GetAsync(
+                    $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
+            if (!playerResponse.IsSuccessStatusCode) return null;
+
+            await Task.Delay(500);
+
+            var summoner = JsonSerializer.Deserialize<Summoner>(await playerResponse.Content.ReadAsStringAsync());
+
+            var accountResponse =
+                await _httpClient.GetAsync(
+                    $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
+            if (!accountResponse.IsSuccessStatusCode) return null;
+
+            await Task.Delay(500);
+
+            var account = JsonSerializer.Deserialize<Account>(await accountResponse.Content.ReadAsStringAsync());
+
+            var leaguesResponse =
+                await _httpClient.GetAsync(
+                    $"https://br1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}");
+            if (!leaguesResponse.IsSuccessStatusCode) return null;
+
+            var leagues =
+                JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
+
+            var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
+            var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
+
+            var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
+            {
+                if (league == null) return null;
+
+                return new LeagueDTO(league);
+            }).ToList();
+
+            return new PlayerInfoDTO()
+            {
+                GameName = account.GameName,
+                TagLine = account.TagLine,
+                Puuid = summoner.Puuid,
+                Leagues = allLeagues,
+                ProfileIconId = summoner.ProfileIconId,
+                SummonerLevel = summoner.SummonerLevel,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Erro ao buscar info do jogador: {puuid}");
+            return null;
+        }
     }
 }

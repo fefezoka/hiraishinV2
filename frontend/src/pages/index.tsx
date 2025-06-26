@@ -98,6 +98,14 @@ export default function Home() {
                       const lpDiff =
                         previousRanking && league.totalLP - previousRanking.totalLP;
 
+                      const daysOnTop = league.arrivedOnTop
+                        ? Math.floor(
+                            (new Date().getTime() -
+                              new Date(league.arrivedOnTop).getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          )
+                        : null;
+
                       return (
                         <Collapsible.Root
                           open={profileOverviewOpen === index}
@@ -127,6 +135,11 @@ export default function Home() {
                                   height={717}
                                 />
                               </div>
+                              {daysOnTop && daysOnTop > 0 ? (
+                                <span className="absolute top-3 left-3 text-xs text-yellow-400 font-semibold">
+                                  {'No topo há ' + daysOnTop + ' dias'}
+                                </span>
+                              ) : null}
                               <div className="min-w-[26px] flex gap-2 items-center absolute top-3 left-1/2 md:relative md:top-auto md:left-auto">
                                 <span className="font-semibold text-yellow-400">
                                   #{index + 1}
