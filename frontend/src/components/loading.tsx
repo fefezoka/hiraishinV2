@@ -1,11 +1,15 @@
 import { mpengu, penguDab } from '@/assets';
 import Image, { StaticImageData } from 'next/image';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export const Loading = () => {
-  const [src] = useState<StaticImageData>(
-    [mpengu, penguDab][Math.floor(Math.random() * 2)]
-  );
+  const [src, setSrc] = useState<StaticImageData | null>(null);
+
+  useEffect(() => {
+    setSrc([mpengu, penguDab][Math.floor(Math.random() * 2)]);
+  }, []);
+
+  if (!src) return null;
 
   return (
     <div className="flex items-center justify-center flex-col">
