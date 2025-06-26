@@ -120,23 +120,21 @@ export default function Home() {
                           <Collapsible.CollapsibleTrigger asChild>
                             <div
                               id={`player-${player.gameName}-${player.tagLine}`}
-                              className="md:px-[64px] mb-2 rounded-lg px-3 py-6 cursor-pointer flex items-center overflow-hidden justify-between text-sm md:text-base relative z-10"
+                              className="md:px-[64px] mb-2 rounded-lg px-3 py-6 cursor-pointer flex items-center overflow-hidden justify-between text-xs sm:text-sm md:text-base relative z-10"
                             >
-                              <div className="absolute top-0 md:-top-12 left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 overflow-hidden">
-                                <Image
-                                  draggable={false}
-                                  src={
-                                    playerData.skin.startsWith('/_next')
-                                      ? playerData.skin
-                                      : `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${playerData.skin}.jpg`
-                                  }
-                                  alt=""
-                                  width={1215}
-                                  height={717}
-                                />
-                              </div>
+                              <Image
+                                draggable={false}
+                                src={
+                                  playerData.skin.startsWith('/_next')
+                                    ? playerData.skin
+                                    : `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${playerData.skin}.jpg`
+                                }
+                                alt=""
+                                fill
+                                className="left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 object-cover object-[0_17%]"
+                              />
                               {daysOnTop && daysOnTop > 0 ? (
-                                <span className="absolute top-3 left-3 text-xs text-yellow-400 font-semibold">
+                                <span className="absolute top-3 left-3 text-xs sm:text-sm text-yellow-400 font-semibold">
                                   {'No topo há ' + daysOnTop + ' dias'}
                                 </span>
                               ) : null}
@@ -160,7 +158,7 @@ export default function Home() {
                                     ))}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2 md:gap-4 w-[284px]">
+                              <div className="flex items-center gap-2 md:gap-3 w-[284px]">
                                 <div className="border-2 border-orange-400 relative">
                                   <div className="w-[60px] h-[60px] md:w-[72px] md:h-[72px]">
                                     <Image
@@ -180,21 +178,18 @@ export default function Home() {
                                     target="_blank"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <div className="flex gap-1 items-baseline">
-                                      <h1 className="w-fit shrink-0">
-                                        {player.gameName}
-                                      </h1>
-                                      <h2 className="text-yellow-400 text-xs sm:text-base">
+                                    <div className="text-sm sm:text-base truncate max-w-[144px] sm:max-w-none font-semibold">
+                                      <span className="w-fit">{player.gameName}</span>{' '}
+                                      <span className="text-yellow-400">
                                         #{player.tagLine}
-                                      </h2>
+                                      </span>
                                     </div>
                                   </Link>
-                                  <p className="text-yellow-400 font-semibold text-xs">
+                                  <p className="text-yellow-400 font-semibold text-xxs sm:text-xs">
                                     {index === 0 ? 'Hokage' : playerData.title}
                                   </p>
                                 </div>
                               </div>
-
                               <div className="flex relative flex-col justify-center items-center md:min-w-[172px] shrink-0">
                                 <div className="w-[64px] h-[64px] md:w-[72px] md:h-[72px] relative">
                                   <Image
@@ -203,7 +198,7 @@ export default function Home() {
                                     fill
                                   />
                                 </div>
-                                <span>
+                                <span className="text-sm sm:text-base font-semibold">
                                   {tiers.find((tier) => tier.en === league.tier)?.pt}{' '}
                                   {league.totalLP < 2800 && league.rank}{' '}
                                   {league.leaguePoints} PDL

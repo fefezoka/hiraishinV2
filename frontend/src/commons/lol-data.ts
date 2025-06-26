@@ -2,16 +2,19 @@ import { david } from '@/assets';
 
 export const LOL_VERSION = '15.12.1';
 
+// skin reference
+// https://ddragon.leagueoflegends.com/cdn/15.12.1/data/en_US/champion/Varus.json
+// https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Varus_0.jpg
 export const playersData = [
   {
     title: 'Vagabundo', // Felipe
-    skin: 'Viktor_3',
+    skin: 'Ahri_27',
     puuid:
       '7nDVkHJU_EUzwXv-Gx00Omv2Od0kf_cayZQbGHrDAWcUEo2aAgii3Oa9B3IxslsVkxjQr_iZ_PAn2Q',
   },
   {
     title: 'Vagabundo', // Ghigho
-    skin: 'Thresh_1',
+    skin: 'Pyke_25',
     puuid:
       '-KTo82lkyRfxSAuggZnXY3yvBjN6qL-RHWUUu-CiaJL0y9mTocPeGoVmbgkEPSLXuwyyxcD9URKetA',
   },
@@ -23,19 +26,19 @@ export const playersData = [
   }, // Zed_1
   {
     title: 'Gold mais forte', // Neto
-    skin: 'Xayah_37',
+    skin: 'Irelia_55',
     puuid:
       'OSY7lpbDqEGueNxZw2NjOXv0xCCpDZZ-Oub6jfE8JcsxJHR-hkZTHyMuCbfSKG-w2f1sEEsNiLI1nw',
   },
   {
     title: 'Aposentado', // Bruno
-    skin: 'Darius_3',
+    skin: 'Darius_2',
     puuid:
       'AWlqS2UDDZg94vG8ZDfE4MhFMqHMF-i_rsNRvuwDLjrh0nHE01TfHBeBbbqzee2Tgptn2fU9rcQAOw',
   },
   {
     title: 'Soul silver', // Henrickler
-    skin: 'Lillia_19',
+    skin: 'Rengar_0',
     puuid:
       'pfONoHAWCuWgRN5CEj0KbL14j4Ppc9GHXSgaCJzgbGHBE1eXGAnrt1ZVvPL3dY3J_1DJNPKvpJXT6g',
   },
@@ -47,13 +50,13 @@ export const playersData = [
   },
   {
     title: 'Narigudo', // Ianguas
-    skin: 'Varus_60',
+    skin: 'Varus_2',
     puuid:
       'RH-na3OpXeDwMoiIt8o6Di1ygIO2QF3AG4QTFf01NyEIi6EQybDtRNYH2AGSzmRHoMoofwyAZszfaQ',
   },
   {
     title: 'Ex diamante 1', // Thiago
-    skin: 'Riven_16',
+    skin: 'Malphite_1',
     puuid:
       'awiuMM0WCsb3Ae7h10P7nTKYjpt_daiD4vZp_o9Rzx0cSaeoneXsHH2_e2NpHCXdS2yPqSZTXcP8sw',
   },
