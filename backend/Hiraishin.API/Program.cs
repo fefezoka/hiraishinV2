@@ -41,7 +41,7 @@ builder.Services.AddHangfire(x =>
 
 builder.Services.AddHangfireServer(options =>
 {
-    options.SchedulePollingInterval = TimeSpan.FromHours(5);
+    options.SchedulePollingInterval = TimeSpan.FromHours(1);
 });
 
 builder.Services.AddSwaggerGen(swagger =>
@@ -116,7 +116,7 @@ RecurringJob.AddOrUpdate<LeaderboardEntryJob>(
 RecurringJob.AddOrUpdate<LeaderboardEntryJob>(
     "weekly-leaderboard-entry-job",
     x => x.Run(null!, CancellationToken.None, true),
-    Cron.Weekly(DayOfWeek.Monday, 5),
+    Cron.Weekly(DayOfWeek.Monday, 0),
     new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"),
