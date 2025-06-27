@@ -41,7 +41,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
       (rank) => rank.queueType === (queue === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR')
     )
     .map((rank) => ({
-      week: new Intl.DateTimeFormat().format(new Date(rank.weekStart)),
+      week: new Intl.DateTimeFormat('pt-BR').format(new Date(rank.weekStart)),
       totalLP: rank.totalLP,
       weeklyRanking: rank,
     }));
