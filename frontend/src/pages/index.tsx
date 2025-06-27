@@ -16,6 +16,7 @@ import axios from '@/service/axios';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { PlayerOverview } from '@/components/player-overview';
 import { useRouter } from 'next/router';
+import { FaCrown } from 'react-icons/fa';
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
@@ -133,13 +134,11 @@ export default function Home() {
                                 fill
                                 className="left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 object-cover object-[0_17%]"
                               />
-                              {daysOnTop && daysOnTop > 0 ? (
-                                <span className="absolute top-3 left-3 text-xs sm:text-sm text-yellow-400 font-semibold">
-                                  {'No topo há ' + daysOnTop + ' dias'}
-                                </span>
-                              ) : null}
                               <div className="min-w-[26px] flex gap-2 items-center absolute top-3 left-1/2 md:relative md:top-auto md:left-auto">
-                                <span className="font-semibold text-yellow-400">
+                                <span
+                                  data-hokage={index === 0}
+                                  className="font-semibold text-yellow-400"
+                                >
                                   #{index + 1}
                                 </span>
                                 <div className="md:absolute md:top-0 md:-right-7">
@@ -167,7 +166,18 @@ export default function Home() {
                                       fill
                                     />
                                   </div>
-                                  <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black  py-0.5 px-1.5 rounded-md">
+                                  {daysOnTop && daysOnTop > 0 ? (
+                                    <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
+                                      <span
+                                        data-hokage={index === 0}
+                                        className="flex text-yellow-400 gap-1 text-xxs"
+                                      >
+                                        <FaCrown className="text-orange-400" />
+                                        {daysOnTop} dia{daysOnTop > 1 ? 's' : ''}
+                                      </span>
+                                    </div>
+                                  ) : null}
+                                  <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
                                     {player.summonerLevel}
                                   </span>
                                 </div>
@@ -180,12 +190,18 @@ export default function Home() {
                                   >
                                     <div className="text-sm sm:text-base truncate max-w-[144px] sm:max-w-none font-semibold">
                                       <span className="w-fit">{player.gameName}</span>{' '}
-                                      <span className="text-yellow-400">
+                                      <span
+                                        data-hokage={index === 0}
+                                        className="text-yellow-400"
+                                      >
                                         #{player.tagLine}
                                       </span>
                                     </div>
                                   </Link>
-                                  <p className="text-yellow-400 font-semibold text-xxs sm:text-xs">
+                                  <p
+                                    data-hokage={index === 0}
+                                    className="text-foreground/90 text-xxs sm:text-xs"
+                                  >
                                     {index === 0 ? 'Hokage' : playerData.title}
                                   </p>
                                 </div>
@@ -236,7 +252,7 @@ export default function Home() {
                                     </Tooltip>
                                   )}
                                 </span>
-                                <p className="text-xxs  md:text-xs">
+                                <p className="text-xxs text-foreground/90 md:text-xs">
                                   {league.wins}V {league.losses}D -{' '}
                                   <span
                                     className={`${

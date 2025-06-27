@@ -37,4 +37,8 @@
   body {
     @apply bg-[rgb(20,16,40)] text-foreground text-sm sm:text-base;
   }
+
+  [data-hokage='true'] {
+    @apply !text-transparent !font-bold w-fit bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400;
+  }
 }
