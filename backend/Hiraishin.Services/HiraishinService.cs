@@ -1,12 +1,12 @@
 using System.Text.Json;
+using Hiraishin.Data.Context;
+using Hiraishin.Domain.Data;
 using Hiraishin.Domain.Dto;
 using Hiraishin.Domain.Dto.Hiraishin;
-using Hiraishin.Domain.Interface.Services;
-using Hiraishin.Domain.Data;
-using Microsoft.Extensions.Logging;
-using Hiraishin.Data.Context;
-using Microsoft.EntityFrameworkCore;
 using Hiraishin.Domain.Entities;
+using Hiraishin.Domain.Interface.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Hiraishin.Services;
 public class HiraishinService : IHiraishinService
@@ -72,7 +72,7 @@ public class HiraishinService : IHiraishinService
             var idsUrl =
                 $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5";
             var idsResponse = await _httpClient.GetAsync(idsUrl);
-            
+
             if (!idsResponse.IsSuccessStatusCode)
             {
                 _logger.LogError(
@@ -99,7 +99,7 @@ public class HiraishinService : IHiraishinService
                         return null;
                     }
 
-                    var matchContent = await matchResponse.Content.ReadAsStringAsync(); 
+                    var matchContent = await matchResponse.Content.ReadAsStringAsync();
                     return JsonSerializer.Deserialize<Match>(matchContent);
                 }
                 catch (Exception ex)

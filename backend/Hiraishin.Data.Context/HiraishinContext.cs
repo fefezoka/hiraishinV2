@@ -1,5 +1,4 @@
-﻿using Hiraishin.Data.Context.Mapping;
-using Hiraishin.Domain.Entities;
+﻿using Hiraishin.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hiraishin.Data.Context;

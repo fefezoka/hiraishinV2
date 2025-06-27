@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using Hiraishin.Domain.Interface.Services;
 using Hiraishin.Domain.Entities;
+using Hiraishin.Domain.Interface.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hiraishin.API.Controllers;
 
@@ -9,7 +9,7 @@ namespace Hiraishin.API.Controllers;
 public class PlayersController : ControllerBase
 {
     private readonly IHiraishinService _hiraishinService;
-    
+
     public PlayersController(IHiraishinService hiraishinService)
     {
         _hiraishinService = hiraishinService;

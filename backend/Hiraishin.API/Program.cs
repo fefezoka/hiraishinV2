@@ -25,7 +25,7 @@ var connectionString = new NpgsqlConnectionStringBuilder
 builder.Services.AddDbContext<HiraishinContext>(options =>
     options.UseNpgsql(connectionString.ConnectionString));
 
-builder.Services.AddHttpClient<IHiraishinService, HiraishinService>(client => 
+builder.Services.AddHttpClient<IHiraishinService, HiraishinService>(client =>
 {
     client.DefaultRequestHeaders.Add("X-Riot-Token", builder.Configuration["RiotGamesApi:ApiKey"]);
 });
