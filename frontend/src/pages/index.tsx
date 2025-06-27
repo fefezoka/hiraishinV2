@@ -135,10 +135,7 @@ export default function Home() {
                                 className="left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 object-cover object-[0_17%]"
                               />
                               <div className="min-w-[26px] flex gap-2 items-center absolute top-3 left-1/2 md:relative md:top-auto md:left-auto">
-                                <span
-                                  data-hokage={index === 0}
-                                  className="font-semibold text-yellow-400"
-                                >
+                                <span className="font-semibold text-yellow-400">
                                   #{index + 1}
                                 </span>
                                 <div className="md:absolute md:top-0 md:-right-7">
@@ -168,11 +165,8 @@ export default function Home() {
                                   </div>
                                   {daysOnTop && daysOnTop > 0 ? (
                                     <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
-                                      <span
-                                        data-hokage={index === 0}
-                                        className="flex text-yellow-400 gap-1 text-xxs"
-                                      >
-                                        <FaCrown className="text-orange-400" />
+                                      <span className="flex text-yellow-400 gap-1 text-xxs">
+                                        <FaCrown />
                                         {daysOnTop} dia{daysOnTop > 1 ? 's' : ''}
                                       </span>
                                     </div>
@@ -190,18 +184,12 @@ export default function Home() {
                                   >
                                     <div className="text-sm sm:text-base truncate max-w-[144px] sm:max-w-none font-semibold">
                                       <span className="w-fit">{player.gameName}</span>{' '}
-                                      <span
-                                        data-hokage={index === 0}
-                                        className="text-yellow-400"
-                                      >
+                                      <span className="text-yellow-400">
                                         #{player.tagLine}
                                       </span>
                                     </div>
                                   </Link>
-                                  <p
-                                    data-hokage={index === 0}
-                                    className="text-foreground/90 text-xxs sm:text-xs"
-                                  >
+                                  <p className="text-yellow-400 font-semibold text-xxs sm:text-xs">
                                     {index === 0 ? 'Hokage' : playerData.title}
                                   </p>
                                 </div>
