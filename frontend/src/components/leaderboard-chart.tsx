@@ -40,10 +40,10 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
     ?.filter(
       (rank) => rank.queueType === (queue === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR')
     )
-    .map((rank) => ({
-      week: new Intl.DateTimeFormat('pt-BR').format(new Date(rank.weekStart)),
-      totalLP: rank.totalLP,
-      weeklyRanking: rank,
+    .map((leaderboardEntry) => ({
+      week: new Intl.DateTimeFormat('pt-BR').format(new Date(leaderboardEntry.weekStart)),
+      totalLP: leaderboardEntry.totalLP,
+      leaderboardEntry,
     }));
 
   return (
@@ -81,7 +81,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                 content={({ payload }) => {
                   if (!payload?.length) return null;
                   const pdl = payload[0].value;
-                  const rank = filterByQueue.find((data) => data.totalLP === pdl);
+                  const rank = filterByQueue.find((data) => data.totalLP === pdl)!;
 
                   return (
                     <div className="bg-black text-white p-2 rounded text-sm flex items-center gap-2">
@@ -89,11 +89,15 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                         width={50}
                         height={50}
                         alt=""
-                        src={`https://opgg-static.akamaized.net/images/medals_new/${rank?.weeklyRanking.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
+                        src={`https://opgg-static.akamaized.net/images/medals_new/${rank.leaderboardEntry.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
                       />
                       <div>
-                        {tiers.find((tier) => tier.en === rank?.weeklyRanking.tier)?.pt}{' '}
-                        {rank?.weeklyRanking.rank} {rank?.weeklyRanking.leaguePoints} PDL
+                        {tiers.find((tier) => tier.en === rank.leaderboardEntry.tier)?.pt}{' '}
+                        {rank.leaderboardEntry.rank} {rank.leaderboardEntry.leaguePoints}{' '}
+                        PDL{' '}
+                        <span className="text-yellow-400">
+                          #{rank.leaderboardEntry.index}
+                        </span>
                       </div>
                     </div>
                   );
