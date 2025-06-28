@@ -15,13 +15,11 @@ import { playersData } from '@/commons/lol-data';
 import axios from '@/service/axios';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { PlayerOverview } from '@/components/player-overview';
-import { useRouter } from 'next/router';
 import { FaCrown } from 'react-icons/fa';
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
   const [profileOverviewOpen, setProfileOverviewOpen] = useState<number | null>(null);
-  const router = useRouter();
 
   const {
     data: players,
@@ -114,8 +112,12 @@ export default function Home() {
                           onOpenChange={async (open) => {
                             setProfileOverviewOpen(open ? index : null);
                             await new Promise((r) => setTimeout(r, 400));
-                            open &&
-                              router.push(`#player-${player.gameName}-${player.tagLine}`);
+                            if (open) {
+                              const el = document.getElementById(
+                                `player-${player.gameName}-${player.tagLine}`
+                              );
+                              el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
                           }}
                         >
                           <Collapsible.CollapsibleTrigger asChild>
