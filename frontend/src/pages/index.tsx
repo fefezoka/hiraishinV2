@@ -16,6 +16,9 @@ import axios from '@/service/axios';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { PlayerOverview } from '@/components/player-overview';
 import { FaCrown } from 'react-icons/fa';
+import { isAxiosError } from 'axios';
+import { blitz } from '@/assets';
+import { Button } from '@/components/ui/button';
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
@@ -26,6 +29,7 @@ export default function Home() {
     isLoading,
     isRefetching,
     refetch,
+    error,
   } = useQuery<Player[]>({
     queryKey: ['leaderboard'],
     queryFn: async () => (await axios.get<Player[]>('hiraishin/leaderboard')).data,
@@ -39,6 +43,19 @@ export default function Home() {
 
   if (isLoading || isRefetching) {
     return <Loading />;
+  }
+
+  if (isAxiosError(error) && error.status === 429) {
+    return (
+      <div className="flex flex-col items-center justify-center">
+        <Image src={blitz} alt="" width={256} height={256} />
+        <h2>Calma aí mano!</h2>
+        <span>Tenta daqui 1 minutinho</span>
+        <Button className="mt-2" onClick={() => refetch()}>
+          Recarregar
+        </Button>
+      </div>
+    );
   }
 
   return (
