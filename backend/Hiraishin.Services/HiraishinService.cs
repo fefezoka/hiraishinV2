@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using Hiraishin.Data.Context;
 using Hiraishin.Domain.Data;
@@ -5,6 +6,7 @@ using Hiraishin.Domain.Dto;
 using Hiraishin.Domain.Dto.Hiraishin;
 using Hiraishin.Domain.Entities;
 using Hiraishin.Domain.Interface.Services;
+using Hiraishin.Domain.Utility.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -67,57 +69,20 @@ public class HiraishinService : IHiraishinService
 
     public async Task<List<Match>> GetMatchHistoryAsync(string puuid, string queue)
     {
-        try
-        {
-            var idsUrl =
-                $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5";
-            var idsResponse = await _httpClient.GetAsync(idsUrl);
+        var matchIds = await GetWithRiotErrorHandlingAsync<List<string>>(
+            $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5"
+        );
 
-            if (!idsResponse.IsSuccessStatusCode)
-            {
-                _logger.LogError(
-                    $"Erro ao buscar match IDs para PUUID {puuid}, Queue {queue}: {idsResponse.StatusCode}");
-                return new List<Match>();
-            }
-
-            var idsContent = await idsResponse.Content.ReadAsStringAsync();
-            var matchIds = JsonSerializer.Deserialize<List<string>>(idsContent);
-
-            if (matchIds == null || matchIds.Count == 0)
-                return new List<Match>();
-
-            var matchDetailTasks = matchIds.Select(async matchId =>
-            {
-                try
-                {
-                    var matchUrl = $"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}";
-                    var matchResponse = await _httpClient.GetAsync(matchUrl);
-
-                    if (!matchResponse.IsSuccessStatusCode)
-                    {
-                        _logger.LogWarning($"Erro ao buscar detalhes da partida {matchId}: {matchResponse.StatusCode}");
-                        return null;
-                    }
-
-                    var matchContent = await matchResponse.Content.ReadAsStringAsync();
-                    return JsonSerializer.Deserialize<Match>(matchContent);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Erro ao processar detalhes da partida {matchId}");
-                    return null;
-                }
-            });
-
-            var matchDetails = await Task.WhenAll(matchDetailTasks);
-
-            return matchDetails.Where(m => m != null).ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Erro geral ao buscar histórico de partidas para o PUUID {puuid}");
+        if (matchIds == null || matchIds.Count == 0)
             return new List<Match>();
-        }
+
+        var matchDetailTasks = matchIds.Select(async matchId => 
+            await GetWithRiotErrorHandlingAsync<Match>($"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}")
+        );
+
+        var matchDetails = await Task.WhenAll(matchDetailTasks);    
+
+        return matchDetails.ToList();
     }
 
     public async Task<List<LeaderboardEntry>> GetLastWeekLeaderboard()
@@ -137,58 +102,58 @@ public class HiraishinService : IHiraishinService
 
     private async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)
     {
-        try
+        var summoner =
+            await GetWithRiotErrorHandlingAsync<Summoner>(
+                $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
+
+        await Task.Delay(500);
+
+        var account =
+            await GetWithRiotErrorHandlingAsync<Account>(
+                $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
+
+        await Task.Delay(500);
+
+        var leagues =
+            await GetWithRiotErrorHandlingAsync<List<League>>(
+                $"https://br1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}");
+
+        var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
+        var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
+
+        var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
         {
-            var playerResponse =
-                await _httpClient.GetAsync(
-                    $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
-            if (!playerResponse.IsSuccessStatusCode) return null;
+            if (league == null) return null;
 
-            await Task.Delay(500);
+            return new LeagueDTO(league);
+        }).ToList();
 
-            var summoner = JsonSerializer.Deserialize<Summoner>(await playerResponse.Content.ReadAsStringAsync());
+        return new PlayerInfoDTO()
+        {
+            GameName = account.GameName,
+            TagLine = account.TagLine,
+            Puuid = summoner.Puuid,
+            Leagues = allLeagues,
+            ProfileIconId = summoner.ProfileIconId,
+            SummonerLevel = summoner.SummonerLevel,
+        };
 
-            var accountResponse =
-                await _httpClient.GetAsync(
-                    $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
-            if (!accountResponse.IsSuccessStatusCode) return null;
+    }
+    private async Task<T> GetWithRiotErrorHandlingAsync<T>(string url)
+    {
+        var response = await _httpClient.GetAsync(url);
 
-            await Task.Delay(500);
-
-            var account = JsonSerializer.Deserialize<Account>(await accountResponse.Content.ReadAsStringAsync());
-
-            var leaguesResponse =
-                await _httpClient.GetAsync(
-                    $"https://br1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}");
-            if (!leaguesResponse.IsSuccessStatusCode) return null;
-
-            var leagues =
-                JsonSerializer.Deserialize<List<League>>(await leaguesResponse.Content.ReadAsStringAsync());
-
-            var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
-            var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
-
-            var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
+        if (!response.IsSuccessStatusCode)
+        {
+            throw response.StatusCode switch
             {
-                if (league == null) return null;
-
-                return new LeagueDTO(league);
-            }).ToList();
-
-            return new PlayerInfoDTO()
-            {
-                GameName = account.GameName,
-                TagLine = account.TagLine,
-                Puuid = summoner.Puuid,
-                Leagues = allLeagues,
-                ProfileIconId = summoner.ProfileIconId,
-                SummonerLevel = summoner.SummonerLevel,
+                HttpStatusCode.TooManyRequests => new TooManyRequestsException(response.ReasonPhrase),
+                HttpStatusCode.BadRequest => new BadRequestException(response.ReasonPhrase),
+                HttpStatusCode.NotFound => new NotFoundException(response.ReasonPhrase),
+                _ => new Exception($"Unhandled Riot API error: {(int)response.StatusCode}"),
             };
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Erro ao buscar info do jogador: {puuid}");
-            return null;
-        }
+
+        return JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync());
     }
 }

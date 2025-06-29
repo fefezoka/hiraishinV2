@@ -3,6 +3,7 @@ using Hangfire.PostgreSql;
 using Hiraishin.Data.Context;
 using Hiraishin.Domain.Interface.Services;
 using Hiraishin.Jobs;
+using Hiraishin.Middleware;
 using Hiraishin.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -29,6 +30,8 @@ builder.Services.AddHttpClient<IHiraishinService, HiraishinService>(client =>
 {
     client.DefaultRequestHeaders.Add("X-Riot-Token", builder.Configuration["RiotGamesApi:ApiKey"]);
 });
+
+builder.Services.AddScoped<RequestMiddleware>();
 
 builder.Services.AddHangfire(x =>
 {
@@ -94,6 +97,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseMiddleware<RequestMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {
