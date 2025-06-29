@@ -25,7 +25,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Hiraishin.Jobs\Hiraishin.Jobs.csproj" />
     <ProjectReference Include="..\Hiraishin.Data.Context\Hiraishin.Data.Context.csproj" />
-    <ProjectReference Include="..\Hiraishin.Middleware\Hiraishin.Middleware.csproj" />
     <ProjectReference Include="..\Hiraishin.Services\Hiraishin.Services.csproj" />
   </ItemGroup>
 
