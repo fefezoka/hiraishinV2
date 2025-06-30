@@ -51,7 +51,7 @@ namespace Hiraishin.Jobs
 
                     if (!weekly && leagueLastUserLeaderboard?.TotalLP == league.TotalLP)
                     {
-                        _logger.LogError("O total de PDL não mudou de um dia pro outro. weekly");
+                        _logger.LogError("O total de PDL não mudou de um dia pro outro");
                         continue;
                     }
 

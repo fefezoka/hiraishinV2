@@ -41,7 +41,7 @@ builder.Services.AddHangfire(x =>
 
 builder.Services.AddHangfireServer(options =>
 {
-    options.SchedulePollingInterval = TimeSpan.FromMinutes(1);
+    options.SchedulePollingInterval = TimeSpan.FromHours(1);
 });
 
 builder.Services.AddSwaggerGen(swagger =>
