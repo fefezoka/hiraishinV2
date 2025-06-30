@@ -4,6 +4,7 @@ using Hiraishin.Domain.Interface.Services;
 using Microsoft.Extensions.Logging;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Hiraishin.Jobs
 {
@@ -81,8 +82,19 @@ namespace Hiraishin.Jobs
                 }
             }
 
-            _hiraishinContext.LeaderboardEntry.AddRange(snapshots);
-            await _hiraishinContext.SaveChangesAsync();
+            try
+            {
+                _hiraishinContext.LeaderboardEntry.AddRange(snapshots);
+                await _hiraishinContext.SaveChangesAsync();
+            }
+            catch (PostgresException ex)
+            {
+                _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+            }
 
             _logger.LogInformation("[{JobId}] Finished lederboard entry job", jobId);
         }
