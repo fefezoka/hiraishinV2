@@ -21,7 +21,7 @@ namespace Hiraishin.Jobs
             _hiraishinContext = hiraishinContext;
         }
 
-        public async Task Run(PerformContext context, CancellationToken token, bool weekly)
+        public async Task Run(PerformContext context, CancellationToken token)
         {
             var jobId = context.BackgroundJob.Id;
 
@@ -32,6 +32,8 @@ namespace Hiraishin.Jobs
             var players = _hiraishinService.GetLeaderboard().Result;
 
             var leaderboardEntries = new List<LeaderboardEntry>();
+
+            var weekly = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday;
 
             DateTime now = DateTime.UtcNow.Date.AddHours(3);
 
@@ -50,12 +52,6 @@ namespace Hiraishin.Jobs
                     if (!weekly && leagueLastUserLeaderboard?.TotalLP == league.TotalLP)
                     {
                         _logger.LogError("O total de PDL não mudou de um dia pro outro. weekly");
-                        continue;
-                    }
-
-                    if (leagueLastUserLeaderboard?.WeekStart.Date == DateTime.UtcNow.Date)
-                    {
-                        _logger.LogError("Leaderboard entry duplicada.");
                         continue;
                     }
 

@@ -113,17 +113,8 @@ app.MapHangfireDashboard();
 
 RecurringJob.AddOrUpdate<LeaderboardEntryJob>(
     "leaderboard-entry-job",
-    x => x.Run(null!, CancellationToken.None, false),
+    x => x.Run(null!, CancellationToken.None),
     Cron.Daily(),
-    new RecurringJobOptions
-    {
-        TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"),
-    });
-
-RecurringJob.AddOrUpdate<LeaderboardEntryJob>(
-    "weekly-leaderboard-entry-job",
-    x => x.Run(null!, CancellationToken.None, true),
-    Cron.Weekly(DayOfWeek.Monday, 3, 6),
     new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"),
