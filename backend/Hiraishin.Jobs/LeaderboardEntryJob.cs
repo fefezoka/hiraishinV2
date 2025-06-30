@@ -31,8 +31,6 @@ namespace Hiraishin.Jobs
 
             var players = _hiraishinService.GetLeaderboard().Result;
 
-            var snapshots = new List<LeaderboardEntry>();
-
             DateTime now = DateTime.UtcNow.Date.AddHours(3);
 
             foreach (var player in players)
@@ -67,7 +65,7 @@ namespace Hiraishin.Jobs
                         }
                     }
 
-                    snapshots.Add(new LeaderboardEntry
+                    var leaderboardEntry = new LeaderboardEntry
                     {
                         Puuid = player.Puuid,
                         Index = league.Index,
@@ -78,22 +76,22 @@ namespace Hiraishin.Jobs
                         TotalLP = league.TotalLP,
                         WeekStart = now,
                         ArrivedOnTop = ArrivedOnTop
-                    });
-                }
-            }
+                    };
 
-            try
-            {
-                _hiraishinContext.LeaderboardEntry.AddRange(snapshots);
-                await _hiraishinContext.SaveChangesAsync();
-            }
-            catch (PostgresException ex)
-            {
-                _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+                    try
+                    {
+                        _hiraishinContext.LeaderboardEntry.Add(leaderboardEntry);
+                        await _hiraishinContext.SaveChangesAsync();
+                    }
+                    catch (PostgresException ex)
+                    {
+                        _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+                    }
+                }
             }
 
             _logger.LogInformation("[{JobId}] Finished lederboard entry job", jobId);
