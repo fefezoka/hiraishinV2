@@ -83,13 +83,13 @@ namespace Hiraishin.Jobs
                         _hiraishinContext.LeaderboardEntry.Add(leaderboardEntry);
                         await _hiraishinContext.SaveChangesAsync();
                     }
-                    catch (PostgresException ex)
+                    catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
                     {
-                        _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+                        _logger.LogWarning(ex, "[{JobId}] Entrada duplicada ignorada.", jobId);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occured!", jobId);
+                        _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occurred!", jobId);
                     }
                 }
             }
