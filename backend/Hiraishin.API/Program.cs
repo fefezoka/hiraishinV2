@@ -123,7 +123,7 @@ RecurringJob.AddOrUpdate<LeaderboardEntryJob>(
 RecurringJob.AddOrUpdate<LeaderboardEntryJob>(
     "weekly-leaderboard-entry-job",
     x => x.Run(null!, CancellationToken.None, true),
-    Cron.Weekly(DayOfWeek.Monday, 2, 35),
+    Cron.Weekly(DayOfWeek.Monday, 3, 6),
     new RecurringJobOptions
     {
         TimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"),

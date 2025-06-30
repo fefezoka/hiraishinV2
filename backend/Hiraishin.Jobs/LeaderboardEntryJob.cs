@@ -31,6 +31,8 @@ namespace Hiraishin.Jobs
 
             var players = _hiraishinService.GetLeaderboard().Result;
 
+            var leaderboardEntries = new List<LeaderboardEntry>();
+
             DateTime now = DateTime.UtcNow.Date.AddHours(3);
 
             foreach (var player in players)
@@ -47,7 +49,13 @@ namespace Hiraishin.Jobs
 
                     if (!weekly && leagueLastUserLeaderboard?.TotalLP == league.TotalLP)
                     {
-                        _logger.LogError("O total de PDL não mudou de um dia pro outro. weekly: [{weekly}]", weekly);
+                        _logger.LogError("O total de PDL não mudou de um dia pro outro. weekly");
+                        continue;
+                    }
+
+                    if (leagueLastUserLeaderboard?.WeekStart.Date == DateTime.UtcNow.Date)
+                    {
+                        _logger.LogError("Leaderboard entry duplicada.");
                         continue;
                     }
 
@@ -78,22 +86,12 @@ namespace Hiraishin.Jobs
                         ArrivedOnTop = ArrivedOnTop
                     };
 
-                    try
-                    {
-                        _hiraishinContext.LeaderboardEntry.Add(leaderboardEntry);
-                        await _hiraishinContext.SaveChangesAsync();
-                    }
-                    catch (DbUpdateException ex) when (ex.InnerException is PostgresException pgEx && pgEx.SqlState == "23505")
-                    {
-                        _logger.LogWarning(ex, "[{JobId}] Entrada duplicada ignorada.", jobId);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex, "[{JobId}] Leaderboard job error occurred!", jobId);
-                    }
+                    leaderboardEntries.Add(leaderboardEntry);
                 }
             }
 
+            _hiraishinContext.LeaderboardEntry.AddRange(leaderboardEntries);
+            await _hiraishinContext.SaveChangesAsync();
             _logger.LogInformation("[{JobId}] Finished lederboard entry job", jobId);
         }
     }
