@@ -249,8 +249,8 @@ export default function Home() {
                                         </span>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        {lpDiff > 0 ? '+' + lpDiff : lpDiff} PDL desde a
-                                        última segunda feira (
+                                        {lpDiff > 0 ? '+' + lpDiff : lpDiff} PDL desde o
+                                        último domingo 23:59 (
                                         {new Intl.DateTimeFormat().format(
                                           new Date(previousRanking!.day)
                                         )}
