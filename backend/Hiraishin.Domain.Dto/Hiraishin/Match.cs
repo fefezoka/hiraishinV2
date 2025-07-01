@@ -9,6 +9,8 @@ public class Match
 
     public class Info
     {
+        [JsonPropertyName("gameCreation")]
+        public long GameCreation {  get; set; }
         [JsonPropertyName("gameDuration")]
         public long GameDuration { get; set; }
         [JsonPropertyName("participants")]

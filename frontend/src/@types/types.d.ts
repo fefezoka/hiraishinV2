@@ -48,6 +48,7 @@ type League = {
 
 interface Match {
   info: {
+    gameCreation: number;
     gameDuration: number;
     participants: {
       puuid: string;
