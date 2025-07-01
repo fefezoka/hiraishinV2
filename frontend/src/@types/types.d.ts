@@ -93,7 +93,7 @@ interface LeaderboardEntry {
   arrivedOnTop: Date;
   wins?: number;
   losses?: number;
-  matches?: LeaderboardMatch[];
+  matches: LeaderboardMatch[];
 }
 
 interface LeaderboardMatch {

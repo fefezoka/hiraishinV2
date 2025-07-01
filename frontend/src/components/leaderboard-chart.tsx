@@ -83,100 +83,122 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                   const pdl = payload[0].value;
                   const rank = filterByQueue.find((data) => data.totalLP === pdl)!;
 
+                  let dayWins = 0;
+                  let dayLosses = 0;
+
+                  rank.leaderboardEntry.matches?.forEach((match) => {
+                    if (match.win) {
+                      dayWins += 1;
+                    } else {
+                      dayLosses -= 1;
+                    }
+                  });
+
                   return (
-                    <div className="bg-black text-white p-2 px-4 flex flex-col">
+                    <div className="bg-card border text-white p-2 flex flex-col w-[250px]">
                       <div>
-                        <span className="text-muted-foreground">
-                          {new Intl.DateTimeFormat().format(
-                            new Date(rank!.leaderboardEntry.day)
-                          )}
-                        </span>
                         <div className="rounded text-sm flex items-center gap-2">
                           <Image
-                            width={50}
-                            height={50}
+                            width={60}
+                            height={60}
                             alt=""
                             src={`https://opgg-static.akamaized.net/images/medals_new/${rank.leaderboardEntry.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
                           />
-                          <div>
-                            {
-                              tiers.find((tier) => tier.en === rank.leaderboardEntry.tier)
-                                ?.pt
-                            }{' '}
-                            {rank.leaderboardEntry.rank}{' '}
-                            {rank.leaderboardEntry.leaguePoints} PDL{' '}
-                            <span className="text-yellow-400">
-                              #{rank.leaderboardEntry.index}
-                            </span>
+                          <div className="flex flex-col items-start">
+                            <div>
+                              {
+                                tiers.find(
+                                  (tier) => tier.en === rank.leaderboardEntry.tier
+                                )?.pt
+                              }{' '}
+                              {rank.leaderboardEntry.rank}{' '}
+                              {rank.leaderboardEntry.leaguePoints} PDL{' '}
+                              <span className="text-yellow-400">
+                                #{rank.leaderboardEntry.index}
+                              </span>
+                            </div>
+                            <div className="flex gap-1 text-xxs text-foreground/90 md:text-xs">
+                              <span>{rank.leaderboardEntry.wins}V</span>
+                              <span>{rank.leaderboardEntry.losses}D</span>
+                              <span className="text-green-400">+{dayWins}</span>
+                              <span className="text-red-400">{dayLosses}</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="divide-y">
-                          {rank.leaderboardEntry.matches?.map((summoner, index) => (
-                            <div
-                              className="flex py-1 justify-between items-center sm:text-xs text-xxs"
-                              key={index}
-                            >
-                              <div className="flex gap-0.5">
-                                <div className="relative sm:h-[36px] sm:w-[36px] h-[32px] w-[32px]">
-                                  <Image
-                                    src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${summoner.championName}.png`}
-                                    alt=""
-                                    fill
-                                  />
-                                  <span className="absolute left-0 bottom-0 sm:text-xxs bg-black">
-                                    {summoner.champLevel}
-                                  </span>
-                                </div>
-                                <div className="flex flex-col">
-                                  {Object.values({
-                                    spell1: summoner.summoner1Id,
-                                    spell2: summoner.summoner2Id,
-                                  }).map((spell: number) => (
-                                    <div
-                                      key={spell}
-                                      className="relative sm:h-[18px] sm:w-[18px] h-[16px] w-[16px]"
-                                    >
+                        {rank.leaderboardEntry.matches.length > 0 && (
+                          <div>
+                            <div className="my-1 bg-border h-[1px] w-full" />
+                            <div className="divide-y">
+                              {rank.leaderboardEntry.matches?.map((summoner, index) => (
+                                <div
+                                  className="flex py-1 px-2 justify-between items-center sm:text-xs text-xxs"
+                                  key={index}
+                                >
+                                  <div className="flex gap-0.5">
+                                    <div className="relative sm:h-[36px] sm:w-[36px] h-[32px] w-[32px]">
                                       <Image
-                                        src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                                        src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${summoner.championName}.png`}
                                         alt=""
                                         fill
                                       />
+                                      <span className="absolute left-0 bottom-0 sm:text-xxs bg-black">
+                                        {summoner.champLevel}
+                                      </span>
                                     </div>
-                                  ))}
+                                    <div className="flex flex-col">
+                                      {Object.values({
+                                        spell1: summoner.summoner1Id,
+                                        spell2: summoner.summoner2Id,
+                                      }).map((spell: number) => (
+                                        <div
+                                          key={spell}
+                                          className="relative sm:h-[18px] sm:w-[18px] h-[16px] w-[16px]"
+                                        >
+                                          <Image
+                                            src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                                            alt=""
+                                            fill
+                                          />
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span
+                                      data-remake={summoner.gameEndedInEarlySurrender}
+                                      data-win={summoner.win}
+                                      className={
+                                        'data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold'
+                                      }
+                                    >
+                                      {!summoner.gameEndedInEarlySurrender
+                                        ? summoner.win
+                                          ? 'Vitória'
+                                          : 'Derrota'
+                                        : 'Remake'}
+                                    </span>
+                                    <span className="ml-1">
+                                      {new Intl.DateTimeFormat('pt-BR', {
+                                        minute: '2-digit',
+                                        second: '2-digit',
+                                      }).format(summoner.gameDuration * 1000)}
+                                    </span>
+                                  </div>
+                                  <div className="flex flex-col items-center">
+                                    <span className="font-bold tracking-wider">
+                                      {summoner.kills}/
+                                      <span className="text-red-500">
+                                        {summoner.deaths}
+                                      </span>
+                                      /{summoner.assists}
+                                    </span>
+                                    <span>{summoner.totalMinionsKilled} CS</span>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex flex-col">
-                                <span
-                                  data-remake={summoner.gameEndedInEarlySurrender}
-                                  data-win={summoner.win}
-                                  className={
-                                    'data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold'
-                                  }
-                                >
-                                  {!summoner.gameEndedInEarlySurrender
-                                    ? summoner.win
-                                      ? 'Vitória'
-                                      : 'Derrota'
-                                    : 'Remake'}
-                                </span>
-                                <span className="ml-1">
-                                  {new Intl.DateTimeFormat('pt-BR', {
-                                    minute: '2-digit',
-                                    second: '2-digit',
-                                  }).format(summoner.gameDuration * 1000)}
-                                </span>
-                              </div>
-                              <div className="flex flex-col items-center">
-                                <span className="font-bold tracking-wider">
-                                  {summoner.kills}/
-                                  <span className="text-red-500">{summoner.deaths}</span>/
-                                  {summoner.assists}
-                                </span>
-                                <span>{summoner.totalMinionsKilled} CS</span>
-                              </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
