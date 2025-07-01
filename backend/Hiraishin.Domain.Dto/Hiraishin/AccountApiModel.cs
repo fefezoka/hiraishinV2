@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Hiraishin.Domain.Dto;
 
-public class Account
+public class AccountApiModel
 {
     [JsonPropertyName("puuid")]
     public string Puuid { get; set; }

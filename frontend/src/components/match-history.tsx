@@ -44,7 +44,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
 
             return (
               <div
-                className="flex justify-between  md:px-6 py-2 items-center sm:text-xs text-xxs"
+                className="flex justify-between md:px-6 py-2 items-center sm:text-xs text-xxs"
                 key={index}
               >
                 <div className="flex gap-0.5">

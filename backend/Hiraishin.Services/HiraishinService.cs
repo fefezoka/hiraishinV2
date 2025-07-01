@@ -8,19 +8,16 @@ using Hiraishin.Domain.Entities;
 using Hiraishin.Domain.Interface.Services;
 using Hiraishin.Domain.Utility.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Hiraishin.Services;
 public class HiraishinService : IHiraishinService
 {
     private readonly HttpClient _httpClient;
-    private readonly ILogger<HiraishinService> _logger;
     private readonly HiraishinContext _hiraishinContext;
 
-    public HiraishinService(HttpClient httpClient, ILogger<HiraishinService> logger, HiraishinContext hiraishinContext)
+    public HiraishinService(HttpClient httpClient, HiraishinContext hiraishinContext)
     {
         _httpClient = httpClient;
-        _logger = logger;
         _hiraishinContext = hiraishinContext;
     }
 
@@ -55,10 +52,10 @@ public class HiraishinService : IHiraishinService
                     {
                         var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
                             .Where(x => x.Puuid == player.Puuid && x.QueueType == league.QueueType)
-                            .OrderByDescending(x => x.WeekStart)
-                            .FirstAsync();
+                            .OrderByDescending(x => x.Day)
+                            .FirstOrDefaultAsync();
 
-                        league.ArrivedOnTop = lastUserLeaderboard.ArrivedOnTop;
+                        league.ArrivedOnTop = lastUserLeaderboard?.ArrivedOnTop;
                     }
                 }
             }
@@ -67,17 +64,20 @@ public class HiraishinService : IHiraishinService
         return allPlayers;
     }
 
-    public async Task<List<Match>> GetMatchHistoryAsync(string puuid, string queue)
+    public async Task<List<MatchApiModel>> GetMatchHistoryAsync(string puuid, int queue, long startTime, int count)
     {
         var matchIds = await GetWithRiotErrorHandlingAsync<List<string>>(
-            $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?start=0&queue={queue}&count=5"
+            $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?" +
+            $"startTime={startTime}" +
+            $"&queue={queue}" +
+            $"&count={count}"
         );
 
         if (matchIds == null || matchIds.Count == 0)
-            return new List<Match>();
+            return new List<MatchApiModel>();
 
         var matchDetailTasks = matchIds.Select(async matchId => 
-            await GetWithRiotErrorHandlingAsync<Match>($"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}")
+            await GetWithRiotErrorHandlingAsync<MatchApiModel>($"https://americas.api.riotgames.com/lol/match/v5/matches/{matchId}")
         );
 
         var matchDetails = await Task.WhenAll(matchDetailTasks);    
@@ -90,32 +90,38 @@ public class HiraishinService : IHiraishinService
         DateTime now = DateTime.UtcNow.Date;
         DateTime lastMonday = now.AddDays(1 - (int)now.DayOfWeek).AddHours(3);
 
-        return await _hiraishinContext.LeaderboardEntry.Where(x => x.WeekStart == lastMonday).ToListAsync();
+        return await _hiraishinContext.LeaderboardEntry
+            .Include(x => x.Matches)
+            .Where(x => x.Day == lastMonday)
+            .ToListAsync();
     }
 
     public async Task<List<LeaderboardEntry>> GetPastLeaderboardByUser(string puuid)
     {
         DateTime threeMonthsAgo = DateTime.UtcNow.Date.AddDays(-90);
 
-        return await _hiraishinContext.LeaderboardEntry.Where(x => x.WeekStart >= threeMonthsAgo && x.Puuid == puuid).ToListAsync();
+        return await _hiraishinContext.LeaderboardEntry
+            .Include(x => x.Matches)
+            .Where(x => x.Day >= threeMonthsAgo && x.Puuid == puuid)
+            .ToListAsync();
     }
 
     private async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)
     {
         var summoner =
-            await GetWithRiotErrorHandlingAsync<Summoner>(
+            await GetWithRiotErrorHandlingAsync<SummonerApiModel>(
                 $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
 
         await Task.Delay(500);
 
         var account =
-            await GetWithRiotErrorHandlingAsync<Account>(
+            await GetWithRiotErrorHandlingAsync<AccountApiModel>(
                 $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
 
         await Task.Delay(500);
 
         var leagues =
-            await GetWithRiotErrorHandlingAsync<List<League>>(
+            await GetWithRiotErrorHandlingAsync<List<LeagueApiModel>>(
                 $"https://br1.api.riotgames.com/lol/league/v4/entries/by-puuid/{puuid}");
 
         var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");

@@ -20,7 +20,7 @@ public class PlayersController : ControllerBase
         => Ok(await _hiraishinService.GetLeaderboard());
 
     [HttpGet("match-history")]
-    public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] string queue)
+    public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] int queue)
         => Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
 
     [HttpGet("past-leaderboard/last-week")]

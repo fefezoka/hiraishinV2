@@ -83,7 +83,7 @@ type Rank = 'IV' | 'III' | 'II' | 'I';
 interface LeaderboardEntry {
   id: number;
   puuid: string;
-  weekStart: string;
+  day: string;
   queueType: Queue;
   tier: string;
   rank: string;
@@ -91,6 +91,27 @@ interface LeaderboardEntry {
   totalLP: number;
   index: number;
   arrivedOnTop: Date;
+  wins?: number;
+  losses?: number;
+  matches?: LeaderboardMatch[];
+}
+
+interface LeaderboardMatch {
+  gameDuration: number;
+  puuid: string;
+  summonerName: string;
+  riotIdGameName: string;
+  riotIdTagline: string;
+  champLevel: number;
+  summoner1Id: number;
+  summoner2Id: number;
+  win: boolean;
+  gameEndedInEarlySurrender: boolean;
+  kills: number;
+  deaths: number;
+  assists: number;
+  totalMinionsKilled: number;
+  championName: string;
 }
 
 // Hiraishindle

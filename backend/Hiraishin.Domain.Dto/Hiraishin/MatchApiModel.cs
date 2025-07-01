@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Hiraishin.Domain.Dto.Hiraishin;
 
-public class Match
+public class MatchApiModel
 {
     [JsonPropertyName("info")]
     public Info info { get; set; }

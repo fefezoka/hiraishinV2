@@ -2,7 +2,7 @@
 
 namespace Hiraishin.Domain.Dto.Hiraishin
 {
-    public class Summoner
+    public class SummonerApiModel
     {
         [JsonPropertyName("puuid")]
         public string Puuid { get; set; }

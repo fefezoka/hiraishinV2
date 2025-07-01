@@ -2,7 +2,7 @@
 
 namespace Hiraishin.Domain.Dto.Hiraishin;
 
-public class League
+public class LeagueApiModel
 {
     [JsonPropertyName("leagueId")]
     public String LeagueId { get; set; }

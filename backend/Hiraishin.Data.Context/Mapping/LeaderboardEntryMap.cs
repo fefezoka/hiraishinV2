@@ -8,8 +8,16 @@ namespace Hiraishin.Data.Context.Mapping
         public static void Map(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LeaderboardEntry>()
-                .HasIndex(r => new { r.Puuid, r.WeekStart, r.QueueType })
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<LeaderboardEntry>()
+                .HasIndex(r => new { r.Puuid, r.Day, r.QueueType })
                 .IsUnique();
+
+            modelBuilder.Entity<LeaderboardEntry>()
+                .HasMany(x => x.Matches)
+                .WithOne(x => x.LeaderboardEntry)
+                .HasForeignKey(x => x.LeaderboardEntryId);
         }
     }
 }

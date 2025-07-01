@@ -4,7 +4,8 @@ using Hiraishin.Domain.Interface.Services;
 using Microsoft.Extensions.Logging;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
+using Hiraishin.Domain.Dto.Hiraishin;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Hiraishin.Jobs
 {
@@ -24,9 +25,7 @@ namespace Hiraishin.Jobs
         public async Task Run(PerformContext context, CancellationToken token)
         {
             var jobId = context.BackgroundJob.Id;
-
             using var _ = _logger.BeginScope("LeaderboardJob");
-
             _logger.LogInformation("[{JobId}] Starting weekly ranking job...", jobId);
 
             var players = _hiraishinService.GetLeaderboard().Result;
@@ -34,24 +33,24 @@ namespace Hiraishin.Jobs
             var leaderboardEntries = new List<LeaderboardEntry>();
 
             var weekly = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday;
-
-            DateTime now = DateTime.UtcNow.Date.AddHours(3);
+            var utcYesterdayMidnight = DateTime.UtcNow.Date.AddDays(-1).AddHours(3);
+            var utcYesterdayMidnightTimestamp = (long)DateTime.UtcNow.Date.AddDays(-1).AddHours(3).Subtract(DateTime.UnixEpoch).TotalSeconds;
 
             foreach (var player in players)
             {
                 var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
                     .Where(x => x.Puuid == player.Puuid)
                     .GroupBy(x => x.QueueType)
-                    .Select(g => g.OrderByDescending(x => x.WeekStart).First())
+                    .Select(g => g.OrderByDescending(x => x.Day).First())
                     .ToListAsync();
 
                 foreach (var league in player.Leagues)
                 {
                     var leagueLastUserLeaderboard = lastUserLeaderboard.Find(x => x.QueueType == league.QueueType);
 
-                    if (!weekly && leagueLastUserLeaderboard?.TotalLP == league.TotalLP)
+                    if (!weekly && (league.Wins + league.Losses) - (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses) == 0)
                     {
-                        _logger.LogError("O total de PDL não mudou de um dia pro outro");
+                        _logger.LogError("O usuário [{player}] não jogou ontem!", player.GameName);
                         continue;
                     }
 
@@ -61,12 +60,39 @@ namespace Hiraishin.Jobs
                     {
                         if (leagueLastUserLeaderboard == null || leagueLastUserLeaderboard.ArrivedOnTop == null)
                         {
-                            ArrivedOnTop = DateTime.UtcNow.Date.AddHours(3);
+                            ArrivedOnTop = utcYesterdayMidnight;
                         }
                         else
                         {
                             ArrivedOnTop = leagueLastUserLeaderboard.ArrivedOnTop;
                         }
+                    }
+
+                    var queueTypeNumber = league.QueueType == "RANKED_SOLO_5x5" ? 420 : 440;
+                    var matchesResponse = await _hiraishinService.GetMatchHistoryAsync(player.Puuid, queueTypeNumber, utcYesterdayMidnightTimestamp, 100);
+                    var matches = new List<Match>();
+
+                    foreach (var matchResponse in matchesResponse)
+                    {
+                        var user = matchResponse.info.Participants.Find(x => x.Puuid == player.Puuid)!;
+
+                        var match = new Match
+                        {
+                            Assists = user.Assists,
+                            ChampionId = user.ChampionId,
+                            ChampionName = user.ChampionName,
+                            Kills = user.Kills,
+                            Deaths = user.Deaths,
+                            GameDuration = matchResponse.info.GameDuration,
+                            Win = user.Win,
+                            GameEndedInEarlySurrender = user.GameEndedInEarlySurrender,
+                            Summoner1Id = user.Summoner1Id,
+                            Summoner2Id = user.Summoner2Id,
+                            ChampLevel = user.ChampLevel,
+                            TotalMinionsKilled = user.TotalMinionsKilled,
+                        };
+
+                        matches.Add(match);
                     }
 
                     var leaderboardEntry = new LeaderboardEntry
@@ -78,12 +104,16 @@ namespace Hiraishin.Jobs
                         Rank = league.Rank,
                         Tier = league.Tier,
                         TotalLP = league.TotalLP,
-                        WeekStart = now,
-                        ArrivedOnTop = ArrivedOnTop
+                        Day = utcYesterdayMidnight,
+                        ArrivedOnTop = ArrivedOnTop,
+                        Losses = league.Losses,
+                        Wins = league.Wins,
+                        Matches = matches,
                     };
 
                     leaderboardEntries.Add(leaderboardEntry);
                 }
+                Thread.Sleep(10 * 1000);
             }
 
             _hiraishinContext.LeaderboardEntry.AddRange(leaderboardEntries);
