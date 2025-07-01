@@ -26,37 +26,28 @@ public class HiraishinService : IHiraishinService
         var tasks = PlayersData.Puuids.Select(FetchPlayerDataAsync);
         var allPlayers = (await Task.WhenAll(tasks)).ToList();
 
-        var recordLeagueRanking = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" }.Select((queueType, index) =>
+        for(int q = 0; q < 2; q++) // 2 queue types
         {
-            return allPlayers
-                .Where(p => p.Leagues[index] != null)
-                .OrderByDescending(p => p.Leagues[index].TotalLP)
-                .ThenByDescending(p => p.Leagues[index].Winrate)
-                .Select((player, i) => new { Player = player, Index = i + 1 })
-                .ToDictionary(
-                    x => x.Player.GameName,
-                    x => x.Index
-                    );
-        }).ToList();
+            var orderedPlayers = allPlayers
+            .Where(p => p.Leagues[q] != null)
+            .OrderByDescending(p => p.Leagues[q].TotalLP)
+            .ThenByDescending(p => p.Leagues[q].Winrate)
+            .ToList();
 
-        foreach (var player in allPlayers)
-        {
-            for (int i = 0; i < player.Leagues.Count; i++)
+            for (int i = 0; i < orderedPlayers.Count; i++)
             {
-                var league = player.Leagues[i];
-                if (league != null && recordLeagueRanking[i].TryGetValue(player.GameName, out var index))
+                var player = orderedPlayers[i];
+                var league = player.Leagues[q];
+                league.Index = i + 1;
+
+                if (league.Index == 1)
                 {
-                    league.Index = index;
+                    var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
+                        .Where(x => x.Puuid == player.Puuid && x.QueueType == league.QueueType)
+                        .OrderByDescending(x => x.Day)
+                        .FirstOrDefaultAsync();
 
-                    if (league.Index == 1)
-                    {
-                        var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
-                            .Where(x => x.Puuid == player.Puuid && x.QueueType == league.QueueType)
-                            .OrderByDescending(x => x.Day)
-                            .FirstOrDefaultAsync();
-
-                        league.ArrivedOnTop = lastUserLeaderboard?.ArrivedOnTop;
-                    }
+                    league.ArrivedOnTop = lastUserLeaderboard?.ArrivedOnTop;
                 }
             }
         }

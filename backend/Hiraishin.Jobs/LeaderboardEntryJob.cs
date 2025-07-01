@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Hangfire.Server;
 using Microsoft.EntityFrameworkCore;
 using Hiraishin.Domain.Dto.Hiraishin;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace Hiraishin.Jobs
 {
@@ -34,7 +33,7 @@ namespace Hiraishin.Jobs
 
             var weekly = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday;
             var utcYesterdayMidnight = DateTime.UtcNow.Date.AddDays(-1).AddHours(3);
-            var utcYesterdayMidnightTimestamp = (long)DateTime.UtcNow.Date.AddDays(-1).AddHours(3).Subtract(DateTime.UnixEpoch).TotalSeconds;
+            var utcYesterdayMidnightTimestamp = (long)utcYesterdayMidnight.Subtract(DateTime.UnixEpoch).TotalSeconds;
 
             foreach (var player in players)
             {
@@ -50,7 +49,7 @@ namespace Hiraishin.Jobs
 
                     if (!weekly && (league.Wins + league.Losses) - (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses) == 0)
                     {
-                        _logger.LogError("O usuário [{player}] não jogou ontem!", player.GameName);
+                        _logger.LogError("The user [{player}] hasn't played yesterday", player.GameName);
                         continue;
                     }
 
