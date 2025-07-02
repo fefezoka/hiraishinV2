@@ -95,17 +95,17 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                   });
 
                   return (
-                    <div className="bg-card border text-white p-2 flex flex-col w-[250px]">
+                    <div className="bg-card border text-white p-2 flex flex-col w-[266px]">
                       <div>
                         <div className="rounded text-sm flex items-center gap-2">
                           <Image
-                            width={60}
-                            height={60}
+                            width={57}
+                            height={57}
                             alt=""
                             src={`https://opgg-static.akamaized.net/images/medals_new/${rank.leaderboardEntry.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
                           />
                           <div className="flex flex-col items-start">
-                            <div>
+                            <div className="font-semibold">
                               {
                                 tiers.find(
                                   (tier) => tier.en === rank.leaderboardEntry.tier

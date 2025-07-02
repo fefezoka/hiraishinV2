@@ -32,7 +32,9 @@ namespace Hiraishin.Jobs
             var leaderboardEntries = new List<LeaderboardEntry>();
 
             var weekly = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday;
-            var utcYesterdayMidnight = DateTime.UtcNow.Date.AddDays(-1).AddHours(3);
+            var utcTodayMidnight = DateTime.UtcNow.Date.AddHours(3);
+            var utcTodayMidnightTimestamp = (long)utcTodayMidnight.Subtract(DateTime.UnixEpoch).TotalSeconds;
+            var utcYesterdayMidnight = utcTodayMidnight.AddDays(-1);
             var utcYesterdayMidnightTimestamp = (long)utcYesterdayMidnight.Subtract(DateTime.UnixEpoch).TotalSeconds;
 
             foreach (var player in players)
@@ -68,7 +70,11 @@ namespace Hiraishin.Jobs
                     }
 
                     var queueTypeNumber = league.QueueType == "RANKED_SOLO_5x5" ? 420 : 440;
-                    var matchesResponse = await _hiraishinService.GetMatchHistoryAsync(player.Puuid, queueTypeNumber, utcYesterdayMidnightTimestamp, 100);
+                    var matchesResponse = await _hiraishinService.GetMatchHistoryAsync(player.Puuid, 
+                        queueTypeNumber, 
+                        utcYesterdayMidnightTimestamp, 
+                        utcTodayMidnightTimestamp, 
+                        100);
                     var matches = new List<Match>();
 
                     foreach (var matchResponse in matchesResponse)

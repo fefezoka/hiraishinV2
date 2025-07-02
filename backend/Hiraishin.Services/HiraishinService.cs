@@ -55,11 +55,12 @@ public class HiraishinService : IHiraishinService
         return allPlayers;
     }
 
-    public async Task<List<MatchApiModel>> GetMatchHistoryAsync(string puuid, int queue, long startTime, int count)
+    public async Task<List<MatchApiModel>> GetMatchHistoryAsync(string puuid, int queue, long startTime,long? endTime, int count)
     {
         var matchIds = await GetWithRiotErrorHandlingAsync<List<string>>(
             $"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{puuid}/ids?" +
             $"startTime={startTime}" +
+            (endTime != null ? $"&endTime={endTime}" : "") +
             $"&queue={queue}" +
             $"&count={count}"
         );
