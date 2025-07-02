@@ -121,7 +121,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                               <span>{rank.leaderboardEntry.wins}V</span>
                               <span>{rank.leaderboardEntry.losses}D</span>
                               <span className="text-green-400">+{dayWins}</span>
-                              <span className="text-red-400">{dayLosses}</span>
+                              <span className="text-red-400">-{Math.abs(dayLosses)}</span>
                             </div>
                           </div>
                         </div>
