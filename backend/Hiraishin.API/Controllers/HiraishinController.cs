@@ -1,3 +1,4 @@
+using Hiraishin.Domain.Dto.Hiraishin;
 using Hiraishin.Domain.Entities;
 using Hiraishin.Domain.Interface.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,11 @@ public class PlayersController : ControllerBase
     }
 
     [HttpGet("leaderboard")]
-    public async Task<ActionResult> GetLeaderboard()
+    public async Task<ActionResult<List<PlayerInfoDTO>>> GetLeaderboard()
         => Ok(await _hiraishinService.GetLeaderboard());
 
     [HttpGet("match-history")]
-    public async Task<ActionResult> GetMatchHistory([FromQuery] string puuid, [FromQuery] int queue)
+    public async Task<ActionResult<List<MatchApiModel>>> GetMatchHistory([FromQuery] string puuid, [FromQuery] int queue)
         => Ok(await _hiraishinService.GetMatchHistoryAsync(puuid, queue));
 
     [HttpGet("past-leaderboard/last-week")]
