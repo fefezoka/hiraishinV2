@@ -83,7 +83,6 @@ public class HiraishinService : IHiraishinService
         DateTime lastSunday = now.AddDays(0 - (int)now.DayOfWeek).AddHours(3);
 
         return await _hiraishinContext.LeaderboardEntry
-            .Include(x => x.Matches)
             .Where(x => x.Day == lastSunday)
             .ToListAsync();
     }
@@ -93,7 +92,7 @@ public class HiraishinService : IHiraishinService
         DateTime threeMonthsAgo = DateTime.UtcNow.Date.AddDays(-90);
 
         return await _hiraishinContext.LeaderboardEntry
-            .Include(x => x.Matches)
+            .Include(x => x.Matches.OrderBy(x => x.Id))
             .Where(x => x.Day >= threeMonthsAgo && x.Puuid == puuid)
             .ToListAsync();
     }
