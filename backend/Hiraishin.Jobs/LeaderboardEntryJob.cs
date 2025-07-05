@@ -51,7 +51,7 @@ namespace Hiraishin.Jobs
 
                     if (!weekly && (league.Wins + league.Losses) - (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses) == 0)
                     {
-                        _logger.LogError("The user [{player}] hasn't played yesterday", player.GameName);
+                        _logger.LogError("The user [{player}] hasn't played [{mode}] yesterday", player.GameName, league.QueueType);
                         continue;
                     }
 

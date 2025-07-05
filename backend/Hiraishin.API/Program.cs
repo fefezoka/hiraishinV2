@@ -7,8 +7,15 @@ using Hiraishin.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Npgsql;
+using Serilog;
+using Serilog.Settings.Configuration;
+using UAParser;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration, new ConfigurationReaderOptions() { SectionName = "Logging" })
+    .ReadFrom.Services(services));
 
 var dbConfig = builder.Configuration.GetSection("Database");
 
@@ -34,6 +41,7 @@ builder.Services.AddHangfire(x =>
 {
     x.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
         .UseSimpleAssemblyNameTypeSerializer()
+        .UseSerilogLogProvider()
         .UseRecommendedSerializerSettings()
         .UsePostgreSqlStorage(options => { options.UseNpgsqlConnection(connectionString.ConnectionString); },
             new PostgreSqlStorageOptions { UseSlidingInvisibilityTimeout = true });
@@ -92,6 +100,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseSwaggerUI();
 }
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.EnrichDiagnosticContext = (context, httpContext) =>
+    {
+        var parsedUserAgent = Parser.GetDefault()?.Parse(httpContext.Request.Headers.UserAgent);
+        context.Set("Browser", parsedUserAgent?.UA.Family);
+        context.Set("Device", parsedUserAgent?.Device.ToString());
+        context.Set("OS", parsedUserAgent?.OS.ToString());
+    };
+});
 
 app.UsePathBase("/api");
 app.UseCors("AllowFrontend");
