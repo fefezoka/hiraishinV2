@@ -25,6 +25,12 @@ const chartConfig = {
   },
 };
 
+interface Payload {
+  totalLP: number;
+  week: string;
+  leaderboardEntry: LeaderboardEntry;
+}
+
 export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
   const { data, isLoading } = useQuery<LeaderboardEntry[]>({
     queryKey: ['last-3-months-leaderboard', player.puuid],
@@ -38,7 +44,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
 
   const filterByQueue = data
     ?.filter(
-      (rank) => rank.queueType === (queue === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR')
+      (info) => info.queueType === (queue === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR')
     )
     .map((leaderboardEntry) => ({
       week: new Intl.DateTimeFormat('pt-BR').format(new Date(leaderboardEntry.day)),
@@ -80,13 +86,12 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                 cursor={false}
                 content={({ payload }) => {
                   if (!payload?.length) return null;
-                  const pdl = payload[0].value;
-                  const rank = filterByQueue.find((data) => data.totalLP === pdl)!;
+                  const info = payload[0].payload as Payload;
 
                   let dayWins = 0;
                   let dayLosses = 0;
 
-                  rank.leaderboardEntry.matches?.forEach((match) => {
+                  info.leaderboardEntry.matches?.forEach((match) => {
                     if (match.win) {
                       dayWins += 1;
                     } else {
@@ -102,34 +107,34 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                             width={57}
                             height={57}
                             alt=""
-                            src={`https://opgg-static.akamaized.net/images/medals_new/${rank.leaderboardEntry.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
+                            src={`https://opgg-static.akamaized.net/images/medals_new/${info.leaderboardEntry.tier.toLowerCase()}.png?image=q_auto,f_webp,w_144&v=1687738763941`}
                           />
                           <div className="flex flex-col items-start">
                             <div className="font-semibold">
                               {
                                 tiers.find(
-                                  (tier) => tier.en === rank.leaderboardEntry.tier
+                                  (tier) => tier.en === info.leaderboardEntry.tier
                                 )?.pt
                               }{' '}
-                              {rank.leaderboardEntry.rank}{' '}
-                              {rank.leaderboardEntry.leaguePoints} PDL{' '}
+                              {info.leaderboardEntry.rank}{' '}
+                              {info.leaderboardEntry.leaguePoints} PDL{' '}
                               <span className="text-yellow-400">
-                                #{rank.leaderboardEntry.index}
+                                #{info.leaderboardEntry.index}
                               </span>
                             </div>
                             <div className="flex gap-1 text-xxs text-foreground/90 md:text-xs">
-                              <span>{rank.leaderboardEntry.wins}V</span>
-                              <span>{rank.leaderboardEntry.losses}D</span>
+                              <span>{info.leaderboardEntry.wins}V</span>
+                              <span>{info.leaderboardEntry.losses}D</span>
                               <span className="text-green-400">+{dayWins}</span>
                               <span className="text-red-400">-{Math.abs(dayLosses)}</span>
                             </div>
                           </div>
                         </div>
-                        {rank.leaderboardEntry.matches.length > 0 && (
+                        {info.leaderboardEntry.matches.length > 0 && (
                           <div>
                             <div className="my-1 bg-border h-[1px] w-full" />
                             <div className="divide-y">
-                              {rank.leaderboardEntry.matches?.map((summoner, index) => (
+                              {info.leaderboardEntry.matches?.map((summoner, index) => (
                                 <div
                                   className="flex py-1 px-2 justify-between items-center sm:text-xs text-xxs"
                                   key={index}
