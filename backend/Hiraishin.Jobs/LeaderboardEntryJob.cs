@@ -32,10 +32,10 @@ namespace Hiraishin.Jobs
             var leaderboardEntries = new List<LeaderboardEntry>();
 
             var weekly = DateTime.UtcNow.DayOfWeek == DayOfWeek.Monday;
-            var utcTodayMidnight = DateTime.UtcNow.Date.AddHours(3);
-            var utcTodayMidnightTimestamp = (long)utcTodayMidnight.Subtract(DateTime.UnixEpoch).TotalSeconds;
-            var utcYesterdayMidnight = utcTodayMidnight.AddDays(-1);
-            var utcYesterdayMidnightTimestamp = (long)utcYesterdayMidnight.Subtract(DateTime.UnixEpoch).TotalSeconds;
+            var utcTodayAtSix = DateTime.UtcNow.Date.AddHours(9); // 6 horas + 3 do utc
+            var utcTodayAtSixTimestamp = (long)utcTodayAtSix.Subtract(DateTime.UnixEpoch).TotalSeconds;
+            var utcYesterdayAtSix = utcTodayAtSix.AddDays(-1);
+            var utcYesterdayAtSixTimestamp = (long)utcYesterdayAtSix.Subtract(DateTime.UnixEpoch).TotalSeconds;
 
             foreach (var player in players)
             {
@@ -61,7 +61,7 @@ namespace Hiraishin.Jobs
                     {
                         if (leagueLastUserLeaderboard == null || leagueLastUserLeaderboard.ArrivedOnTop == null)
                         {
-                            ArrivedOnTop = utcYesterdayMidnight;
+                            ArrivedOnTop = utcYesterdayAtSix;
                         }
                         else
                         {
@@ -72,8 +72,8 @@ namespace Hiraishin.Jobs
                     var queueTypeNumber = league.QueueType == "RANKED_SOLO_5x5" ? 420 : 440;
                     var matchesResponse = await _hiraishinService.GetMatchHistoryAsync(player.Puuid, 
                         queueTypeNumber, 
-                        utcYesterdayMidnightTimestamp, 
-                        utcTodayMidnightTimestamp, 
+                        utcYesterdayAtSixTimestamp, 
+                        utcTodayAtSixTimestamp, 
                         100);
                     var matches = new List<Match>();
 
@@ -109,7 +109,7 @@ namespace Hiraishin.Jobs
                         Rank = league.Rank,
                         Tier = league.Tier,
                         TotalLP = league.TotalLP,
-                        Day = utcYesterdayMidnight,
+                        Day = utcYesterdayAtSix,
                         ArrivedOnTop = ArrivedOnTop,
                         Losses = league.Losses,
                         Wins = league.Wins,
