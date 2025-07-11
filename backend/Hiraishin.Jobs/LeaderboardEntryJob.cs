@@ -49,7 +49,10 @@ namespace Hiraishin.Jobs
                 {
                     var leagueLastUserLeaderboard = lastUserLeaderboard.Find(x => x.QueueType == league.QueueType);
 
-                    if (!weekly && (league.Wins + league.Losses) - (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses) == 0)
+                    if (!weekly &&
+                        ((league.Wins + league.Losses) - (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses) == 0 ||
+                        league.LeaguePoints == leagueLastUserLeaderboard?.LeaguePoints)
+                        )
                     {
                         _logger.LogError("The user [{player}] hasn't played [{mode}] yesterday", player.GameName, league.QueueType);
                         continue;
