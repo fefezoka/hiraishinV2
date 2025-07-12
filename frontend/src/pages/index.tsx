@@ -19,6 +19,7 @@ import { FaCrown } from 'react-icons/fa';
 import { isAxiosError } from 'axios';
 import { blitz } from '@/assets';
 import { Button } from '@/components/ui/button';
+import { addDays } from 'date-fns';
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
@@ -252,7 +253,7 @@ export default function Home() {
                                         {lpDiff > 0 ? '+' + lpDiff : lpDiff} PDL desde a
                                         última segunda-feira 6:00h (
                                         {new Intl.DateTimeFormat().format(
-                                          new Date(previousRanking!.day)
+                                          addDays(new Date(previousRanking!.day), 1)
                                         )}
                                         )
                                       </TooltipContent>
