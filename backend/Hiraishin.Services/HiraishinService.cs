@@ -80,10 +80,11 @@ public class HiraishinService : IHiraishinService
     public async Task<List<LeaderboardEntry>> GetLastWeekLeaderboard()
     {
         DateTime now = DateTime.UtcNow.Date;
-        DateTime lastSunday = now.AddDays(0 - (int)now.DayOfWeek);
 
         return await _hiraishinContext.LeaderboardEntry
-            .Where(x => x.Day.Date == lastSunday.Date)
+            .Where(x => x.Day.DayOfWeek == DayOfWeek.Sunday)
+            .OrderByDescending(x => x.Day)
+            .Take(20)
             .ToListAsync();
     }
 

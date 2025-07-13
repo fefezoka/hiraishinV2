@@ -39,6 +39,8 @@ namespace Hiraishin.Jobs
 
             foreach (var player in players)
             {
+                _logger.LogInformation("Processing player [{player}]", player.GameName);
+
                 var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
                     .Where(x => x.Puuid == player.Puuid)
                     .GroupBy(x => x.QueueType)
@@ -54,7 +56,6 @@ namespace Hiraishin.Jobs
                         league.LeaguePoints == leagueLastUserLeaderboard?.LeaguePoints)
                         )
                     {
-                        _logger.LogError("The user [{player}] hasn't played [{mode}] yesterday", player.GameName, league.QueueType);
                         continue;
                     }
 
