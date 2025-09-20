@@ -176,7 +176,7 @@ export default function Home() {
                               </div>
                               <div className="flex items-center gap-2 md:gap-3 w-[284px]">
                                 <div className="border-2 border-orange-400 relative">
-                                  <div className="w-[60px] h-[60px] md:w-[72px] md:h-[72px]">
+                                  <div className="w-[56px] h-[56px] md:w-[72px] md:h-[72px]">
                                     <Image
                                       src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${player.profileIconId}.png`}
                                       alt=""
@@ -202,7 +202,7 @@ export default function Home() {
                                     target="_blank"
                                     onClick={(e) => e.stopPropagation()}
                                   >
-                                    <div className="text-sm sm:text-base truncate max-w-[144px] sm:max-w-none font-semibold">
+                                    <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
                                       <span className="w-fit">{player.gameName}</span>{" "}
                                       <span className="text-yellow-400">
                                         #{player.tagLine}
