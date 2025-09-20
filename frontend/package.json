@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier \"**/*.{ts,tsx}\" --write"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.11",
@@ -38,7 +39,8 @@
     "use-debounce": "^10.0.5"
   },
   "devDependencies": {
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "prettier": "3.6.2"
   },
   "overrides": {
     "react-is": "^19.0.0-rc-69d4b800-20241021"

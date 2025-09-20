@@ -1,9 +1,9 @@
-import { LeaderboardChart } from '@/components/leaderboard-chart';
-import { MatchHistory } from '@/components/match-history';
+import { LeaderboardChart } from "@/components/leaderboard-chart"
+import { MatchHistory } from "@/components/match-history"
 
 interface IPlayerOverview {
-  player: Player;
-  queue: 420 | 440;
+  player: Player
+  queue: 420 | 440
 }
 
 export const PlayerOverview = ({ player, queue }: IPlayerOverview) => {
@@ -12,5 +12,5 @@ export const PlayerOverview = ({ player, queue }: IPlayerOverview) => {
       <LeaderboardChart player={player} queue={queue} />
       <MatchHistory player={player} queue={queue} />
     </div>
-  );
-};
+  )
+}

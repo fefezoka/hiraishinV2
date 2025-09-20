@@ -1,37 +1,37 @@
-import { spinner } from '@/assets';
-import { LOL_VERSION, spells } from '@/commons/lol-data';
+import { spinner } from "@/assets"
+import { LOL_VERSION, spells } from "@/commons/lol-data"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import axios from '@/service/axios';
-import { diffBetweenDates } from '@/utils/diff-between-dates';
-import { useQuery } from '@tanstack/react-query';
-import Image from 'next/image';
-import Link from 'next/link';
+} from "@/components/ui/card"
+import axios from "@/service/axios"
+import { diffBetweenDates } from "@/utils/diff-between-dates"
+import { useQuery } from "@tanstack/react-query"
+import Image from "next/image"
+import Link from "next/link"
 
 interface IMatchHistory {
-  player: Player;
-  queue: 420 | 440;
+  player: Player
+  queue: 420 | 440
 }
 
 export const MatchHistory = ({ player, queue }: IMatchHistory) => {
   const { data, isLoading } = useQuery<Match[]>({
-    queryKey: ['match-history', player.puuid, queue],
+    queryKey: ["match-history", player.puuid, queue],
     queryFn: async () =>
       (await axios.get(`hiraishin/match-history?puuid=${player.puuid}&queue=${queue}`))
         .data,
-  });
+  })
 
   return (
     <Card>
       <CardHeader className="flex gap-2">
         <div>
           <CardTitle>Histórico de partidas</CardTitle>
-          <CardDescription>Ranqueada {queue === 420 ? 'Solo' : 'Flex'}</CardDescription>
+          <CardDescription>Ranqueada {queue === 420 ? "Solo" : "Flex"}</CardDescription>
         </div>
         {isLoading && <Image src={spinner} alt="" height={20} width={20} />}
       </CardHeader>
@@ -40,7 +40,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
           data.map((match, index) => {
             const summoner = match.info.participants.find(
               (participant) => participant.puuid === player.puuid
-            )!;
+            )!
 
             return (
               <div
@@ -78,26 +78,26 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                 </div>
                 <div className="flex flex-col items-center">
                   <span className="font-bold">
-                    {queue === 420 ? 'Ranqueada Solo' : 'Ranqueada Flex'}
+                    {queue === 420 ? "Ranqueada Solo" : "Ranqueada Flex"}
                   </span>
                   <div>
                     <span
                       data-remake={summoner.gameEndedInEarlySurrender}
                       data-win={summoner.win}
                       className={
-                        'data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold'
+                        "data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold"
                       }
                     >
                       {!summoner.gameEndedInEarlySurrender
                         ? summoner.win
-                          ? 'Vitória'
-                          : 'Derrota'
-                        : 'Remake'}
+                          ? "Vitória"
+                          : "Derrota"
+                        : "Remake"}
                     </span>
                     <span className="ml-1">
-                      {new Intl.DateTimeFormat('pt-BR', {
-                        minute: '2-digit',
-                        second: '2-digit',
+                      {new Intl.DateTimeFormat("pt-BR", {
+                        minute: "2-digit",
+                        second: "2-digit",
                       }).format(match.info.gameDuration * 1000)}
                     </span>
                   </div>
@@ -160,7 +160,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                             <span
                               data-player={participant.summonerName === player.gameName}
                               className={
-                                'text-xxxs data-[player=true]:font-bold hover:underline'
+                                "text-xxxs data-[player=true]:font-bold hover:underline"
                               }
                             >
                               {participant.riotIdGameName} #{participant.riotIdTagline}
@@ -172,9 +172,9 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                   ))}
                 </div>
               </div>
-            );
+            )
           })}
       </CardContent>
     </Card>
-  );
-};
+  )
+}

@@ -1,56 +1,56 @@
-import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
-import Image from 'next/image';
-import { LOL_VERSION, spells, tiers } from '@/commons/lol-data';
-import { useQuery } from '@tanstack/react-query';
-import axios from '@/service/axios';
-import { spinner } from '@/assets';
+} from "@/components/ui/card"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
+import Image from "next/image"
+import { LOL_VERSION, spells, tiers } from "@/commons/lol-data"
+import { useQuery } from "@tanstack/react-query"
+import axios from "@/service/axios"
+import { spinner } from "@/assets"
 
 interface ILeaderboardChart {
-  player: Player;
-  queue: 420 | 440;
+  player: Player
+  queue: 420 | 440
 }
 
 const chartConfig = {
   totalLP: {
-    label: 'PDL Total',
-    color: 'var(--chart-4)',
+    label: "PDL Total",
+    color: "var(--chart-4)",
   },
-};
+}
 
 interface Payload {
-  totalLP: number;
-  week: string;
-  leaderboardEntry: LeaderboardEntry;
+  totalLP: number
+  week: string
+  leaderboardEntry: LeaderboardEntry
 }
 
 export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
   const { data, isLoading } = useQuery<LeaderboardEntry[]>({
-    queryKey: ['last-3-months-leaderboard', player.puuid],
+    queryKey: ["last-3-months-leaderboard", player.puuid],
     queryFn: async () =>
       (
         await axios.get<LeaderboardEntry[]>(
-          '/hiraishin/past-leaderboard/by-user/' + player.puuid
+          "/hiraishin/past-leaderboard/by-user/" + player.puuid
         )
       ).data,
-  });
+  })
 
   const filterByQueue = data
     ?.filter(
-      (info) => info.queueType === (queue === 420 ? 'RANKED_SOLO_5x5' : 'RANKED_FLEX_SR')
+      (info) => info.queueType === (queue === 420 ? "RANKED_SOLO_5x5" : "RANKED_FLEX_SR")
     )
     .map((leaderboardEntry) => ({
-      week: new Intl.DateTimeFormat('pt-BR').format(new Date(leaderboardEntry.day)),
+      week: new Intl.DateTimeFormat("pt-BR").format(new Date(leaderboardEntry.day)),
       totalLP: leaderboardEntry.totalLP,
       leaderboardEntry,
-    }));
+    }))
 
   return (
     <Card>
@@ -79,25 +79,25 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
               />
               <YAxis
                 dataKey="totalLP"
-                domain={['dataMin - 50', 'dataMax + 50']}
+                domain={["dataMin - 50", "dataMax + 50"]}
                 tickFormatter={(value) => pdlToTier(value)}
               />
               <ChartTooltip
                 cursor={false}
                 content={({ payload }) => {
-                  if (!payload?.length) return null;
-                  const info = payload[0].payload as Payload;
+                  if (!payload?.length) return null
+                  const info = payload[0].payload as Payload
 
-                  let dayWins = 0;
-                  let dayLosses = 0;
+                  let dayWins = 0
+                  let dayLosses = 0
 
                   info.leaderboardEntry.matches?.forEach((match) => {
                     if (match.win) {
-                      dayWins += 1;
+                      dayWins += 1
                     } else {
-                      dayLosses -= 1;
+                      dayLosses -= 1
                     }
-                  });
+                  })
 
                   return (
                     <div className="bg-card border text-white p-2 flex flex-col w-[266px]">
@@ -115,9 +115,9 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                                 tiers.find(
                                   (tier) => tier.en === info.leaderboardEntry.tier
                                 )?.pt
-                              }{' '}
-                              {info.leaderboardEntry.rank}{' '}
-                              {info.leaderboardEntry.leaguePoints} PDL{' '}
+                              }{" "}
+                              {info.leaderboardEntry.rank}{" "}
+                              {info.leaderboardEntry.leaguePoints} PDL{" "}
                               <span className="text-yellow-400">
                                 #{info.leaderboardEntry.index}
                               </span>
@@ -173,19 +173,19 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                                       data-remake={summoner.gameEndedInEarlySurrender}
                                       data-win={summoner.win}
                                       className={
-                                        'data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold'
+                                        "data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold"
                                       }
                                     >
                                       {!summoner.gameEndedInEarlySurrender
                                         ? summoner.win
-                                          ? 'Vitória'
-                                          : 'Derrota'
-                                        : 'Remake'}
+                                          ? "Vitória"
+                                          : "Derrota"
+                                        : "Remake"}
                                     </span>
                                     <span className="ml-1">
-                                      {new Intl.DateTimeFormat('pt-BR', {
-                                        minute: '2-digit',
-                                        second: '2-digit',
+                                      {new Intl.DateTimeFormat("pt-BR", {
+                                        minute: "2-digit",
+                                        second: "2-digit",
                                       }).format(summoner.gameDuration * 1000)}
                                     </span>
                                   </div>
@@ -206,7 +206,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                         )}
                       </div>
                     </div>
-                  );
+                  )
                 }}
               />
               <Line
@@ -215,7 +215,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                 stroke="var(--color-totalLP)"
                 strokeWidth={2}
                 dot={{
-                  fill: 'var(--color-totalLP)',
+                  fill: "var(--color-totalLP)",
                 }}
                 activeDot={{
                   r: 6,
@@ -226,30 +226,30 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
         )}
       </CardContent>
     </Card>
-  );
-};
+  )
+}
 
 const eloMap = [
-  { min: 0, max: 399, name: 'Ferro' },
-  { min: 400, max: 799, name: 'Bronze' },
-  { min: 800, max: 1199, name: 'Prata' },
-  { min: 1200, max: 1599, name: 'Ouro' },
-  { min: 1600, max: 1999, name: 'Platina' },
-  { min: 2000, max: 2399, name: 'Esmeralda' },
-  { min: 2400, max: 2799, name: 'Diamante' },
-  { min: 2800, max: Infinity, name: 'Mestre' },
-];
+  { min: 0, max: 399, name: "Ferro" },
+  { min: 400, max: 799, name: "Bronze" },
+  { min: 800, max: 1199, name: "Prata" },
+  { min: 1200, max: 1599, name: "Ouro" },
+  { min: 1600, max: 1999, name: "Platina" },
+  { min: 2000, max: 2399, name: "Esmeralda" },
+  { min: 2400, max: 2799, name: "Diamante" },
+  { min: 2800, max: Infinity, name: "Mestre" },
+]
 
 const pdlToTier = (pdl: number) => {
-  const tier = eloMap.find((t) => pdl >= t.min && pdl <= t.max);
-  if (!tier) return 'Unknown';
+  const tier = eloMap.find((t) => pdl >= t.min && pdl <= t.max)
+  if (!tier) return "Unknown"
 
   if (pdl >= 2800) {
-    return tier.name;
+    return tier.name
   }
 
-  const divisionSize = Math.floor((tier.max - tier.min + 1) / 4);
-  const division = 4 - Math.floor((pdl - tier.min) / divisionSize);
+  const divisionSize = Math.floor((tier.max - tier.min + 1) / 4)
+  const division = 4 - Math.floor((pdl - tier.min) / divisionSize)
 
-  return `${tier.name} ${division}`;
-};
+  return `${tier.name} ${division}`
+}

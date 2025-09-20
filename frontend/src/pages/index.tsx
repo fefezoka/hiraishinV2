@@ -1,29 +1,29 @@
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import * as Collapsible from '@radix-ui/react-collapsible';
-import * as Tabs from '@radix-ui/react-tabs';
-import { LOL_VERSION, tiers } from '@/commons/lol-data';
-import { IoMdRefresh } from 'react-icons/io';
+import { useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import * as Collapsible from "@radix-ui/react-collapsible"
+import * as Tabs from "@radix-ui/react-tabs"
+import { LOL_VERSION, tiers } from "@/commons/lol-data"
+import { IoMdRefresh } from "react-icons/io"
 import {
   MdOutlineKeyboardDoubleArrowUp,
   MdOutlineKeyboardDoubleArrowDown,
-} from 'react-icons/md';
-import { Loading } from '@/components/loading';
-import { useQuery } from '@tanstack/react-query';
-import { playersData } from '@/commons/lol-data';
-import axios from '@/service/axios';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { PlayerOverview } from '@/components/player-overview';
-import { FaCrown } from 'react-icons/fa';
-import { isAxiosError } from 'axios';
-import { blitz } from '@/assets';
-import { Button } from '@/components/ui/button';
-import { addDays } from 'date-fns';
+} from "react-icons/md"
+import { Loading } from "@/components/loading"
+import { useQuery } from "@tanstack/react-query"
+import { playersData } from "@/commons/lol-data"
+import axios from "@/service/axios"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { PlayerOverview } from "@/components/player-overview"
+import { FaCrown } from "react-icons/fa"
+import { isAxiosError } from "axios"
+import { blitz } from "@/assets"
+import { Button } from "@/components/ui/button"
+import { addDays } from "date-fns"
 
 export default function Home() {
-  const [queueType, setQueueType] = useState<Queue>('RANKED_SOLO_5x5');
-  const [profileOverviewOpen, setProfileOverviewOpen] = useState<number | null>(null);
+  const [queueType, setQueueType] = useState<Queue>("RANKED_SOLO_5x5")
+  const [profileOverviewOpen, setProfileOverviewOpen] = useState<number | null>(null)
 
   const {
     data: players,
@@ -32,18 +32,18 @@ export default function Home() {
     refetch,
     error,
   } = useQuery<Player[]>({
-    queryKey: ['leaderboard'],
-    queryFn: async () => (await axios.get<Player[]>('hiraishin/leaderboard')).data,
-  });
+    queryKey: ["leaderboard"],
+    queryFn: async () => (await axios.get<Player[]>("hiraishin/leaderboard")).data,
+  })
 
   const { data: lastWeekLeaderboard } = useQuery<LeaderboardEntry[]>({
-    queryKey: ['last-week-leaderboard'],
+    queryKey: ["last-week-leaderboard"],
     queryFn: async () =>
-      (await axios.get<LeaderboardEntry[]>('hiraishin/past-leaderboard/last-week')).data,
-  });
+      (await axios.get<LeaderboardEntry[]>("hiraishin/past-leaderboard/last-week")).data,
+  })
 
   if (isLoading || isRefetching) {
-    return <Loading />;
+    return <Loading />
   }
 
   if (isAxiosError(error) && error.status === 429) {
@@ -56,7 +56,7 @@ export default function Home() {
           Recarregar
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -64,15 +64,15 @@ export default function Home() {
       <div className="relative">
         <Tabs.Root
           onValueChange={(value) => {
-            setQueueType(value as Queue);
-            setProfileOverviewOpen(null);
+            setQueueType(value as Queue)
+            setProfileOverviewOpen(null)
           }}
           defaultValue={queueType}
         >
           <Tabs.List className="flex mb-2.5 items-center gap-3 justify-center">
             <Tabs.Trigger value="RANKED_SOLO_5x5" asChild>
               <button
-                data-selected={queueType === 'RANKED_SOLO_5x5'}
+                data-selected={queueType === "RANKED_SOLO_5x5"}
                 className="py-2 text-sm px-2 text-muted-foreground border-b-2 border-muted-foreground data-[selected=true]:font-bold data-[selected=true]:border-slate-300 data-[selected=true]:text-slate-300 transition-all w-[140px]"
               >
                 Ranqueada Solo
@@ -80,7 +80,7 @@ export default function Home() {
             </Tabs.Trigger>
             <Tabs.Trigger value="RANKED_FLEX_SR" asChild>
               <button
-                data-selected={queueType === 'RANKED_FLEX_SR'}
+                data-selected={queueType === "RANKED_FLEX_SR"}
                 className="py-2 text-sm px-2 text-muted-foreground border-b-2 border-muted-foreground data-[selected=true]:font-bold data-[selected=true]:border-slate-300 data-[selected=true]:text-slate-300 transition-all w-[140px]"
               >
                 Ranqueada Flex
@@ -94,7 +94,7 @@ export default function Home() {
           </Tabs.List>
           {players && (
             <div className="border-slate-300 divide-slate-300">
-              {['RANKED_SOLO_5x5', 'RANKED_FLEX_SR'].map((type, typeIndex) => (
+              {["RANKED_SOLO_5x5", "RANKED_FLEX_SR"].map((type, typeIndex) => (
                 <Tabs.Content value={type} key={type}>
                   {players
                     .filter((player) => player.leagues[typeIndex])
@@ -102,18 +102,18 @@ export default function Home() {
                       (a, b) => a.leagues[typeIndex]!.index - b.leagues[typeIndex]!.index
                     )
                     .map((player, index) => {
-                      const league = player.leagues[typeIndex]!;
+                      const league = player.leagues[typeIndex]!
 
                       const playerData = playersData.find(
                         (x) => x.puuid === player.puuid
-                      )!;
+                      )!
 
                       const previousRanking = lastWeekLeaderboard?.find(
                         (x) => x.queueType === queueType && x.puuid === player.puuid
-                      );
+                      )
 
                       const lpDiff =
-                        previousRanking && league.totalLP - previousRanking.totalLP;
+                        previousRanking && league.totalLP - previousRanking.totalLP
 
                       const daysOnTop = league.arrivedOnTop
                         ? Math.floor(
@@ -121,20 +121,20 @@ export default function Home() {
                               new Date(league.arrivedOnTop).getTime()) /
                               (1000 * 60 * 60 * 24)
                           )
-                        : null;
+                        : null
 
                       return (
                         <Collapsible.Root
                           open={profileOverviewOpen === index}
                           key={player.puuid}
                           onOpenChange={async (open) => {
-                            setProfileOverviewOpen(open ? index : null);
-                            await new Promise((r) => setTimeout(r, 400));
+                            setProfileOverviewOpen(open ? index : null)
+                            await new Promise((r) => setTimeout(r, 400))
                             if (open) {
                               const el = document.getElementById(
                                 `player-${player.gameName}-${player.tagLine}`
-                              );
-                              el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                              )
+                              el?.scrollIntoView({ behavior: "smooth", block: "start" })
                             }
                           }}
                         >
@@ -146,7 +146,7 @@ export default function Home() {
                               <Image
                                 draggable={false}
                                 src={
-                                  playerData.skin.startsWith('/_next')
+                                  playerData.skin.startsWith("/_next")
                                     ? playerData.skin
                                     : `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${playerData.skin}.jpg`
                                 }
@@ -164,12 +164,12 @@ export default function Home() {
                                     (index + 1 < previousRanking.index ? (
                                       <MdOutlineKeyboardDoubleArrowUp
                                         className="text-green-500"
-                                        size={'1.5em'}
+                                        size={"1.5em"}
                                       />
                                     ) : (
                                       <MdOutlineKeyboardDoubleArrowDown
                                         className="text-red-500"
-                                        size={'1.5em'}
+                                        size={"1.5em"}
                                       />
                                     ))}
                                 </div>
@@ -187,7 +187,7 @@ export default function Home() {
                                     <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
                                       <span className="flex text-yellow-400 gap-1 text-xxs">
                                         <FaCrown />
-                                        {daysOnTop} dia{daysOnTop > 1 ? 's' : ''}
+                                        {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
                                       </span>
                                     </div>
                                   ) : null}
@@ -203,14 +203,14 @@ export default function Home() {
                                     onClick={(e) => e.stopPropagation()}
                                   >
                                     <div className="text-sm sm:text-base truncate max-w-[144px] sm:max-w-none font-semibold">
-                                      <span className="w-fit">{player.gameName}</span>{' '}
+                                      <span className="w-fit">{player.gameName}</span>{" "}
                                       <span className="text-yellow-400">
                                         #{player.tagLine}
                                       </span>
                                     </div>
                                   </Link>
                                   <p className="text-yellow-400 font-semibold text-xxs sm:text-xs">
-                                    {index === 0 ? 'Hokage' : playerData.title}
+                                    {index === 0 ? "Hokage" : playerData.title}
                                   </p>
                                 </div>
                               </div>
@@ -223,8 +223,8 @@ export default function Home() {
                                   />
                                 </div>
                                 <span className="text-sm sm:text-base font-semibold">
-                                  {tiers.find((tier) => tier.en === league.tier)?.pt}{' '}
-                                  {league.totalLP < 2800 && league.rank}{' '}
+                                  {tiers.find((tier) => tier.en === league.tier)?.pt}{" "}
+                                  {league.totalLP < 2800 && league.rank}{" "}
                                   {league.leaguePoints} PDL
                                   {lpDiff !== 0 && lpDiff !== undefined && (
                                     <Tooltip>
@@ -235,7 +235,7 @@ export default function Home() {
                                               +{lpDiff} PDL
                                               <MdOutlineKeyboardDoubleArrowUp
                                                 className="text-green-500"
-                                                size={'1.25rem'}
+                                                size={"1.25rem"}
                                               />
                                             </>
                                           ) : (
@@ -243,14 +243,14 @@ export default function Home() {
                                               {lpDiff} PDL
                                               <MdOutlineKeyboardDoubleArrowDown
                                                 className="text-red-500"
-                                                size={'1.5em'}
+                                                size={"1.5em"}
                                               />
                                             </>
                                           )}
                                         </span>
                                       </TooltipTrigger>
                                       <TooltipContent>
-                                        {lpDiff > 0 ? '+' + lpDiff : lpDiff} PDL desde a
+                                        {lpDiff > 0 ? "+" + lpDiff : lpDiff} PDL desde a
                                         última segunda-feira 6:00h (
                                         {new Intl.DateTimeFormat().format(
                                           addDays(new Date(previousRanking!.day), 1)
@@ -261,11 +261,11 @@ export default function Home() {
                                   )}
                                 </span>
                                 <p className="text-xxs text-foreground/90 md:text-xs">
-                                  {league.wins}V {league.losses}D -{' '}
+                                  {league.wins}V {league.losses}D -{" "}
                                   <span
                                     className={`${
-                                      league.winrate > 50 && 'text-green-400'
-                                    } ${league.winrate < 50 && 'text-red-400'}`}
+                                      league.winrate > 50 && "text-green-400"
+                                    } ${league.winrate < 50 && "text-red-400"}`}
                                   >
                                     {league.winrate}% Winrate
                                   </span>
@@ -276,11 +276,11 @@ export default function Home() {
                           <Collapsible.CollapsibleContent>
                             <PlayerOverview
                               player={player}
-                              queue={queueType === 'RANKED_SOLO_5x5' ? 420 : 440}
+                              queue={queueType === "RANKED_SOLO_5x5" ? 420 : 440}
                             />
                           </Collapsible.CollapsibleContent>
                         </Collapsible.Root>
-                      );
+                      )
                     })}
                 </Tabs.Content>
               ))}
@@ -289,5 +289,5 @@ export default function Home() {
         </Tabs.Root>
       </div>
     </div>
-  );
+  )
 }

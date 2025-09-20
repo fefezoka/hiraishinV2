@@ -1,15 +1,15 @@
-import { mpengu, penguDab } from '@/assets';
-import Image, { StaticImageData } from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { mpengu, penguDab } from "@/assets"
+import Image, { StaticImageData } from "next/image"
+import React, { useEffect, useState } from "react"
 
 export const Loading = () => {
-  const [src, setSrc] = useState<StaticImageData | null>(null);
+  const [src, setSrc] = useState<StaticImageData | null>(null)
 
   useEffect(() => {
-    setSrc([mpengu, penguDab][Math.floor(Math.random() * 2)]);
-  }, []);
+    setSrc([mpengu, penguDab][Math.floor(Math.random() * 2)])
+  }, [])
 
-  if (!src) return null;
+  if (!src) return null
 
   return (
     <div className="flex items-center justify-center flex-col">
@@ -18,5 +18,5 @@ export const Loading = () => {
       </div>
       <span className="text-2xl">Carregando...</span>
     </div>
-  );
-};
+  )
+}
