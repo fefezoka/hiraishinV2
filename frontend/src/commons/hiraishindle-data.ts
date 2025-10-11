@@ -13,8 +13,8 @@ export const characters = [
     weight: 54,
     height: 1.82,
     region: "Sul",
-    unemployed: true,
-    mainGames: ["osu!", "TFT", "FIFA"],
+    unemployed: false,
+    mainGames: ["osu!", "FIFA", "Geoguessr"],
   },
   {
     name: "Henrique",
@@ -22,14 +22,14 @@ export const characters = [
     height: 1.69,
     region: "Sul",
     unemployed: false,
-    mainGames: ["LOL", "osu!", "Pixelmon", "Valorant", "Honkai"],
+    mainGames: ["osu!", "Valorant"],
   },
   {
     name: "David",
     weight: 85,
     height: 1.88,
     region: "Sul",
-    unemployed: false,
+    unemployed: true,
     mainGames: ["LOL", "FIFA"],
   },
   {
@@ -37,7 +37,7 @@ export const characters = [
     weight: 140,
     height: 1.85,
     region: "Sul",
-    unemployed: true,
+    unemployed: false,
     mainGames: ["LOL", "TFT"],
   },
   {
@@ -45,8 +45,8 @@ export const characters = [
     weight: 120,
     height: 1.8,
     region: "Sul",
-    unemployed: true,
-    mainGames: ["LOL", "LOR", "Pixelmon", "Honkai"],
+    unemployed: false,
+    mainGames: ["LOL", "DBD"],
   },
   {
     name: "Gustavo",
@@ -61,7 +61,7 @@ export const characters = [
     weight: 85,
     height: 1.82,
     region: "Sul",
-    unemployed: true,
+    unemployed: false,
     mainGames: ["LOL", "FIFA"],
   },
   {
@@ -70,7 +70,7 @@ export const characters = [
     height: 1.73,
     region: "Norte",
     unemployed: false,
-    mainGames: ["LOL", "FIFA", "Pixelmon"],
+    mainGames: ["LOL", "FIFA"],
   },
   {
     name: "Thiago",
@@ -78,7 +78,7 @@ export const characters = [
     height: 1.87,
     region: "Norte",
     unemployed: false,
-    mainGames: ["LOL"],
+    mainGames: ["LOL", "Peak"],
   },
   {
     name: "Paulo",
@@ -86,7 +86,7 @@ export const characters = [
     height: 1.68,
     region: "Norte",
     unemployed: true,
-    mainGames: ["osu!", "Honkai", "Pixelmon"],
+    mainGames: ["osu!", "Throne and Liberty"],
   },
   {
     name: "GVC",
@@ -94,7 +94,7 @@ export const characters = [
     height: 1.8,
     region: "Sul",
     unemployed: true,
-    mainGames: ["osu!", "TFT", "Pixelmon", "Honkai"],
+    mainGames: ["osu!", "TFT", "Geoguessr"],
   },
   {
     name: "Carlos",
@@ -110,6 +110,6 @@ export const characters = [
     height: 1.83,
     region: "Sul",
     unemployed: false,
-    mainGames: ["CS2", "FIFA", "R6"],
+    mainGames: ["LOL", "FIFA"],
   },
 ]
