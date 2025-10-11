@@ -16,6 +16,7 @@ public class LeagueDTO
     public int Index { get; set; }
     public int Winrate => Wins + Losses == 0 ? 0 : (int)Math.Round((double)Wins / (Wins + Losses) * 100);
     public DateTime? ArrivedOnTop { get; set; }
+    public DateTime? ArrivedOnBottom { get; set; }
 
     public LeagueDTO(LeagueApiModel league)
     {

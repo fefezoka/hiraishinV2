@@ -49,6 +49,16 @@ public class HiraishinService : IHiraishinService
 
                     league.ArrivedOnTop = lastUserLeaderboard?.ArrivedOnTop;
                 }
+
+                if (league.Index == orderedPlayers.Count)
+                {
+                    var lastUserLeaderboard = await _hiraishinContext.LeaderboardEntry
+                        .Where(x => x.Puuid == player.Puuid && x.QueueType == league.QueueType)
+                        .OrderByDescending(x => x.Day)
+                        .FirstOrDefaultAsync();
+
+                    league.ArrivedOnBottom = lastUserLeaderboard?.ArrivedOnBottom;
+                }
             }
         }
 

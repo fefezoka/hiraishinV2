@@ -16,5 +16,6 @@ public class LeaderboardEntry
     public int Wins { get; set; }
     public int Losses { get; set; }
     public DateTime? ArrivedOnTop { get; set; }
+    public DateTime? ArrivedOnBottom { get; set; }
     public virtual List<Match> Matches { get; set; }
 }

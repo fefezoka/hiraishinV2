@@ -16,6 +16,7 @@ import axios from "@/service/axios"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { PlayerOverview } from "@/components/player-overview"
 import { FaCrown } from "react-icons/fa"
+import { LiaPoopSolid } from "react-icons/lia"
 import { isAxiosError } from "axios"
 import { blitz } from "@/assets"
 import { Button } from "@/components/ui/button"
@@ -123,6 +124,14 @@ export default function Home() {
                           )
                         : null
 
+                      const daysOnBottom = league.arrivedOnBottom
+                        ? Math.floor(
+                            (new Date().getTime() -
+                              new Date(league.arrivedOnBottom).getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          )
+                        : null
+
                       return (
                         <Collapsible.Root
                           open={profileOverviewOpen === index}
@@ -188,6 +197,14 @@ export default function Home() {
                                       <span className="flex text-yellow-400 gap-1 text-xxs">
                                         <FaCrown />
                                         {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
+                                      </span>
+                                    </div>
+                                  ) : null}
+                                  {daysOnBottom && daysOnBottom > 0 ? (
+                                    <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
+                                      <span className="flex text-yellow-400 gap-1 text-xxs">
+                                        <LiaPoopSolid strokeWidth={2} />
+                                        {daysOnBottom} dia{daysOnBottom > 1 ? "s" : ""}
                                       </span>
                                     </div>
                                   ) : null}

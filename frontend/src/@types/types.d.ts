@@ -44,6 +44,7 @@ type League = {
   tier: Tier
   rank: Rank
   arrivedOnTop: Date
+  arrivedOnBottom: Date
 }
 
 interface Match {

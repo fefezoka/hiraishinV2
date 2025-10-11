@@ -62,6 +62,7 @@ namespace Hiraishin.Jobs
                     _logger.LogInformation("The user [{player}] played [{mode}] yesterday", player.GameName, league.QueueType);
 
                     DateTime? ArrivedOnTop = null;
+                    DateTime? ArrivedOnBottom = null;
 
                     if (league.Index == 1)
                     {
@@ -72,6 +73,18 @@ namespace Hiraishin.Jobs
                         else
                         {
                             ArrivedOnTop = leagueLastUserLeaderboard.ArrivedOnTop;
+                        }
+                    }
+
+                    if (league.Index == 10)
+                    {
+                        if (leagueLastUserLeaderboard == null || leagueLastUserLeaderboard.ArrivedOnBottom == null)
+                        {
+                            ArrivedOnBottom = utcYesterdayAtSix;
+                        }
+                        else
+                        {
+                            ArrivedOnBottom = leagueLastUserLeaderboard.ArrivedOnBottom;
                         }
                     }
 
@@ -117,6 +130,7 @@ namespace Hiraishin.Jobs
                         TotalLP = league.TotalLP,
                         Day = utcYesterdayAtSix,
                         ArrivedOnTop = ArrivedOnTop,
+                        ArrivedOnBottom = ArrivedOnBottom,
                         Losses = league.Losses,
                         Wins = league.Wins,
                         Matches = matches,
