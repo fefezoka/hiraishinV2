@@ -27,7 +27,7 @@ namespace Hiraishin.Jobs
             using var _ = _logger.BeginScope("LeaderboardJob");
             _logger.LogInformation("[{JobId}] Starting weekly ranking job...", jobId);
 
-            var players = _hiraishinService.GetLeaderboard().Result;
+            var players = await _hiraishinService.GetLeaderboard();
 
             var leaderboardEntries = new List<LeaderboardEntry>();
 
@@ -36,6 +36,9 @@ namespace Hiraishin.Jobs
             var utcTodayAtSixTimestamp = (long)utcTodayAtSix.Subtract(DateTime.UnixEpoch).TotalSeconds;
             var utcYesterdayAtSix = utcTodayAtSix.AddDays(-1);
             var utcYesterdayAtSixTimestamp = (long)utcYesterdayAtSix.Subtract(DateTime.UnixEpoch).TotalSeconds;
+
+            var rankedSoloPlayersCount = players.Sum(x => x.Leagues.Count(y => y.QueueType == "RANKED_SOLO_5x5"));
+            var rankedFlexPlayersCount = players.Sum(x => x.Leagues.Count(y => y.QueueType == "RANKED_FLEX_SR"));
 
             foreach (var player in players)
             {
@@ -50,16 +53,10 @@ namespace Hiraishin.Jobs
                 foreach (var league in player.Leagues)
                 {
                     var leagueLastUserLeaderboard = lastUserLeaderboard.Find(x => x.QueueType == league.QueueType);
+                    var playedYesterday = (league.Wins + league.Losses) != (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses);
 
-                    if (!weekly &&
-                        ((league.Wins + league.Losses) == (leagueLastUserLeaderboard?.Wins + leagueLastUserLeaderboard?.Losses) &&
-                        league.LeaguePoints == leagueLastUserLeaderboard?.LeaguePoints)
-                        )
-                    {
+                    if (!weekly && !playedYesterday)
                         continue;
-                    }
-
-                    _logger.LogInformation("The user [{player}] played [{mode}] yesterday", player.GameName, league.QueueType);
 
                     DateTime? ArrivedOnTop = null;
                     DateTime? ArrivedOnBottom = null;
@@ -76,7 +73,7 @@ namespace Hiraishin.Jobs
                         }
                     }
 
-                    if (league.Index == 10)
+                    if (league.Index == (league.QueueType == "RANKED_SOLO_5x5" ? rankedSoloPlayersCount : rankedFlexPlayersCount))
                     {
                         if (leagueLastUserLeaderboard == null || leagueLastUserLeaderboard.ArrivedOnBottom == null)
                         {
@@ -115,6 +112,8 @@ namespace Hiraishin.Jobs
                             ChampLevel = user.ChampLevel,
                             TotalMinionsKilled = user.TotalMinionsKilled,
                         };
+
+                        _logger.LogInformation("The user [{player}] played [{mode}] with champion [{champion}] yesterday", player.GameName, league.QueueType, match.ChampionName);
 
                         matches.Add(match);
                     }
