@@ -108,6 +108,35 @@ public class HiraishinService : IHiraishinService
             .ToListAsync();
     }
 
+    public async Task<ChampionOverview> GetChampionOverview(string championName, int queue)
+    {
+        var matches = await _hiraishinContext.Match
+            .AsNoTracking()
+            .Where(x => x.ChampionName == championName && x.LeaderboardEntry.QueueType == (queue == 420 ? "RANKED_SOLO_5x5" : "RANKED_FLEX_SR"))
+            .Include(x => x.LeaderboardEntry)
+            .OrderByDescending(x => x.Id)
+            .ToListAsync();
+
+        var players = matches
+            .GroupBy(x => x.LeaderboardEntry.Puuid)
+            .Select(x => new ChampionOverviewPlayer
+            {
+                Puuid = x.Key,
+                Wins = x.Sum(x => Convert.ToInt32(x.Win)),
+                Losses = x.Count() - x.Sum(m => Convert.ToInt32(m.Win))
+            })
+            .OrderByDescending(x => x.Wins / (x.Wins + x.Losses))
+            .ToList();
+
+        var championOverview = new ChampionOverview
+        {
+            Matches = matches,
+            Players = players
+        };
+
+        return championOverview;
+    }
+
     private async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)
     {
         var summoner =

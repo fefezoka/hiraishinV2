@@ -1,9 +1,8 @@
 import { Input } from "@/components/ui/input"
 import { FormEvent, useEffect, useState } from "react"
-import { MdSend } from "react-icons/md"
+import { LuSend, LuArrowDown, LuArrowUp } from "react-icons/lu"
 import { characters, properties } from "@/commons/hiraishindle-data"
 import { cn } from "@/lib/utils"
-import { MdArrowDownward, MdArrowUpward } from "react-icons/md"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useOutsideClick } from "@/hooks/mouse-handler"
 
@@ -187,9 +186,9 @@ export default function Hiraishindle() {
           {value}
           {value !== chosenValue &&
             (value > chosenValue ? (
-              <MdArrowDownward className="w-4 h-4" />
+              <LuArrowDown className="w-4 h-4" />
             ) : (
-              <MdArrowUpward className="w-4 h-4" />
+              <LuArrowUp className="w-4 h-4" />
             ))}
         </div>
       )
@@ -215,7 +214,7 @@ export default function Hiraishindle() {
             onChange={(e) => onInputChange(e.target.value)}
           />
           <button type="submit">
-            <MdSend className="w-5 h-5" />
+            <LuSend className="w-5 h-5" />
           </button>
         </div>
         {formattedCharacters.length !== 0 && (

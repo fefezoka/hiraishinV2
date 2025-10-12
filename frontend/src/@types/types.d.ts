@@ -78,6 +78,24 @@ interface Match {
   }
 }
 
+interface MatchFromDB {
+  id: number
+  gameDuration: number
+  championId: number
+  summoner1Id: number
+  summoner2Id: number
+  win: boolean
+  gameEndedInEarlySurrender: boolean
+  kills: number
+  deaths: number
+  assists: number
+  champLevel: number
+  championName: string
+  totalMinionsKilled: number
+  leaderboardEntryId: number
+  leaderboardEntry: LeaderboardEntry
+}
+
 type Tier = "SILVER" | "GOLD" | "PLATINUM" | "EMERALD" | "DIAMOND" | "MASTER"
 type Rank = "IV" | "III" | "II" | "I"
 
@@ -113,6 +131,71 @@ interface LeaderboardMatch {
   assists: number
   totalMinionsKilled: number
   championName: string
+}
+
+interface ChampionData {
+  version: string
+  id: string
+  key: string
+  name: string
+  title: string
+  blurb: string
+  info: ChampionInfo
+  image: ChampionImage
+  tags: string[]
+  partype: string
+  stats: ChampionStats
+}
+
+interface ChampionInfo {
+  attack: number
+  defense: number
+  magic: number
+  difficulty: number
+}
+
+interface ChampionImage {
+  full: string
+  sprite: string
+  group: string
+  x: number
+  y: number
+  w: number
+  h: number
+}
+
+interface ChampionStats {
+  hp: number
+  hpperlevel: number
+  mp: number
+  mpperlevel: number
+  movespeed: number
+  armor: number
+  armorperlevel: number
+  spellblock: number
+  spellblockperlevel: number
+  attackrange: number
+  hpregen: number
+  hpregenperlevel: number
+  mpregen: number
+  mpregenperlevel: number
+  crit: number
+  critperlevel: number
+  attackdamage: number
+  attackdamageperlevel: number
+  attackspeedperlevel: number
+  attackspeed: number
+}
+
+interface AllChampionsData {
+  data: {
+    [key: string]: ChampionData
+  }
+}
+
+interface ChampionOverview {
+  players: { wins: number; losses: number; puuid: string }[]
+  matches: MatchFromDB[]
 }
 
 // Hiraishindle

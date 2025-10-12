@@ -16,7 +16,7 @@ export const Loading = () => {
       <div className="w-[360px] h-[360px] relative">
         <Image src={src} alt="" fill />
       </div>
-      <span className="text-2xl">Carregando...</span>
+      <span className="text-xl">Carregando...</span>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { hiraishin } from "@/assets"
 import { DefaultSeo } from "next-seo"
 import Link from "next/link"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { useRouter } from "next/router"
 
 const poppins = Poppins({ weight: ["400", "500", "600", "700"], subsets: ["latin"] })
 
@@ -20,6 +21,8 @@ const queryClient = new QueryClient({
 })
 
 const MyApp: AppType = ({ Component, pageProps }) => {
+  const router = useRouter()
+
   return (
     <main className={poppins.className}>
       <DefaultSeo
@@ -35,7 +38,7 @@ const MyApp: AppType = ({ Component, pageProps }) => {
       <div className="w-full flex justify-center">
         <Link
           href={"/"}
-          className="text-5xl md:text-7xl my-10 font-bold text-transparent w-fit bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400"
+          className="text-5xl md:text-7xl my-10 font-bold text-transparent w-fit bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-800"
         >
           HIRAISHIN
         </Link>

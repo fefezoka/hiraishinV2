@@ -31,4 +31,8 @@ public class PlayersController : ControllerBase
     [HttpGet("past-leaderboard/by-user/{puuid}")]
     public async Task<ActionResult<List<LeaderboardEntry>>> GetPastLeaderboardByUser([FromRoute] string puuid)
         => Ok(await _hiraishinService.GetPastLeaderboardByUser(puuid));
+
+    [HttpGet("champion-overview")]
+    public async Task<ActionResult<ChampionOverview>> GetChampionOverview([FromQuery] string championName, [FromQuery] int queue)
+        => Ok(await _hiraishinService.GetChampionOverview(championName, queue));
 }

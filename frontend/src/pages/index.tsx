@@ -4,23 +4,26 @@ import Link from "next/link"
 import * as Collapsible from "@radix-ui/react-collapsible"
 import * as Tabs from "@radix-ui/react-tabs"
 import { LOL_VERSION, tiers } from "@/commons/lol-data"
-import { IoMdRefresh } from "react-icons/io"
 import {
-  MdOutlineKeyboardDoubleArrowUp,
-  MdOutlineKeyboardDoubleArrowDown,
-} from "react-icons/md"
+  LuRefreshCw,
+  LuChevronsUp,
+  LuChevronsDown,
+  LuCrown,
+  LuGamepad2,
+} from "react-icons/lu"
+import { LiaPoopSolid } from "react-icons/lia"
+
 import { Loading } from "@/components/loading"
 import { useQuery } from "@tanstack/react-query"
 import { playersData } from "@/commons/lol-data"
 import axios from "@/service/axios"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { PlayerOverview } from "@/components/player-overview"
-import { FaCrown } from "react-icons/fa"
-import { LiaPoopSolid } from "react-icons/lia"
 import { isAxiosError } from "axios"
 import { blitz } from "@/assets"
 import { Button } from "@/components/ui/button"
 import { addDays } from "date-fns"
+import { ChampionOverview } from "@/components/champion-overview"
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>("RANKED_SOLO_5x5")
@@ -62,6 +65,17 @@ export default function Home() {
 
   return (
     <div className="max-w-[774px] font-medium m-auto px-3">
+      <div className="fixed bottom-5 right-5 md:right-44 z-50 flex flex-col gap-2">
+        <ChampionOverview />
+        <Link
+          href={"/hiraishindle"}
+          className="flex items-center gap-3 px-4 py-2 rounded-lg bg-secondary hover:bg-secondary transition-all border border-border/50 hover:border-primary/50 group"
+        >
+          <LuGamepad2 size={20} className="text-yellow-400 text-lg" />
+          Hiraishindle
+        </Link>
+      </div>
+
       <div className="relative">
         <Tabs.Root
           onValueChange={(value) => {
@@ -87,8 +101,8 @@ export default function Home() {
                 Ranqueada Flex
               </button>
             </Tabs.Trigger>
-            <IoMdRefresh
-              size={24}
+            <LuRefreshCw
+              size={18}
               className="cursor-pointer text-muted-foreground absolute right-0"
               onClick={() => refetch()}
             />
@@ -171,15 +185,9 @@ export default function Home() {
                                   {previousRanking &&
                                     index + 1 !== previousRanking.index &&
                                     (index + 1 < previousRanking.index ? (
-                                      <MdOutlineKeyboardDoubleArrowUp
-                                        className="text-green-500"
-                                        size={"1.5em"}
-                                      />
+                                      <LuChevronsUp className="text-green-500" />
                                     ) : (
-                                      <MdOutlineKeyboardDoubleArrowDown
-                                        className="text-red-500"
-                                        size={"1.5em"}
-                                      />
+                                      <LuChevronsDown className="text-red-500" />
                                     ))}
                                 </div>
                               </div>
@@ -195,7 +203,7 @@ export default function Home() {
                                   {daysOnTop && daysOnTop > 0 ? (
                                     <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
                                       <span className="flex text-yellow-400 gap-1 text-xxs">
-                                        <FaCrown />
+                                        <LuCrown strokeWidth={3} />
                                         {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
                                       </span>
                                     </div>
@@ -250,7 +258,7 @@ export default function Home() {
                                           {lpDiff > 0 ? (
                                             <>
                                               +{lpDiff} PDL
-                                              <MdOutlineKeyboardDoubleArrowUp
+                                              <LuChevronsUp
                                                 className="text-green-500"
                                                 size={"1.25rem"}
                                               />
@@ -258,7 +266,7 @@ export default function Home() {
                                           ) : (
                                             <>
                                               {lpDiff} PDL
-                                              <MdOutlineKeyboardDoubleArrowDown
+                                              <LuChevronsDown
                                                 className="text-red-500"
                                                 size={"1.5em"}
                                               />
