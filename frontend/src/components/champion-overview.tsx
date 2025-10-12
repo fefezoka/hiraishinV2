@@ -22,6 +22,8 @@ import {
 import { diffBetweenDates } from "@/utils/diff-between-dates"
 import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { amumu } from "@/assets"
 
 export const ChampionOverview = () => {
   const [selectedChampion, setSelectedChampion] = useState<string | null>(null)
@@ -129,68 +131,86 @@ export const ChampionOverviewDialog = ({
         <DialogTitle>
           {championData.name} - {championData.title}
         </DialogTitle>
-        <DialogDescription>Melhores jogadores</DialogDescription>
 
-        <div className="flex justify-evenly gap-4 items-center">
-          {championOverview?.players.map((player) => {
-            const playerData = players.find((p) => p.puuid === player.puuid)
-            if (!playerData) {
-              return null
-            }
+        {championOverview?.players.length === 0 && (
+          <div className="flex flex-col items-center justify-center">
+            <Image src={amumu.src} alt="" width={172} height={172} />
+            <span className="text-muted-foreground">
+              Ninguém jogou de {championData.name} ainda!
+            </span>
+          </div>
+        )}
 
-            return (
-              <div key={player.puuid} className="flex gap-3 items-center justify-between">
-                <div className="relative self-start border-2 border-orange-400">
-                  <div className="w-[44px] h-[44px] md:w-[60px] md:h-[60px] border-2">
-                    <Image
-                      src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
-                      alt=""
-                      fill
-                    />
-                  </div>
-                  <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
-                    {playerData.summonerLevel}
-                  </span>
-                </div>
-                <div className="flex text-xs flex-col text-muted-foreground">
-                  <Link
-                    className="hover:underline text-white"
-                    href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
-                    target="_blank"
-                    onClick={(e) => e.stopPropagation()}
+        {championOverview?.players.length !== 0 && (
+          <>
+            <DialogDescription>Melhores jogadores</DialogDescription>
+
+            <div className="flex justify-evenly gap-4 items-center">
+              {championOverview?.players.map((player) => {
+                const playerData = players.find((p) => p.puuid === player.puuid)
+                if (!playerData) {
+                  return null
+                }
+
+                return (
+                  <div
+                    key={player.puuid}
+                    className="flex gap-3 items-center justify-between"
                   >
-                    <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
-                      <span className="w-fit">{playerData.gameName}</span>{" "}
-                      <span className="text-yellow-400">#{playerData.tagLine}</span>
+                    <div className="relative self-start border-2 border-orange-400">
+                      <div className="w-[44px] h-[44px] md:w-[60px] md:h-[60px] border-2">
+                        <Image
+                          src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
+                          alt=""
+                          fill
+                        />
+                      </div>
+                      <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
+                        {playerData.summonerLevel}
+                      </span>
                     </div>
-                  </Link>
-                  <div className="font-bold flex mt-1">
-                    <span className="text-green-400">{player.wins}V</span>
-                    <span> / </span>
-                    <span className="text-red-400">{player.losses}D</span>
+                    <div className="flex text-xs flex-col text-muted-foreground">
+                      <Link
+                        className="hover:underline text-white"
+                        href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
+                        target="_blank"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
+                          <span className="w-fit">{playerData.gameName}</span>{" "}
+                          <span className="text-yellow-400">#{playerData.tagLine}</span>
+                        </div>
+                      </Link>
+                      <div className="font-bold flex mt-1">
+                        <span className="text-green-400">{player.wins}V</span>
+                        <span> / </span>
+                        <span className="text-red-400">{player.losses}D</span>
+                      </div>
+                      <div className="mt-1">
+                        Total de{" "}
+                        <span className="text-white font-semibold">
+                          {player.wins + player.losses}
+                        </span>{" "}
+                        partidas
+                      </div>
+                    </div>
                   </div>
-                  <div className="mt-1">
-                    Total de{" "}
-                    <span className="text-white font-semibold">
-                      {player.wins + player.losses}
-                    </span>{" "}
-                    partidas
-                  </div>
-                </div>
+                )
+              })}
+            </div>
+
+            <Separator />
+
+            <DialogDescription>Histórico de partidas</DialogDescription>
+
+            <ScrollArea className="max-h-[360px]">
+              <div className="flex flex-col gap-3">
+                {championOverview?.matches.map((match) => (
+                  <MatchFromDb match={match} queue={queue} key={match.id} />
+                ))}
               </div>
-            )
-          })}
-        </div>
-
-        <Separator />
-
-        <DialogDescription>Histórico de partidas</DialogDescription>
-
-        {championOverview?.matches.map((match) => (
-          <MatchFromDb match={match} queue={queue} key={match.id} />
-        ))}
-        {championOverview?.matches.length === 0 && (
-          <span className="text-sm text-gray-500">Nenhuma partida encontrada</span>
+            </ScrollArea>
+          </>
         )}
       </DialogContent>
     </Dialog>

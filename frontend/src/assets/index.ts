@@ -4,5 +4,6 @@ import david from "./david.jpg"
 import spinner from "./spinner.svg"
 import penguDab from "./pengu-dab.gif"
 import blitz from "./blitz.webp"
+import amumu from "./amumu.webp"
 
-export { mpengu, hiraishin, david, spinner, penguDab, blitz }
+export { mpengu, hiraishin, david, spinner, penguDab, blitz, amumu }
