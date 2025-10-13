@@ -127,7 +127,7 @@ export const ChampionOverviewDialog = ({
           {championData.name} - {championData.title}
         </DialogTitle>
 
-        {championOverview && championOverview.players.length === 0 && (
+        {championOverview && championOverview.matches.length === 0 && (
           <div className="flex flex-col items-center justify-center">
             <Image src={amumu.src} alt="" width={172} height={172} />
             <span className="text-muted-foreground">
@@ -136,7 +136,7 @@ export const ChampionOverviewDialog = ({
           </div>
         )}
 
-        {championOverview && championOverview.players.length !== 0 && (
+        {championOverview && championOverview.matches.length !== 0 && (
           <>
             <DialogDescription>Melhores jogadores</DialogDescription>
 
