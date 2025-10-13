@@ -9,6 +9,6 @@ namespace Hiraishin.Domain.Interface.Services
         Task<List<MatchApiModel>> GetMatchHistoryAsync(string puuid, int queue, long startTime = 0, long? endTime = null, int count = 5);
         Task<List<LeaderboardEntry>> GetLastWeekLeaderboard();
         Task<List<LeaderboardEntry>> GetPastLeaderboardByUser(string puuid);
-        Task<ChampionOverview> GetChampionOverview(string championName, int queue);
+        Task<ChampionOverview> GetChampionOverview(string championName);
     }
 }

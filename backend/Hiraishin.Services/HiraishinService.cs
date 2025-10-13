@@ -108,11 +108,11 @@ public class HiraishinService : IHiraishinService
             .ToListAsync();
     }
 
-    public async Task<ChampionOverview> GetChampionOverview(string championName, int queue)
+    public async Task<ChampionOverview> GetChampionOverview(string championName)
     {
         var matches = await _hiraishinContext.Match
             .AsNoTracking()
-            .Where(x => x.ChampionName == championName && x.LeaderboardEntry.QueueType == (queue == 420 ? "RANKED_SOLO_5x5" : "RANKED_FLEX_SR"))
+            .Where(x => x.ChampionName == championName)
             .Include(x => x.LeaderboardEntry)
             .OrderByDescending(x => x.Id)
             .ToListAsync();
@@ -122,9 +122,10 @@ public class HiraishinService : IHiraishinService
             .Select(x => new ChampionOverviewPlayer
             {
                 Puuid = x.Key,
-                Wins = x.Sum(x => Convert.ToInt32(x.Win)),
-                Losses = x.Count() - x.Sum(m => Convert.ToInt32(m.Win))
+                Wins = x.Sum(y => y.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(y.Win)),
+                Losses = x.Where(y => !y.GameEndedInEarlySurrender).Count() - x.Sum(z => z.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(z.Win))
             })
+            .Where(x => (x.Wins + x.Losses) >= 3)
             .OrderByDescending(x => (double)x.Wins / (x.Wins + x.Losses))
             .Take(2)
             .ToList();

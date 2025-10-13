@@ -42,18 +42,12 @@ export const ChampionOverview = () => {
     },
   })
 
-  if (selectedChampion) {
-    return (
-      <ChampionOverviewDialog
-        championData={champions?.find((champion) => champion.id === selectedChampion)!}
-        setSelectedChampion={setSelectedChampion}
-        queue={420}
-      />
-    )
-  }
-
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+      <ChampionOverviewDialog
+        championData={champions?.find((champion) => champion.id === selectedChampion)}
+        setSelectedChampion={setSelectedChampion}
+      />
       <PopoverTrigger>
         <div className="flex items-center gap-3 px-4 py-2 rounded-lg bg-secondary hover:bg-secondary transition-all border border-border/50 hover:border-primary/50 group">
           <RiSwordFill size={20} className="text-yellow-400" /> Campeões
@@ -73,7 +67,6 @@ export const ChampionOverview = () => {
                     setSelectedChampion(
                       currentValue === selectedChampion ? null : currentValue
                     )
-                    setPopoverOpen(false)
                   }}
                 >
                   <Image
@@ -95,28 +88,30 @@ export const ChampionOverview = () => {
 
 export const ChampionOverviewDialog = ({
   championData,
-  queue,
   setSelectedChampion,
 }: {
-  championData: ChampionData
+  championData: ChampionData | undefined
   setSelectedChampion: React.Dispatch<React.SetStateAction<string | null>>
-  queue: 420 | 440
 }) => {
   const queryClient = useQueryClient()
   const { data: championOverview } = useQuery({
-    queryKey: ["champion-overview", championData.id, queue],
+    queryKey: ["champion-overview", championData?.id],
     queryFn: async () =>
       (
         await axios.get<ChampionOverview>("hiraishin/champion-overview/", {
           params: {
-            championName: championData.id,
-            queue,
+            championName: championData?.id,
           },
         })
       ).data,
+    enabled: !!championData?.id,
   })
 
   const players = queryClient.getQueryData<Player[]>(["leaderboard"])!
+
+  if (!championData) {
+    return null
+  }
 
   return (
     <Dialog
@@ -206,7 +201,7 @@ export const ChampionOverviewDialog = ({
             <ScrollArea className="max-h-[360px]">
               <div className="flex flex-col gap-3">
                 {championOverview?.matches.map((match) => (
-                  <MatchFromDb match={match} queue={queue} key={match.id} />
+                  <MatchFromDb match={match} key={match.id} />
                 ))}
               </div>
             </ScrollArea>
@@ -217,7 +212,7 @@ export const ChampionOverviewDialog = ({
   )
 }
 
-const MatchFromDb = ({ match, queue }: { match: MatchFromDB; queue: 420 | 440 }) => {
+const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
   const queryClient = useQueryClient()
 
   const player = queryClient
@@ -260,7 +255,9 @@ const MatchFromDb = ({ match, queue }: { match: MatchFromDB; queue: 420 | 440 })
               </div>
             </Link>
             <span className="text-muted-foreground">
-              {queue === 420 ? "Ranqueada Solo" : "Ranqueada Flex"}
+              {match.leaderboardEntry.queueType === "RANKED_SOLO_5x5"
+                ? "Ranqueada Solo"
+                : "Ranqueada Flex"}
             </span>
             <span className="text-muted-foreground mx-0.5"> • </span>
             <span

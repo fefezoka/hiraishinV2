@@ -33,6 +33,6 @@ public class PlayersController : ControllerBase
         => Ok(await _hiraishinService.GetPastLeaderboardByUser(puuid));
 
     [HttpGet("champion-overview")]
-    public async Task<ActionResult<ChampionOverview>> GetChampionOverview([FromQuery] string championName, [FromQuery] int queue)
-        => Ok(await _hiraishinService.GetChampionOverview(championName, queue));
+    public async Task<ActionResult<ChampionOverview>> GetChampionOverview([FromQuery] string championName)
+        => Ok(await _hiraishinService.GetChampionOverview(championName));
 }
