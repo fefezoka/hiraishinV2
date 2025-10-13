@@ -127,85 +127,92 @@ export const ChampionOverviewDialog = ({
           {championData.name} - {championData.title}
         </DialogTitle>
 
-        {championOverview && championOverview.matches.length === 0 && (
+        {championOverview && championOverview.matches.length === 0 ? (
           <div className="flex flex-col items-center justify-center">
             <Image src={amumu.src} alt="" width={172} height={172} />
             <span className="text-muted-foreground">
               Ninguém jogou de {championData.name} ainda!
             </span>
           </div>
-        )}
+        ) : (
+          championOverview &&
+          championOverview.matches.length !== 0 && (
+            <>
+              {championOverview.players.length !== 0 && (
+                <>
+                  <DialogDescription>Melhores jogadores</DialogDescription>
 
-        {championOverview && championOverview.matches.length !== 0 && (
-          <>
-            <DialogDescription>Melhores jogadores</DialogDescription>
+                  <div className="flex justify-evenly gap-4 items-center">
+                    {championOverview?.players.map((player) => {
+                      const playerData = players.find((p) => p.puuid === player.puuid)
+                      if (!playerData) {
+                        return null
+                      }
 
-            <div className="flex justify-evenly gap-4 items-center">
-              {championOverview?.players.map((player) => {
-                const playerData = players.find((p) => p.puuid === player.puuid)
-                if (!playerData) {
-                  return null
-                }
-
-                return (
-                  <div
-                    key={player.puuid}
-                    className="flex gap-3 items-center justify-between"
-                  >
-                    <div className="relative self-start border-2 border-orange-400">
-                      <div className="w-[44px] h-[44px] md:w-[60px] md:h-[60px] border-2">
-                        <Image
-                          src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
-                          alt=""
-                          fill
-                        />
-                      </div>
-                      <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
-                        {playerData.summonerLevel}
-                      </span>
-                    </div>
-                    <div className="flex text-xs flex-col text-muted-foreground">
-                      <Link
-                        className="hover:underline text-white"
-                        href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
-                        target="_blank"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
-                          <span className="w-fit">{playerData.gameName}</span>{" "}
-                          <span className="text-yellow-400">#{playerData.tagLine}</span>
+                      return (
+                        <div
+                          key={player.puuid}
+                          className="flex gap-3 items-center justify-between"
+                        >
+                          <div className="relative self-start border-2 border-orange-400">
+                            <div className="w-[44px] h-[44px] md:w-[60px] md:h-[60px] border-2">
+                              <Image
+                                src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
+                                alt=""
+                                fill
+                              />
+                            </div>
+                            <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
+                              {playerData.summonerLevel}
+                            </span>
+                          </div>
+                          <div className="flex text-xs flex-col text-muted-foreground">
+                            <Link
+                              className="hover:underline text-white"
+                              href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
+                              target="_blank"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
+                                <span className="w-fit">{playerData.gameName}</span>{" "}
+                                <span className="text-yellow-400">
+                                  #{playerData.tagLine}
+                                </span>
+                              </div>
+                            </Link>
+                            <div className="font-bold flex mt-1">
+                              <span className="text-green-400">{player.wins}V</span>
+                              <span> / </span>
+                              <span className="text-red-400">{player.losses}D</span>
+                            </div>
+                            <div className="mt-1">
+                              Total de{" "}
+                              <span className="text-white font-semibold">
+                                {player.wins + player.losses}
+                              </span>{" "}
+                              partidas
+                            </div>
+                          </div>
                         </div>
-                      </Link>
-                      <div className="font-bold flex mt-1">
-                        <span className="text-green-400">{player.wins}V</span>
-                        <span> / </span>
-                        <span className="text-red-400">{player.losses}D</span>
-                      </div>
-                      <div className="mt-1">
-                        Total de{" "}
-                        <span className="text-white font-semibold">
-                          {player.wins + player.losses}
-                        </span>{" "}
-                        partidas
-                      </div>
-                    </div>
+                      )
+                    })}
                   </div>
-                )
-              })}
-            </div>
 
-            <Separator />
+                  <Separator />
+                </>
+              )}
 
-            <DialogDescription>Histórico de partidas</DialogDescription>
+              <DialogDescription>Histórico de partidas</DialogDescription>
 
-            <ScrollArea className="max-h-[360px]">
-              <div className="flex flex-col gap-3">
-                {championOverview?.matches.map((match) => (
-                  <MatchFromDb match={match} key={match.id} />
-                ))}
-              </div>
-            </ScrollArea>
-          </>
+              <ScrollArea className="max-h-[360px]">
+                <div className="flex flex-col gap-3">
+                  {championOverview?.matches.map((match) => (
+                    <MatchFromDb match={match} key={match.id} />
+                  ))}
+                </div>
+              </ScrollArea>
+            </>
+          )
         )}
       </DialogContent>
     </Dialog>
@@ -225,13 +232,13 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
 
   return (
     <div
-      className="flex justify-between md:px-6 items-center sm:text-xs text-xxs"
+      className="flex gap-6 justify-between md:px-6 items-center sm:text-xs text-xxs"
       key={match.id}
     >
-      <span>
+      <div className="flex-1">
         <div className="flex items-center gap-2 md:gap-3">
           <div className="border-2 border-orange-400 relative">
-            <div className="w-[40px] h-[40px] md:w-[48px] md:h-[48px]">
+            <div className="w-[32px] h-[32px] md:w-[48px] md:h-[48px]">
               <Image
                 src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${player.profileIconId}.png`}
                 alt=""
@@ -242,14 +249,14 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
               {player.summonerLevel}
             </span>
           </div>
-          <div className="w-[164px]">
+          <div className="w-[120px] sm:w-[200px]">
             <Link
               className="hover:underline"
               href={`https://u.gg/lol/profile/br1/${player.gameName}-${player.tagLine}/overview`}
               target="_blank"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
+              <div className="sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
                 <span className="w-fit">{player.gameName}</span>{" "}
                 <span className="text-yellow-400">#{player.tagLine}</span>
               </div>
@@ -275,59 +282,61 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
             </span>
           </div>
         </div>
-      </span>
-      <div className="flex gap-0.5">
-        <div className="relative sm:h-[48px] sm:w-[48px] h-[40px] w-[40px]">
-          <Image
-            src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${match.championName}.png`}
-            alt=""
-            fill
-          />
-          <span className="absolute left-0 bottom-0 sm:text-xxs bg-black">
-            {match.champLevel}
+      </div>
+      <div className="flex justify-between w-full">
+        <div className="flex gap-0.5">
+          <div className="relative sm:h-[48px] sm:w-[48px] h-[40px] w-[40px]">
+            <Image
+              src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${match.championName}.png`}
+              alt=""
+              fill
+            />
+            <span className="absolute left-0 bottom-0 sm:text-xxs bg-black">
+              {match.champLevel}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            {Object.values({
+              spell1: match.summoner1Id,
+              spell2: match.summoner2Id,
+            }).map((spell: number) => (
+              <div
+                key={spell}
+                className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]"
+              >
+                <Image
+                  src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                  alt=""
+                  fill
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col justify-center items-center">
+          <span className="font-bold sm:text-sm text-xs tracking-wider">
+            {match.kills}/<span className="text-red-500">{match.deaths}</span>/
+            {match.assists}
+          </span>
+          <span className="text-muted-foreground">KDA</span>
+        </div>
+        <div className="hidden sm:flex flex-col items-center">
+          <div>
+            <span className="font-bold sm:text-sm text-xs">
+              {new Intl.DateTimeFormat("pt-BR", {
+                minute: "2-digit",
+                second: "2-digit",
+              }).format(match.gameDuration * 1000)}
+            </span>
+          </div>
+          <span className="text-muted-foreground">
+            {diffBetweenDates(new Date(match.leaderboardEntry.day))}
           </span>
         </div>
-        <div className="flex flex-col">
-          {Object.values({
-            spell1: match.summoner1Id,
-            spell2: match.summoner2Id,
-          }).map((spell: number) => (
-            <div
-              key={spell}
-              className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]"
-            >
-              <Image
-                src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
-                alt=""
-                fill
-              />
-            </div>
-          ))}
+        <div className="hidden sm:flex flex-col items-center">
+          <span className="font-bold sm:text-sm text-xs">{match.totalMinionsKilled}</span>
+          <span className="text-muted-foreground">CS</span>
         </div>
-      </div>
-      <div className="flex flex-col justify-center items-center">
-        <span className="font-bold sm:text-sm text-xs tracking-wider">
-          {match.kills}/<span className="text-red-500">{match.deaths}</span>/
-          {match.assists}
-        </span>
-        <span className="text-muted-foreground">KDA</span>
-      </div>
-      <div className="flex flex-col items-center">
-        <div>
-          <span className="font-bold sm:text-sm text-xs">
-            {new Intl.DateTimeFormat("pt-BR", {
-              minute: "2-digit",
-              second: "2-digit",
-            }).format(match.gameDuration * 1000)}
-          </span>
-        </div>
-        <span className="text-muted-foreground">
-          {diffBetweenDates(new Date(match.leaderboardEntry.day))}
-        </span>
-      </div>
-      <div className="flex flex-col items-center">
-        <span className="font-bold sm:text-sm text-xs">{match.totalMinionsKilled}</span>
-        <span className="text-muted-foreground">CS</span>
       </div>
     </div>
   )
