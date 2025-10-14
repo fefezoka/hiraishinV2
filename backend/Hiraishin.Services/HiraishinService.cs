@@ -128,13 +128,11 @@ public class HiraishinService : IHiraishinService
             .OrderByDescending(x => (double)x.Wins / (x.Wins + x.Losses))
             .ToList();
 
-        var championOverview = new ChampionOverview
+        return new ChampionOverview
         {
             Matches = matches,
             Players = players
         };
-
-        return championOverview;
     }
 
     private async Task<PlayerInfoDTO> FetchPlayerDataAsync(string puuid)

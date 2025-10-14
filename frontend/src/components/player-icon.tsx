@@ -19,12 +19,13 @@ export const PlayerIcon = ({
   const sizeClasses = cn(mobileClass, desktopClass)
 
   return (
-    <div className="relative self-start border-2 border-orange-400">
-      <div className={cn(sizeClasses, "border-2")}>
+    <div className="relative self-start">
+      <div className={cn(sizeClasses, "border-2 rounded-sm shadow-lg")}>
         <Image
           src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${player.profileIconId}.png`}
           alt={`Ícone de perfil do Invocador ${player.gameName}`}
           fill
+          className="rounded-lg"
         />
       </div>
       <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">

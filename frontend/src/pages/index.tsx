@@ -179,7 +179,7 @@ export default function Home() {
                                 fill
                                 className="left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 object-cover object-[0_17%]"
                               />
-                              <div className="min-w-[26px] flex gap-2 items-center absolute top-3 left-1/2 md:relative md:top-auto md:left-auto">
+                              <div className="min-w-[26px] flex gap-1 items-center absolute top-3 left-1/2 md:relative md:top-auto md:left-auto">
                                 <span className="font-semibold text-yellow-400">
                                   #{index + 1}
                                 </span>
@@ -187,16 +187,16 @@ export default function Home() {
                                   {previousRanking &&
                                     index + 1 !== previousRanking.index &&
                                     (index + 1 < previousRanking.index ? (
-                                      <LuChevronsUp className="text-green-500" />
+                                      <LuChevronsUp className="text-green-500 w-[16px] h-[16px] sm:w-[22px] sm:h-[22px]" />
                                     ) : (
-                                      <LuChevronsDown className="text-red-500" />
+                                      <LuChevronsDown className="text-red-500 w-[16px] h-[16px] sm:w-[22px] sm:h-[22px]" />
                                     ))}
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 md:gap-3 w-[284px]">
                                 <PlayerIcon
                                   player={player}
-                                  desktopClass="md:w-[72px] md:h-[72px]"
+                                  desktopClass="md:w-[74px] md:h-[74px]"
                                   mobileClass="w-[56px] h-[56px]"
                                 >
                                   <>
@@ -241,22 +241,16 @@ export default function Home() {
                                   {lpDiff !== 0 && lpDiff !== undefined && (
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <span className="absolute font-semibold flex text-sm -top-2 right-0">
+                                        <span className="absolute font-semibold flex text-xs sm:text-sm -top-3 right-0">
                                           {lpDiff > 0 ? (
                                             <>
                                               +{lpDiff} PDL
-                                              <LuChevronsUp
-                                                className="text-green-500"
-                                                size={"1.25rem"}
-                                              />
+                                              <LuChevronsUp className="text-green-500 w-[16px] h-[16px] sm:w-[20px] sm:h-[20px]" />
                                             </>
                                           ) : (
                                             <>
                                               {lpDiff} PDL
-                                              <LuChevronsDown
-                                                className="text-red-500"
-                                                size={"1.5em"}
-                                              />
+                                              <LuChevronsDown className="text-red-500 w-[16px] h-[16px] sm:w-[20px] sm:h-[20px]" />
                                             </>
                                           )}
                                         </span>

@@ -23,7 +23,7 @@ import { diffBetweenDates } from "@/utils/diff-between-dates"
 import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { amumu } from "@/assets"
+import { amumu, spinner } from "@/assets"
 import { PlayerIcon } from "@/components/player-icon"
 import { PlayerName } from "@/components/player-name"
 
@@ -96,7 +96,7 @@ export const ChampionOverviewDialog = ({
   setSelectedChampion: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
   const queryClient = useQueryClient()
-  const { data: championOverview } = useQuery({
+  const { data: championOverview, isLoading } = useQuery({
     queryKey: ["champion-overview", championData?.id],
     queryFn: async () =>
       (
@@ -123,6 +123,11 @@ export const ChampionOverviewDialog = ({
     return null
   }
 
+  const topPlayer = championOverview?.players?.[0]
+  const topPlayerData = topPlayer
+    ? players.find((p) => p.puuid === topPlayer.puuid)
+    : null
+
   return (
     <Dialog
       open={true}
@@ -134,10 +139,18 @@ export const ChampionOverviewDialog = ({
     >
       <DialogContent className="sm:max-w-[666px]">
         <DialogTitle>
-          {championData.name} - {championData.title}{" "}
-          <span className="text-green-400">{descriptionData.totalWins}V</span>
-          <span className="text-muted-foreground"> / </span>
-          <span className="text-red-400">{descriptionData.totalLosses}D</span>
+          <div className="flex items-center gap-2">
+            {championData.name} - {championData.title}
+            {isLoading ? (
+              <Image src={spinner} alt="" width={20} height={20} />
+            ) : (
+              <div>
+                <span className="text-green-400">{descriptionData.totalWins}V</span>
+                <span className="text-muted-foreground"> / </span>
+                <span className="text-red-400">{descriptionData.totalLosses}D</span>
+              </div>
+            )}
+          </div>
         </DialogTitle>
 
         {championOverview && championOverview.matches.length === 0 ? (
@@ -156,55 +169,56 @@ export const ChampionOverviewDialog = ({
                   <DialogDescription>Melhores jogadores</DialogDescription>
 
                   <div className="flex justify-evenly gap-4 items-center">
-                    {championOverview?.players.slice(0, 2).map((player) => {
-                      const playerData = players.find((p) => p.puuid === player.puuid)
-                      if (!playerData) {
-                        return null
-                      }
-
-                      return (
-                        <div key={player.puuid} className="flex gap-3 items-center">
-                          <PlayerIcon
-                            mobileClass="w-[40px] h-[40px]"
-                            player={playerData}
-                          />
-                          <div className="flex text-xs flex-col text-muted-foreground">
-                            <div className="text-white">
-                              <PlayerName player={playerData} />
-                            </div>
-                            <div className="font-bold flex mt-1">
-                              <span className="text-green-400">{player.wins}V</span>
-                              <span> / </span>
-                              <span className="text-red-400">{player.losses}D</span>
-                            </div>
-                            <div className="mt-1">
-                              Total de{" "}
-                              <span className="text-white font-semibold">
-                                {player.wins + player.losses}
-                              </span>{" "}
-                              partidas
-                            </div>
+                    {topPlayer && topPlayerData && (
+                      <div key={topPlayer.puuid} className="flex gap-3 items-center">
+                        <span className="font-semibold text-yellow-400">#1</span>
+                        <PlayerIcon
+                          mobileClass="w-[40px] h-[40px]"
+                          player={topPlayerData}
+                        />
+                        <div className="flex text-xs flex-col text-muted-foreground">
+                          <div className="text-white">
+                            <PlayerName player={topPlayerData} />
+                          </div>
+                          <div className="font-bold flex mt-1">
+                            <span className="text-green-400">{topPlayer.wins}V</span>
+                            <span> / </span>
+                            <span className="text-red-400">{topPlayer.losses}D</span>
+                          </div>
+                          <div className="mt-1">
+                            Total de{" "}
+                            <span className="text-white font-semibold">
+                              {topPlayer.wins + topPlayer.losses}
+                            </span>{" "}
+                            partidas
                           </div>
                         </div>
-                      )
-                    })}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col gap-3 px-6 mt-2">
-                    {championOverview.players.slice(2, 10).map((player) => {
+                    {championOverview.players.slice(1, 10).map((player, index) => {
                       const playerData = players.find((p) => p.puuid === player.puuid)
                       if (!playerData) {
                         return null
                       }
 
                       return (
-                        <div key={player.puuid} className="flex gap-3 items-center">
+                        <div
+                          key={player.puuid}
+                          className="flex text-xs gap-3 items-center"
+                        >
+                          <span className="font-semibold text-yellow-400">
+                            #{index + 2}
+                          </span>
+
                           <PlayerIcon
                             player={playerData}
                             desktopClass="sm:w-[36px] sm:h-[36px]"
                             mobileClass="w-[28px] h-[28px]"
                           />
-                          <div className="flex text-xs items-center gap-3 text-muted-foreground">
+                          <div className="flex items-center gap-3 text-muted-foreground">
                             <div className="text-white">
                               <PlayerName
                                 player={playerData}
@@ -270,18 +284,11 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
     >
       <div className="flex-1">
         <div className="flex items-center gap-2 md:gap-3">
-          <div className="border-2 border-orange-400 relative">
-            <div className="w-[32px] h-[32px] md:w-[48px] md:h-[48px]">
-              <Image
-                src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${player.profileIconId}.png`}
-                alt=""
-                fill
-              />
-            </div>
-            <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
-              {player.summonerLevel}
-            </span>
-          </div>
+          <PlayerIcon
+            player={player}
+            desktopClass="sm:w-[48px] sm:h-[48px]"
+            mobileClass="w-[32px] h-[32px]"
+          />
           <div className="w-[120px] sm:w-[200px]">
             <PlayerName player={player} mobileSize="xxs" desktopSize="base" />
             <span className="text-muted-foreground">
