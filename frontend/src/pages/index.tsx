@@ -198,28 +198,27 @@ export default function Home() {
                                   player={player}
                                   desktopSize="72px"
                                   mobileSize="56px"
-                                  children={
-                                    <>
-                                      {daysOnTop && daysOnTop > 0 ? (
-                                        <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
-                                          <span className="flex text-yellow-400 gap-1 text-xxs">
-                                            <LuCrown strokeWidth={3} />
-                                            {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
-                                          </span>
-                                        </div>
-                                      ) : null}
-                                      {daysOnBottom && daysOnBottom > 0 ? (
-                                        <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
-                                          <span className="flex text-yellow-400 gap-1 text-xxs">
-                                            <LiaPoopSolid strokeWidth={2} />
-                                            {daysOnBottom} dia
-                                            {daysOnBottom > 1 ? "s" : ""}
-                                          </span>
-                                        </div>
-                                      ) : null}
-                                    </>
-                                  }
-                                />
+                                >
+                                  <>
+                                    {daysOnTop && daysOnTop > 0 ? (
+                                      <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
+                                        <span className="flex text-yellow-400 gap-1 text-xxs">
+                                          <LuCrown strokeWidth={3} />
+                                          {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
+                                        </span>
+                                      </div>
+                                    ) : null}
+                                    {daysOnBottom && daysOnBottom > 0 ? (
+                                      <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
+                                        <span className="flex text-yellow-400 gap-1 text-xxs">
+                                          <LiaPoopSolid strokeWidth={2} />
+                                          {daysOnBottom} dia
+                                          {daysOnBottom > 1 ? "s" : ""}
+                                        </span>
+                                      </div>
+                                    ) : null}
+                                  </>
+                                </PlayerIcon>
                                 <div>
                                   <PlayerName player={player} />
                                   <p className="text-yellow-400 font-semibold text-xxs sm:text-xs">
