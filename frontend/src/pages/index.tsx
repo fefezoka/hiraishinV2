@@ -196,8 +196,8 @@ export default function Home() {
                               <div className="flex items-center gap-2 md:gap-3 w-[284px]">
                                 <PlayerIcon
                                   player={player}
-                                  desktopSize="72px"
-                                  mobileSize="56px"
+                                  desktopClass="md:w-[72px] md:h-[72px]"
+                                  mobileClass="w-[56px] h-[56px]"
                                 >
                                   <>
                                     {daysOnTop && daysOnTop > 0 ? (

@@ -164,7 +164,10 @@ export const ChampionOverviewDialog = ({
 
                       return (
                         <div key={player.puuid} className="flex gap-3 items-center">
-                          <PlayerIcon mobileSize="40px" player={playerData} />
+                          <PlayerIcon
+                            mobileClass="w-[40px] h-[40px]"
+                            player={playerData}
+                          />
                           <div className="flex text-xs flex-col text-muted-foreground">
                             <div className="text-white">
                               <PlayerName player={playerData} />
@@ -198,8 +201,8 @@ export const ChampionOverviewDialog = ({
                         <div key={player.puuid} className="flex gap-3 items-center">
                           <PlayerIcon
                             player={playerData}
-                            desktopSize="36px"
-                            mobileSize="28px"
+                            desktopClass="sm:w-[36px] sm:h-[36px]"
+                            mobileClass="w-[28px] h-[28px]"
                           />
                           <div className="flex text-xs items-center gap-3 text-muted-foreground">
                             <div className="text-white">
