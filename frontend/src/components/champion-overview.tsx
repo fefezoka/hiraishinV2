@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
   Command,
@@ -109,6 +109,14 @@ export const ChampionOverviewDialog = ({
 
   const players = queryClient.getQueryData<Player[]>(["leaderboard"])!
 
+  const descriptionData = useMemo(() => {
+    const totalWins =
+      championOverview?.players.reduce((acc, player) => acc + player.wins, 0) || 0
+    const totalLosses =
+      championOverview?.players.reduce((acc, player) => acc + player.losses, 0) || 0
+    return { totalWins, totalLosses }
+  }, [championOverview])
+
   if (!championData) {
     return null
   }
@@ -124,7 +132,10 @@ export const ChampionOverviewDialog = ({
     >
       <DialogContent className="sm:max-w-[666px]">
         <DialogTitle>
-          {championData.name} - {championData.title}
+          {championData.name} - {championData.title}{" "}
+          <span className="text-green-400">{descriptionData.totalWins}V</span>
+          <span className="text-muted-foreground"> / </span>
+          <span className="text-red-400">{descriptionData.totalLosses}D</span>
         </DialogTitle>
 
         {championOverview && championOverview.matches.length === 0 ? (
@@ -143,7 +154,7 @@ export const ChampionOverviewDialog = ({
                   <DialogDescription>Melhores jogadores</DialogDescription>
 
                   <div className="flex justify-evenly gap-4 items-center">
-                    {championOverview?.players.map((player) => {
+                    {championOverview?.players.slice(0, 2).map((player) => {
                       const playerData = players.find((p) => p.puuid === player.puuid)
                       if (!playerData) {
                         return null
@@ -198,13 +209,66 @@ export const ChampionOverviewDialog = ({
                     })}
                   </div>
 
+                  <div className="flex flex-col gap-3 px-6">
+                    {championOverview.players.slice(2, 10).map((player) => {
+                      const playerData = players.find((p) => p.puuid === player.puuid)
+                      if (!playerData) {
+                        return null
+                      }
+
+                      return (
+                        <div key={player.puuid} className="flex gap-3 items-center">
+                          <div className="relative self-start border-2 border-orange-400">
+                            <div className="w-[28px] h-[28px] md:w-[36px] md:h-[36px] border-2">
+                              <Image
+                                src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
+                                alt=""
+                                fill
+                              />
+                            </div>
+                            <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
+                              {playerData.summonerLevel}
+                            </span>
+                          </div>
+                          <div className="flex text-xs items-center gap-3 text-muted-foreground">
+                            <Link
+                              className="hover:underline text-white"
+                              href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
+                              target="_blank"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <div className="truncate max-w-[116px] sm:max-w-none font-semibold">
+                                <span className="w-fit">{playerData.gameName}</span>{" "}
+                                <span className="text-yellow-400">
+                                  #{playerData.tagLine}
+                                </span>
+                              </div>
+                            </Link>
+                            <div className="font-bold flex mt-1">
+                              <span className="text-green-400">{player.wins}V</span>
+                              <span> / </span>
+                              <span className="text-red-400">{player.losses}D</span>
+                            </div>
+                            <div className="mt-1">
+                              Total de{" "}
+                              <span className="text-white font-semibold">
+                                {player.wins + player.losses}
+                              </span>{" "}
+                              partidas
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+
                   <Separator />
                 </>
               )}
 
               <DialogDescription>Histórico de partidas</DialogDescription>
 
-              <ScrollArea className="max-h-[360px]">
+              <ScrollArea className="max-h-[340px]">
                 <div className="flex flex-col gap-3">
                   {championOverview?.matches.map((match) => (
                     <MatchFromDb match={match} key={match.id} />
@@ -283,9 +347,9 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
           </div>
         </div>
       </div>
-      <div className="flex justify-between w-full">
+      <div className="flex justify-between w-full items-center">
         <div className="flex gap-0.5">
-          <div className="relative sm:h-[48px] sm:w-[48px] h-[40px] w-[40px]">
+          <div className="relative sm:h-[48px] sm:w-[48px] h-[32px] w-[32px]">
             <Image
               src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${match.championName}.png`}
               alt=""
@@ -302,7 +366,7 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
             }).map((spell: number) => (
               <div
                 key={spell}
-                className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]"
+                className="relative sm:h-[24px] sm:w-[24px] h-[16px] w-[16px]"
               >
                 <Image
                   src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}

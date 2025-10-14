@@ -125,9 +125,7 @@ public class HiraishinService : IHiraishinService
                 Wins = x.Sum(y => y.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(y.Win)),
                 Losses = x.Where(y => !y.GameEndedInEarlySurrender).Count() - x.Sum(z => z.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(z.Win))
             })
-            .Where(x => (x.Wins + x.Losses) >= 3)
             .OrderByDescending(x => (double)x.Wins / (x.Wins + x.Losses))
-            .Take(2)
             .ToList();
 
         var championOverview = new ChampionOverview
