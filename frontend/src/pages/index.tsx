@@ -24,6 +24,8 @@ import { blitz } from "@/assets"
 import { Button } from "@/components/ui/button"
 import { addDays } from "date-fns"
 import { ChampionOverview } from "@/components/champion-overview"
+import { PlayerIcon } from "@/components/player-icon"
+import { PlayerName } from "@/components/player-name"
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>("RANKED_SOLO_5x5")
@@ -192,48 +194,34 @@ export default function Home() {
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 md:gap-3 w-[284px]">
-                                <div className="border-2 border-orange-400 relative">
-                                  <div className="w-[56px] h-[56px] md:w-[72px] md:h-[72px]">
-                                    <Image
-                                      src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${player.profileIconId}.png`}
-                                      alt=""
-                                      fill
-                                    />
-                                  </div>
-                                  {daysOnTop && daysOnTop > 0 ? (
-                                    <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
-                                      <span className="flex text-yellow-400 gap-1 text-xxs">
-                                        <LuCrown strokeWidth={3} />
-                                        {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
-                                      </span>
-                                    </div>
-                                  ) : null}
-                                  {daysOnBottom && daysOnBottom > 0 ? (
-                                    <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
-                                      <span className="flex text-yellow-400 gap-1 text-xxs">
-                                        <LiaPoopSolid strokeWidth={2} />
-                                        {daysOnBottom} dia{daysOnBottom > 1 ? "s" : ""}
-                                      </span>
-                                    </div>
-                                  ) : null}
-                                  <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
-                                    {player.summonerLevel}
-                                  </span>
-                                </div>
+                                <PlayerIcon
+                                  player={player}
+                                  desktopSize="72px"
+                                  mobileSize="56px"
+                                  children={
+                                    <>
+                                      {daysOnTop && daysOnTop > 0 ? (
+                                        <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
+                                          <span className="flex text-yellow-400 gap-1 text-xxs">
+                                            <LuCrown strokeWidth={3} />
+                                            {daysOnTop} dia{daysOnTop > 1 ? "s" : ""}
+                                          </span>
+                                        </div>
+                                      ) : null}
+                                      {daysOnBottom && daysOnBottom > 0 ? (
+                                        <div className="bg-black rounded-md py-0.5 px-1.5 absolute truncate -top-2.5 left-1/2 -translate-x-1/2">
+                                          <span className="flex text-yellow-400 gap-1 text-xxs">
+                                            <LiaPoopSolid strokeWidth={2} />
+                                            {daysOnBottom} dia
+                                            {daysOnBottom > 1 ? "s" : ""}
+                                          </span>
+                                        </div>
+                                      ) : null}
+                                    </>
+                                  }
+                                />
                                 <div>
-                                  <Link
-                                    className="hover:underline"
-                                    href={`https://u.gg/lol/profile/br1/${player.gameName}-${player.tagLine}/overview`}
-                                    target="_blank"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
-                                      <span className="w-fit">{player.gameName}</span>{" "}
-                                      <span className="text-yellow-400">
-                                        #{player.tagLine}
-                                      </span>
-                                    </div>
-                                  </Link>
+                                  <PlayerName player={player} />
                                   <p className="text-yellow-400 font-semibold text-xxs sm:text-xs">
                                     {index === 0 ? "Hokage" : playerData.title}
                                   </p>

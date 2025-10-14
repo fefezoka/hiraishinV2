@@ -24,6 +24,8 @@ import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { amumu } from "@/assets"
+import { PlayerIcon } from "@/components/player-icon"
+import { PlayerName } from "@/components/player-name"
 
 export const ChampionOverview = () => {
   const [selectedChampion, setSelectedChampion] = useState<string | null>(null)
@@ -161,36 +163,12 @@ export const ChampionOverviewDialog = ({
                       }
 
                       return (
-                        <div
-                          key={player.puuid}
-                          className="flex gap-3 items-center justify-between"
-                        >
-                          <div className="relative self-start border-2 border-orange-400">
-                            <div className="w-[44px] h-[44px] md:w-[60px] md:h-[60px] border-2">
-                              <Image
-                                src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
-                                alt=""
-                                fill
-                              />
-                            </div>
-                            <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
-                              {playerData.summonerLevel}
-                            </span>
-                          </div>
+                        <div key={player.puuid} className="flex gap-3 items-center">
+                          <PlayerIcon mobileSize="40px" player={playerData} />
                           <div className="flex text-xs flex-col text-muted-foreground">
-                            <Link
-                              className="hover:underline text-white"
-                              href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
-                              target="_blank"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <div className="text-sm sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
-                                <span className="w-fit">{playerData.gameName}</span>{" "}
-                                <span className="text-yellow-400">
-                                  #{playerData.tagLine}
-                                </span>
-                              </div>
-                            </Link>
+                            <div className="text-white">
+                              <PlayerName player={playerData} />
+                            </div>
                             <div className="font-bold flex mt-1">
                               <span className="text-green-400">{player.wins}V</span>
                               <span> / </span>
@@ -209,7 +187,7 @@ export const ChampionOverviewDialog = ({
                     })}
                   </div>
 
-                  <div className="flex flex-col gap-3 px-6">
+                  <div className="flex flex-col gap-3 px-6 mt-2">
                     {championOverview.players.slice(2, 10).map((player) => {
                       const playerData = players.find((p) => p.puuid === player.puuid)
                       if (!playerData) {
@@ -218,32 +196,20 @@ export const ChampionOverviewDialog = ({
 
                       return (
                         <div key={player.puuid} className="flex gap-3 items-center">
-                          <div className="relative self-start border-2 border-orange-400">
-                            <div className="w-[28px] h-[28px] md:w-[36px] md:h-[36px] border-2">
-                              <Image
-                                src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${playerData.profileIconId}.png`}
-                                alt=""
-                                fill
+                          <PlayerIcon
+                            player={playerData}
+                            desktopSize="36px "
+                            mobileSize="28px"
+                          />
+                          <div className="flex text-xs items-center gap-3 text-muted-foreground">
+                            <div className="text-white">
+                              <PlayerName
+                                player={playerData}
+                                desktopSize="xs"
+                                mobileSize="xs"
                               />
                             </div>
-                            <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-xxs bg-black py-0.5 px-1.5 rounded-md">
-                              {playerData.summonerLevel}
-                            </span>
-                          </div>
-                          <div className="flex text-xs items-center gap-3 text-muted-foreground">
-                            <Link
-                              className="hover:underline text-white"
-                              href={`https://u.gg/lol/profile/br1/${playerData.gameName}-${playerData.tagLine}/overview`}
-                              target="_blank"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <div className="truncate max-w-[116px] sm:max-w-none font-semibold">
-                                <span className="w-fit">{playerData.gameName}</span>{" "}
-                                <span className="text-yellow-400">
-                                  #{playerData.tagLine}
-                                </span>
-                              </div>
-                            </Link>
+
                             <div className="font-bold flex mt-1">
                               <span className="text-green-400">{player.wins}V</span>
                               <span> / </span>
@@ -314,17 +280,7 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
             </span>
           </div>
           <div className="w-[120px] sm:w-[200px]">
-            <Link
-              className="hover:underline"
-              href={`https://u.gg/lol/profile/br1/${player.gameName}-${player.tagLine}/overview`}
-              target="_blank"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="sm:text-base truncate max-w-[116px] sm:max-w-none font-semibold">
-                <span className="w-fit">{player.gameName}</span>{" "}
-                <span className="text-yellow-400">#{player.tagLine}</span>
-              </div>
-            </Link>
+            <PlayerName player={player} mobileSize="xxs" desktopSize="base" />
             <span className="text-muted-foreground">
               {match.leaderboardEntry.queueType === "RANKED_SOLO_5x5"
                 ? "Ranqueada Solo"
