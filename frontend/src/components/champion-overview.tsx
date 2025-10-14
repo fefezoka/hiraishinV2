@@ -198,7 +198,7 @@ export const ChampionOverviewDialog = ({
                         <div key={player.puuid} className="flex gap-3 items-center">
                           <PlayerIcon
                             player={playerData}
-                            desktopSize="36px "
+                            desktopSize="36px"
                             mobileSize="28px"
                           />
                           <div className="flex text-xs items-center gap-3 text-muted-foreground">
