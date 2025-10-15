@@ -95,6 +95,8 @@ export const ChampionOverviewDialog = ({
   championData: ChampionData | undefined
   setSelectedChampion: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
+  const [selectedPlayer, setSelectedPlayer] = useState<Player>()
+
   const queryClient = useQueryClient()
   const { data: championOverview, isLoading } = useQuery({
     queryKey: ["champion-overview", championData?.id],
@@ -119,14 +121,28 @@ export const ChampionOverviewDialog = ({
     return { totalWins, totalLosses }
   }, [championOverview])
 
-  if (!championData) {
-    return null
-  }
-
   const topPlayer = championOverview?.players?.[0]
   const topPlayerData = topPlayer
     ? players.find((p) => p.puuid === topPlayer.puuid)
     : null
+
+  const matches = selectedPlayer
+    ? championOverview?.matches.filter(
+        (match) => match.leaderboardEntry.puuid == selectedPlayer.puuid
+      )
+    : championOverview?.matches
+
+  const handleSelectPlayer = (player: Player) => {
+    if (selectedPlayer?.puuid === player.puuid) {
+      return setSelectedPlayer(undefined)
+    }
+
+    setSelectedPlayer(player)
+  }
+
+  if (!championData) {
+    return null
+  }
 
   return (
     <Dialog
@@ -134,6 +150,7 @@ export const ChampionOverviewDialog = ({
       onOpenChange={(open) => {
         if (!open) {
           setSelectedChampion(null)
+          setSelectedPlayer(undefined)
         }
       }}
     >
@@ -168,23 +185,33 @@ export const ChampionOverviewDialog = ({
                 <>
                   <DialogDescription>Melhores jogadores</DialogDescription>
 
-                  <div className="flex justify-evenly gap-4 items-center">
+                  <div className="flex justify-evenly gap-4 items-center cursor-pointer">
                     {topPlayer && topPlayerData && (
-                      <div key={topPlayer.puuid} className="flex gap-3 items-center">
+                      <div
+                        onClick={() => handleSelectPlayer(topPlayerData)}
+                        key={topPlayer.puuid}
+                        className="flex gap-3 items-center"
+                      >
                         <span className="font-semibold text-yellow-400">#1</span>
                         <PlayerIcon
                           mobileClass="w-[40px] h-[40px]"
                           player={topPlayerData}
                         />
                         <div className="flex text-xs flex-col text-muted-foreground">
-                          <div className="text-white">
-                            <PlayerName player={topPlayerData} />
+                          <div className="flex gap-2 items-center justify-center">
+                            <div className="text-white">
+                              <PlayerName player={topPlayerData} />
+                            </div>
+                            <div className="font-bold text-sm flex">
+                              <span className="text-green-400">{topPlayer.wins}V</span>
+                              <span> / </span>
+                              <span className="text-red-400">{topPlayer.losses}D</span>
+                            </div>
                           </div>
-                          <div className="font-bold flex mt-1">
-                            <span className="text-green-400">{topPlayer.wins}V</span>
-                            <span> / </span>
-                            <span className="text-red-400">{topPlayer.losses}D</span>
-                          </div>
+                          <span>
+                            {topPlayer.averageKills} / {topPlayer.averageDeaths} /{" "}
+                            {topPlayer.averageAssists} KDA {topPlayer.averageKDA}
+                          </span>
                           <div className="mt-1">
                             Total de{" "}
                             <span className="text-white font-semibold">
@@ -197,63 +224,80 @@ export const ChampionOverviewDialog = ({
                     )}
                   </div>
 
-                  <div className="flex flex-col gap-3 px-6 mt-2">
-                    {championOverview.players.slice(1, 10).map((player, index) => {
-                      const playerData = players.find((p) => p.puuid === player.puuid)
-                      if (!playerData) {
-                        return null
-                      }
+                  {championOverview.players.length >= 2 && (
+                    <div className="flex flex-col gap-3 sm:px-6 mt-2">
+                      {championOverview.players.slice(1, 10).map((player, index) => {
+                        const playerData = players.find((p) => p.puuid === player.puuid)
+                        if (!playerData) {
+                          return null
+                        }
 
-                      return (
-                        <div
-                          key={player.puuid}
-                          className="flex text-xs gap-3 items-center"
-                        >
-                          <span className="font-semibold text-yellow-400">
-                            #{index + 2}
-                          </span>
+                        return (
+                          <div
+                            key={player.puuid}
+                            className="flex text-xs gap-3 items-center cursor-pointer"
+                            onClick={() => handleSelectPlayer(playerData)}
+                          >
+                            <span className="font-semibold text-yellow-400">
+                              #{index + 2}
+                            </span>
 
-                          <PlayerIcon
-                            player={playerData}
-                            desktopClass="sm:w-[36px] sm:h-[36px]"
-                            mobileClass="w-[28px] h-[28px]"
-                          />
-                          <div className="flex items-center gap-3 text-muted-foreground">
-                            <div className="text-white">
-                              <PlayerName
-                                player={playerData}
-                                desktopSize="xs"
-                                mobileSize="xs"
-                              />
-                            </div>
-
-                            <div className="font-bold flex mt-1">
-                              <span className="text-green-400">{player.wins}V</span>
-                              <span> / </span>
-                              <span className="text-red-400">{player.losses}D</span>
-                            </div>
-                            <div className="mt-1">
-                              Total de{" "}
-                              <span className="text-white font-semibold">
-                                {player.wins + player.losses}
-                              </span>{" "}
-                              partidas
+                            <PlayerIcon
+                              player={playerData}
+                              desktopClass="sm:w-[36px] sm:h-[36px]"
+                              mobileClass="w-[28px] h-[28px]"
+                            />
+                            <div className="flex items-center gap-3 text-muted-foreground">
+                              <div className="text-white">
+                                <PlayerName
+                                  player={playerData}
+                                  desktopSize="xs"
+                                  mobileSize="xs"
+                                />
+                              </div>
+                              <div className="font-bold flex">
+                                <span className="text-green-400">{player.wins}V</span>
+                                <span> / </span>
+                                <span className="text-red-400">{player.losses}D</span>
+                              </div>
+                              <span className="hidden sm:block">
+                                {player.averageKills} / {player.averageDeaths} /{" "}
+                                {player.averageAssists} KDA {player.averageKDA}
+                              </span>
+                              <div>
+                                Total de{" "}
+                                <span className="text-white font-semibold">
+                                  {player.wins + player.losses}
+                                </span>{" "}
+                                partidas
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      )
-                    })}
-                  </div>
+                        )
+                      })}
+                    </div>
+                  )}
 
                   <Separator />
                 </>
               )}
 
-              <DialogDescription>Histórico de partidas</DialogDescription>
+              <DialogDescription>
+                Histórico de partidas{" "}
+                {selectedPlayer && (
+                  <span>
+                    -{" "}
+                    <span className="text-white font-semibold">
+                      {selectedPlayer?.gameName}{" "}
+                      <span className="text-yellow-400">#{selectedPlayer.tagLine}</span>
+                    </span>
+                  </span>
+                )}
+              </DialogDescription>
 
               <ScrollArea className="max-h-[340px]">
                 <div className="flex flex-col gap-3">
-                  {championOverview?.matches.map((match) => (
+                  {matches?.map((match) => (
                     <MatchFromDb match={match} key={match.id} />
                   ))}
                 </div>

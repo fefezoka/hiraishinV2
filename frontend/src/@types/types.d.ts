@@ -194,7 +194,15 @@ interface AllChampionsData {
 }
 
 interface ChampionOverview {
-  players: { wins: number; losses: number; puuid: string }[]
+  players: {
+    wins: number
+    losses: number
+    puuid: string
+    averageKills: string
+    averageDeaths: string
+    averageAssists: string
+    averageKDA: string
+  }[]
   matches: MatchFromDB[]
 }
 

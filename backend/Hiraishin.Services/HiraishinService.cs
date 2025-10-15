@@ -1,5 +1,3 @@
-using System.Net;
-using System.Text.Json;
 using Hiraishin.Data.Context;
 using Hiraishin.Domain.Data;
 using Hiraishin.Domain.Dto;
@@ -8,6 +6,9 @@ using Hiraishin.Domain.Entities;
 using Hiraishin.Domain.Interface.Services;
 using Hiraishin.Domain.Utility.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using System.Net;
+using System.Text.Json;
 
 namespace Hiraishin.Services;
 public class HiraishinService : IHiraishinService
@@ -123,7 +124,10 @@ public class HiraishinService : IHiraishinService
             {
                 Puuid = x.Key,
                 Wins = x.Sum(y => y.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(y.Win)),
-                Losses = x.Where(y => !y.GameEndedInEarlySurrender).Count() - x.Sum(z => z.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(z.Win))
+                Losses = x.Where(y => !y.GameEndedInEarlySurrender).Count() - x.Sum(z => z.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(z.Win)),
+                AverageKills = string.Format(CultureInfo.InvariantCulture, "{0:N1}", x.Average(y => y.Kills)),
+                AverageDeaths = string.Format(CultureInfo.InvariantCulture, "{0:N1}", x.Average(y => y.Deaths)),
+                AverageAssists = string.Format(CultureInfo.InvariantCulture, "{0:N1}", x.Average(y => y.Assists))
             })
             .OrderByDescending(x => (double)x.Wins / (x.Wins + x.Losses))
             .ToList();
