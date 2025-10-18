@@ -27,19 +27,26 @@ public class HiraishinService : IHiraishinService
         var tasks = PlayersData.Puuids.Select(FetchPlayerDataAsync);
         var allPlayers = (await Task.WhenAll(tasks)).ToList();
 
-        for(int q = 0; q < 2; q++) // 2 queue types
+        var queueTypes = new[] { "RANKED_SOLO_5x5", "RANKED_FLEX_SR" };
+
+        foreach (var queueType in queueTypes)
         {
             var orderedPlayers = allPlayers
-            .Where(p => p.Leagues[q] != null)
-            .OrderByDescending(p => p.Leagues[q].TotalLP)
-            .ThenByDescending(p => p.Leagues[q].Winrate)
-            .ToList();
+                .Select(p => new
+                {
+                    Player = p,
+                    League = p.Leagues.FirstOrDefault(l => l.QueueType == queueType)
+                })
+                .Where(x => x.League != null)
+                .OrderByDescending(x => x.League!.TotalLP)
+                .ThenByDescending(x => x.League!.Winrate)
+                .ToList();
 
             for (int i = 0; i < orderedPlayers.Count; i++)
             {
-                var player = orderedPlayers[i];
-                var league = player.Leagues[q];
-                league.Index = i + 1;
+                var player = orderedPlayers[i].Player;
+                var league = orderedPlayers[i].League;
+                league!.Index = i + 1;
 
                 if (league.Index == 1)
                 {
@@ -123,8 +130,8 @@ public class HiraishinService : IHiraishinService
             .Select(x => new ChampionOverviewPlayer
             {
                 Puuid = x.Key,
-                Wins = x.Sum(y => y.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(y.Win)),
-                Losses = x.Where(y => !y.GameEndedInEarlySurrender).Count() - x.Sum(z => z.GameEndedInEarlySurrender ? 0 : Convert.ToInt32(z.Win)),
+                Wins = x.Sum(y => Convert.ToInt32(y.Win)),
+                Losses = x.Count() - x.Sum(z => Convert.ToInt32(z.Win)),
                 AverageKills = string.Format(CultureInfo.InvariantCulture, "{0:N1}", x.Average(y => y.Kills)),
                 AverageDeaths = string.Format(CultureInfo.InvariantCulture, "{0:N1}", x.Average(y => y.Deaths)),
                 AverageAssists = string.Format(CultureInfo.InvariantCulture, "{0:N1}", x.Average(y => y.Assists))
@@ -160,12 +167,10 @@ public class HiraishinService : IHiraishinService
         var rankedSolo = leagues.FirstOrDefault(x => x.QueueType == "RANKED_SOLO_5x5");
         var rankedFlex = leagues.FirstOrDefault(x => x.QueueType == "RANKED_FLEX_SR");
 
-        var allLeagues = new[] { rankedSolo, rankedFlex }.Select(league =>
-        {
-            if (league == null) return null;
-
-            return new LeagueDTO(league);
-        }).ToList();
+        var allLeagues = new[] { rankedSolo, rankedFlex }
+        .Where(l => l != null)
+        .Select(l => new LeagueDTO(l))
+        .ToList();
 
         return new PlayerInfoDTO()
         {

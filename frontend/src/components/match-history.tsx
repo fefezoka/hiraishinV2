@@ -82,17 +82,12 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                   </span>
                   <div>
                     <span
-                      data-remake={summoner.gameEndedInEarlySurrender}
                       data-win={summoner.win}
                       className={
-                        "data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold"
+                        "data-[win=true]:text-green-500 data-[win=false]:text-red-500 font-bold"
                       }
                     >
-                      {!summoner.gameEndedInEarlySurrender
-                        ? summoner.win
-                          ? "Vitória"
-                          : "Derrota"
-                        : "Remake"}
+                      {summoner.win ? "Vitória" : "Derrota"}
                     </span>
                     <span className="ml-1">
                       {new Intl.DateTimeFormat("pt-BR", {

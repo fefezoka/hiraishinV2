@@ -66,6 +66,24 @@ export const playersData = [
     puuid:
       "U5UbYRf4GexyV5TZsA3eijiBl3rUGbJIBsqGu8mZa7M9CRKANu4A80YWBxB9FBrkUcIEHBmk72uzsg",
   },
+  {
+    title: "Smurf do daka",
+    skin: "Zed_0",
+    puuid:
+      "1HZjK4vUsAeqI8FBAEWJF5udzNGgyKcJhb5QQlDwLGtkAwE5PWiWV7m8nbhfjN2-gN35d3fJzcOYdg",
+  },
+  {
+    title: "Smurf do narigudo",
+    skin: "Ezreal_0",
+    puuid:
+      "xx7EfbKQfu-WAKLiFw74XunaqhLMAaJJebosG7F2oWqvUt114B39jckvrJLQ1zl2G94uyG-6Hbq3TQ",
+  },
+  {
+    title: "Paraense",
+    skin: "Xayah_0",
+    puuid:
+      "lOTPLJ4V2YvcfSMM8O8AGc37187Ulf7EIi9pbafmJRrLoVZlUAK1IEaP3ps85KHRvinL94hndpc3JA",
+  },
 ]
 
 export const tiers: { en: Tier; pt: string }[] = [

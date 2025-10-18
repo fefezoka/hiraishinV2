@@ -29,6 +29,7 @@ interface Payload {
   totalLP: number
   week: string
   leaderboardEntry: LeaderboardEntry
+  lpDifference: number
 }
 
 export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
@@ -46,11 +47,20 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
     ?.filter(
       (info) => info.queueType === (queue === 420 ? "RANKED_SOLO_5x5" : "RANKED_FLEX_SR")
     )
-    .map((leaderboardEntry) => ({
-      week: new Intl.DateTimeFormat("pt-BR").format(new Date(leaderboardEntry.day)),
-      totalLP: leaderboardEntry.totalLP,
-      leaderboardEntry,
-    }))
+    .map((leaderboardEntry, index, array) => {
+      const previousEntry = array[index - 1]
+      const previousTotalLP = previousEntry ? previousEntry.totalLP : null
+
+      const lpDifference =
+        previousTotalLP !== null ? leaderboardEntry.totalLP - previousTotalLP : null
+
+      return {
+        week: new Intl.DateTimeFormat("pt-BR").format(new Date(leaderboardEntry.day)),
+        totalLP: leaderboardEntry.totalLP,
+        leaderboardEntry,
+        lpDifference,
+      }
+    })
 
   return (
     <Card>
@@ -87,7 +97,6 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                 content={({ payload }) => {
                   if (!payload?.length) return null
                   const info = payload[0].payload as Payload
-
                   let dayWins = 0
                   let dayLosses = 0
 
@@ -127,6 +136,15 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                               <span>{info.leaderboardEntry.losses}D</span>
                               <span className="text-green-400">+{dayWins}</span>
                               <span className="text-red-400">-{Math.abs(dayLosses)}</span>
+                              {info.lpDifference !== null &&
+                                (info.lpDifference > 0 ? (
+                                  <>+{info.lpDifference} PDL</>
+                                ) : (
+                                  <>{info.lpDifference} PDL</>
+                                ))}
+                            </div>
+                            <div className="text-end text-xxs text-muted-foreground">
+                              {info.week}
                             </div>
                           </div>
                         </div>
@@ -170,17 +188,12 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                                   </div>
                                   <div className="flex flex-col">
                                     <span
-                                      data-remake={summoner.gameEndedInEarlySurrender}
                                       data-win={summoner.win}
                                       className={
-                                        "data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold"
+                                        "data-[win=true]:text-green-500 data-[win=false]:text-red-500 font-bold"
                                       }
                                     >
-                                      {!summoner.gameEndedInEarlySurrender
-                                        ? summoner.win
-                                          ? "Vitória"
-                                          : "Derrota"
-                                        : "Remake"}
+                                      {summoner.win ? "Vitória" : "Derrota"}
                                     </span>
                                     <span className="ml-1">
                                       {new Intl.DateTimeFormat("pt-BR", {

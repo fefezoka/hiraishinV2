@@ -37,8 +37,8 @@ namespace Hiraishin.Jobs
             var utcYesterdayAtSix = utcTodayAtSix.AddDays(-1);
             var utcYesterdayAtSixTimestamp = (long)utcYesterdayAtSix.Subtract(DateTime.UnixEpoch).TotalSeconds;
 
-            var rankedSoloPlayersCount = players.Sum(x => x.Leagues.Count(y => y.QueueType == "RANKED_SOLO_5x5"));
-            var rankedFlexPlayersCount = players.Sum(x => x.Leagues.Count(y => y.QueueType == "RANKED_FLEX_SR"));
+            var rankedSoloPlayersCount = players.Where(x => x.Leagues.Any(y => y.QueueType == "RANKED_SOLO_5x5")).Count();
+            var rankedFlexPlayersCount = players.Where(x => x.Leagues.Any(y => y.QueueType == "RANKED_FLEX_SR")).Count();
 
             foreach (var player in players)
             {
@@ -97,6 +97,9 @@ namespace Hiraishin.Jobs
                     {
                         var user = matchResponse.info.Participants.Find(x => x.Puuid == player.Puuid)!;
 
+                        if (user.GameEndedInEarlySurrender)
+                            continue;
+
                         var match = new Match
                         {
                             Assists = user.Assists,
@@ -106,7 +109,6 @@ namespace Hiraishin.Jobs
                             Deaths = user.Deaths,
                             GameDuration = matchResponse.info.GameDuration,
                             Win = user.Win,
-                            GameEndedInEarlySurrender = user.GameEndedInEarlySurrender,
                             Summoner1Id = user.Summoner1Id,
                             Summoner2Id = user.Summoner2Id,
                             ChampLevel = user.ChampLevel,

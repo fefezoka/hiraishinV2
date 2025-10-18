@@ -10,7 +10,6 @@ public class Match
     public int Summoner1Id { get; set; }
     public int Summoner2Id { get; set; }
     public Boolean Win { get; set; }
-    public Boolean GameEndedInEarlySurrender { get; set; }
     public int Kills { get; set; }
     public int Deaths { get; set; }
     public int Assists { get; set; }

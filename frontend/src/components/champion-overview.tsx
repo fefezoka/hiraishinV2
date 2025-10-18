@@ -342,17 +342,12 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
             </span>
             <span className="text-muted-foreground mx-0.5"> • </span>
             <span
-              data-remake={match.gameEndedInEarlySurrender}
               data-win={match.win}
               className={
-                "data-[remake=false]:data-[win=true]:text-green-500 data-[remake=false]:data-[win=false]:text-red-500 font-bold"
+                "data-[win=true]:text-green-500 data-[win=false]:text-red-500 font-bold"
               }
             >
-              {!match.gameEndedInEarlySurrender
-                ? match.win
-                  ? "Vitória"
-                  : "Derrota"
-                : "Remake"}
+              {match.win ? "Vitória" : "Derrota"}
             </span>
           </div>
         </div>

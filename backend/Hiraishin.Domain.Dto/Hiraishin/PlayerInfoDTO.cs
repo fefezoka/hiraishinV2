@@ -7,5 +7,5 @@ public class PlayerInfoDTO
     public string Puuid { get; set; }
     public int ProfileIconId { get; set; }
     public int SummonerLevel { get; set; }
-    public List<LeagueDTO> Leagues { get; set; }
+    public List<LeagueDTO> Leagues { get; set; } = new List<LeagueDTO>();
 }

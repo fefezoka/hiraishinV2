@@ -85,7 +85,6 @@ interface MatchFromDB {
   summoner1Id: number
   summoner2Id: number
   win: boolean
-  gameEndedInEarlySurrender: boolean
   kills: number
   deaths: number
   assists: number
@@ -125,7 +124,6 @@ interface LeaderboardMatch {
   summoner1Id: number
   summoner2Id: number
   win: boolean
-  gameEndedInEarlySurrender: boolean
   kills: number
   deaths: number
   assists: number
