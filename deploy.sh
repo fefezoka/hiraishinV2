@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Env Vars
-# DOMAIN_NAME="nextselfhost.dev"
-# EMAIL="your-email@example.com"
+DOMAIN_NAME=""
+EMAIL=""
 
 # Script Vars
 REPO_URL="https://github.com/fefezoka/hiraishinV2.git"
@@ -76,25 +76,38 @@ sudo rm -f /etc/nginx/sites-enabled/myapp
 sudo systemctl stop nginx
 
 # Obtain SSL certificate using Certbot standalone mode
-# sudo apt install certbot -y
-# sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL
+sudo apt install certbot -y
+sudo certbot certonly --standalone -d $DOMAIN_NAME --non-interactive --agree-tos -m $EMAIL
 
 # Ensure SSL files exist or generate them
-# if [ ! -f /etc/letsencrypt/options-ssl-nginx.conf ]; then
-#   sudo wget https://raw.githubusercontent.com/certbot/certbot/refs/heads/main/certbot-nginx/src/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf -P /etc/letsencrypt/
-# fi
+if [ ! -f /etc/letsencrypt/options-ssl-nginx.conf ]; then
+  sudo wget https://raw.githubusercontent.com/certbot/certbot/refs/heads/main/certbot-nginx/src/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf -P /etc/letsencrypt/
+fi
 
-# if [ ! -f /etc/letsencrypt/ssl-dhparams.pem ]; then
-#   sudo openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
-# fi
+if [ ! -f /etc/letsencrypt/ssl-dhparams.pem ]; then
+  sudo openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
+fi
 
 # Create Nginx config with reverse proxy, SSL support, rate limiting, and streaming support
 sudo cat > /etc/nginx/sites-available/myapp <<EOL
 limit_req_zone \$binary_remote_addr zone=mylimit:10m rate=10r/s;
 
 server {
-    listen       80    default_server;
-    listen       [::]:80    default_server;
+    listen 80;
+    server_name $DOMAIN_NAME;
+
+    # Redirect all HTTP requests to HTTPS
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name $DOMAIN_NAME;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN_NAME/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     # frontend proxy
     location /
@@ -158,7 +171,7 @@ if ! sudo docker-compose ps | grep "Up"; then
 fi
 
 # Setup automatic SSL certificate renewal...
-# ( crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet && systemctl reload nginx" ) | crontab -
+( crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet && systemctl reload nginx" ) | crontab -
 
 # Output final message
 echo "Deployment complete. Your Next.js app and PostgreSQL database are now running."
