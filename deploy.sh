@@ -171,7 +171,7 @@ if ! sudo docker-compose ps | grep "Up"; then
 fi
 
 # Setup automatic SSL certificate renewal...
-# ( crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet && systemctl reload nginx" ) | crontab -
+( crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet && systemctl reload nginx" ) | crontab -
 
 # Output final message
 echo "Deployment complete. Your Next.js app and PostgreSQL database are now running."
