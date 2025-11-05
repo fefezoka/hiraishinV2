@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Env Vars
-DOMAIN_NAME=""
-EMAIL=""
+DOMAIN_NAME="hiraishin.com.br"
+EMAIL="felipebrito2077@gmail.com"
 
 # Script Vars
 REPO_URL="https://github.com/fefezoka/hiraishinV2.git"
@@ -101,7 +101,7 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen       443 ssl;
     server_name $DOMAIN_NAME;
 
     ssl_certificate /etc/letsencrypt/live/$DOMAIN_NAME/fullchain.pem;
@@ -171,7 +171,7 @@ if ! sudo docker-compose ps | grep "Up"; then
 fi
 
 # Setup automatic SSL certificate renewal...
-( crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet && systemctl reload nginx" ) | crontab -
+# ( crontab -l 2>/dev/null; echo "0 */12 * * * certbot renew --quiet && systemctl reload nginx" ) | crontab -
 
 # Output final message
 echo "Deployment complete. Your Next.js app and PostgreSQL database are now running."
