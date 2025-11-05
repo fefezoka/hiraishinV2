@@ -14,9 +14,9 @@
             "RH-na3OpXeDwMoiIt8o6Di1ygIO2QF3AG4QTFf01NyEIi6EQybDtRNYH2AGSzmRHoMoofwyAZszfaQ", // Ianguas
             "awiuMM0WCsb3Ae7h10P7nTKYjpt_daiD4vZp_o9Rzx0cSaeoneXsHH2_e2NpHCXdS2yPqSZTXcP8sw", // Thiago
             "U5UbYRf4GexyV5TZsA3eijiBl3rUGbJIBsqGu8mZa7M9CRKANu4A80YWBxB9FBrkUcIEHBmk72uzsg", // Verona
-            "lOTPLJ4V2YvcfSMM8O8AGc37187Ulf7EIi9pbafmJRrLoVZlUAK1IEaP3ps85KHRvinL94hndpc3JA", // Caps Paraense
+            "epRDzCuP8CzSKKogwvD3IAMoL6_0optPDsz8HIsZEmBWQCR4-dXK5AgjRxxtc1tCo3hNdFvlTkcVVQ", // T1 Gumayusi
             "xx7EfbKQfu-WAKLiFw74XunaqhLMAaJJebosG7F2oWqvUt114B39jckvrJLQ1zl2G94uyG-6Hbq3TQ", // KatKuo
-            "1HZjK4vUsAeqI8FBAEWJF5udzNGgyKcJhb5QQlDwLGtkAwE5PWiWV7m8nbhfjN2-gN35d3fJzcOYdg", // dakinha
+            "refmOydABQeEWNLiceDbieEDqER5jrx3LvA2OwYGU09Keh_3e_uC3cDumL23F73zIQGcjOYxq8FJUw", // dakinha
         };
     }
 }

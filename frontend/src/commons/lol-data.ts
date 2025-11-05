@@ -70,7 +70,7 @@ export const playersData = [
     title: "Smurf do daka",
     skin: "Zed_0",
     puuid:
-      "1HZjK4vUsAeqI8FBAEWJF5udzNGgyKcJhb5QQlDwLGtkAwE5PWiWV7m8nbhfjN2-gN35d3fJzcOYdg",
+      "refmOydABQeEWNLiceDbieEDqER5jrx3LvA2OwYGU09Keh_3e_uC3cDumL23F73zIQGcjOYxq8FJUw",
   },
   {
     title: "Smurf do narigudo",
@@ -79,10 +79,10 @@ export const playersData = [
       "xx7EfbKQfu-WAKLiFw74XunaqhLMAaJJebosG7F2oWqvUt114B39jckvrJLQ1zl2G94uyG-6Hbq3TQ",
   },
   {
-    title: "Paraense",
+    title: "Smurf do paraense",
     skin: "Xayah_0",
     puuid:
-      "lOTPLJ4V2YvcfSMM8O8AGc37187Ulf7EIi9pbafmJRrLoVZlUAK1IEaP3ps85KHRvinL94hndpc3JA",
+      "epRDzCuP8CzSKKogwvD3IAMoL6_0optPDsz8HIsZEmBWQCR4-dXK5AgjRxxtc1tCo3hNdFvlTkcVVQ",
   },
 ]
 
