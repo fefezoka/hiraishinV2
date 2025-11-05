@@ -27,7 +27,6 @@ services:
       - RiotGamesApi__ApiKey=
     volumes:
       - ./logs/backend:/app/logs
-      - aspnet_keys:/root/.aspnet/DataProtection-Keys
     networks:
       - main
       - logs
