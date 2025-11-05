@@ -1,17 +1,22 @@
-version: '3.8'
+version: "3.8"
 
 networks:
   main:
   logs:
     external: true
 
+volumes:
+  postgres_data:
+    name: hiraishin_postgres_data
+
 services:
   backend:
     build: ./backend/.
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
-      - '127.0.0.1:3001:3001'
+      - "127.0.0.1:3001:3001"
     environment:
       - ASPNETCORE_URLS=http://+:3001
       - Database__Database=hiraishin
@@ -22,7 +27,7 @@ services:
       - RiotGamesApi__ApiKey=
     volumes:
       - ./logs/backend:/app/logs
-      - ./keys:/root/.aspnet/DataProtection-Keys
+      - aspnet_keys:/root/.aspnet/DataProtection-Keys
     networks:
       - main
       - logs
@@ -32,7 +37,7 @@ services:
   frontend:
     build: ./frontend/.
     ports:
-      - '127.0.0.1:3000:3000'
+      - "127.0.0.1:3000:3000"
     volumes:
       - ./logs/frontend:/app/logs
     networks:
@@ -46,11 +51,16 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=hiraishin
-      - PGDATA=/data/postgres
+      - PGDATA=/var/lib/postgresql/data
     ports:
-      - '127.0.0.1:5432:5432'
+      - "127.0.0.1:5432:5432"
     volumes:
-      - ./db:/data/postgres
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - main
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
