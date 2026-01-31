@@ -15,6 +15,7 @@ public class HiraishinService : IHiraishinService
 {
     private readonly HttpClient _httpClient;
     private readonly HiraishinContext _hiraishinContext;
+    private readonly DateTime ComecoSeason = new(2026, 1, 9);
 
     public HiraishinService(HttpClient httpClient, HiraishinContext hiraishinContext)
     {
@@ -112,7 +113,7 @@ public class HiraishinService : IHiraishinService
 
         return await _hiraishinContext.LeaderboardEntry
             .Include(x => x.Matches.OrderBy(x => x.Id))
-            .Where(x => x.Day >= threeMonthsAgo && x.Puuid == puuid)
+            .Where(x => x.Day >= threeMonthsAgo && x.Puuid == puuid && x.Day >= ComecoSeason)
             .ToListAsync();
     }
 
@@ -120,7 +121,7 @@ public class HiraishinService : IHiraishinService
     {
         var matches = await _hiraishinContext.Match
             .AsNoTracking()
-            .Where(x => x.ChampionName == championName)
+            .Where(x => x.ChampionName == championName && x.LeaderboardEntry.Day >= ComecoSeason)
             .Include(x => x.LeaderboardEntry)
             .OrderByDescending(x => x.Id)
             .ToListAsync();
