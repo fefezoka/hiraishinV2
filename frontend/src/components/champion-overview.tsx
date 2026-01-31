@@ -20,7 +20,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { diffBetweenDates } from "@/utils/diff-between-dates"
-import Link from "next/link"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { amumu, spinner } from "@/assets"
@@ -42,14 +41,15 @@ export const ChampionOverview = () => {
         )
       ).data
 
-      return Object.entries(champions.data).map(([key, value]) => value)
+      return Object.entries(champions.data).map(([_, value]) => value)
     },
+    enabled: !!lolVersion,
   })
 
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <ChampionOverviewDialog
-        championData={champions?.find((champion) => champion.id === selectedChampion)}
+        championData={champions?.find((champion) => champion.name === selectedChampion)}
         setSelectedChampion={setSelectedChampion}
       />
       <PopoverTrigger>
@@ -61,12 +61,12 @@ export const ChampionOverview = () => {
         <Command>
           <CommandInput placeholder="Selecione o campeão" />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>Nenhum campeão encontrado</CommandEmpty>
             <CommandGroup>
               {champions?.map((champion) => (
                 <CommandItem
-                  key={champion.id}
-                  value={champion.id}
+                  key={champion.name}
+                  value={champion.name}
                   onSelect={(currentValue) => {
                     setSelectedChampion(
                       currentValue === selectedChampion ? null : currentValue
@@ -101,16 +101,16 @@ export const ChampionOverviewDialog = ({
 
   const queryClient = useQueryClient()
   const { data: championOverview, isLoading } = useQuery({
-    queryKey: ["champion-overview", championData?.id],
+    queryKey: ["champion-overview", championData?.name],
     queryFn: async () =>
       (
         await axios.get<ChampionOverview>("hiraishin/champion-overview/", {
           params: {
-            championName: championData?.id,
+            championName: championData?.name,
           },
         })
       ).data,
-    enabled: !!championData?.id,
+    enabled: !!championData?.name,
   })
 
   const players = queryClient.getQueryData<Player[]>(["leaderboard"])!
