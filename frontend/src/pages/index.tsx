@@ -27,6 +27,7 @@ import { ChampionOverview } from "@/components/champion-overview"
 import { PlayerIcon } from "@/components/player-icon"
 import { PlayerName } from "@/components/player-name"
 import { useLolVersion } from "@/hooks/lol-version"
+import { cn } from "@/lib/utils"
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>("RANKED_SOLO_5x5")
@@ -168,7 +169,7 @@ export default function Home() {
                           <Collapsible.CollapsibleTrigger asChild>
                             <div
                               id={`player-${player.gameName}-${player.tagLine}`}
-                              className="md:px-[64px] mb-2 rounded-lg px-3 py-6 cursor-pointer flex items-center overflow-hidden justify-between text-xs sm:text-sm md:text-base relative z-10"
+                              className="md:px-[64px] mb-2 rounded-lg px-3 py-6 cursor-pointer flex items-center overflow-hidden justify-between text-xs sm:text-sm md:text-base relative z-10 group transition-all"
                             >
                               <Image
                                 draggable={false}
@@ -179,7 +180,11 @@ export default function Home() {
                                 }
                                 alt=""
                                 fill
-                                className="left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 object-cover object-[0_17%]"
+                                className={cn(
+                                  "left-0 right-0 bottom-0 bg-black opacity-[40%] -z-10 object-cover object-[0_17%] transition-all duration-700 ease-out group-hover:scale-[1.03] group-hover:opacity-[55%]",
+                                  profileOverviewOpen === index &&
+                                    "scale-[1.03] opacity-[55%]"
+                                )}
                               />
                               <div className="min-w-[26px] flex gap-1 items-center absolute top-3 left-1/2 md:relative md:top-auto md:left-auto">
                                 <span className="font-semibold text-yellow-400">
