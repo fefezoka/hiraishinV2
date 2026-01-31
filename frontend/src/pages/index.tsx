@@ -26,10 +26,12 @@ import { addDays } from "date-fns"
 import { ChampionOverview } from "@/components/champion-overview"
 import { PlayerIcon } from "@/components/player-icon"
 import { PlayerName } from "@/components/player-name"
+import { useLolVersion } from "@/hooks/lol-version"
 
 export default function Home() {
   const [queueType, setQueueType] = useState<Queue>("RANKED_SOLO_5x5")
   const [profileOverviewOpen, setProfileOverviewOpen] = useState<number | null>(null)
+  const lolVersion = useLolVersion()
 
   const {
     data: players,
@@ -48,7 +50,7 @@ export default function Home() {
       (await axios.get<LeaderboardEntry[]>("hiraishin/past-leaderboard/last-week")).data,
   })
 
-  if (isLoading || isRefetching) {
+  if (isLoading || isRefetching || !lolVersion) {
     return <Loading />
   }
 

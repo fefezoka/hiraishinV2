@@ -43,7 +43,6 @@ export const ChampionOverview = () => {
 
       return Object.entries(champions.data).map(([_, value]) => value)
     },
-    enabled: !!lolVersion,
   })
 
   return (
