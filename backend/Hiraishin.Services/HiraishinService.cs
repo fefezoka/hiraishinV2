@@ -15,7 +15,7 @@ public class HiraishinService : IHiraishinService
 {
     private readonly HttpClient _httpClient;
     private readonly HiraishinContext _hiraishinContext;
-    private readonly DateTime ComecoSeason = new(2026, 1, 9);
+    private readonly DateTime SeasonStart = new(2026, 1, 9, 0, 0, 0, DateTimeKind.Utc);
 
     public HiraishinService(HttpClient httpClient, HiraishinContext hiraishinContext)
     {
@@ -109,11 +109,9 @@ public class HiraishinService : IHiraishinService
 
     public async Task<List<LeaderboardEntry>> GetPastLeaderboardByUser(string puuid)
     {
-        DateTime threeMonthsAgo = DateTime.UtcNow.Date.AddDays(-90);
-
         return await _hiraishinContext.LeaderboardEntry
             .Include(x => x.Matches.OrderBy(x => x.Id))
-            .Where(x => x.Day >= threeMonthsAgo && x.Puuid == puuid && x.Day >= ComecoSeason)
+            .Where(x => x.Puuid == puuid && x.Day.Date >= SeasonStart.Date)
             .ToListAsync();
     }
 
@@ -121,7 +119,7 @@ public class HiraishinService : IHiraishinService
     {
         var matches = await _hiraishinContext.Match
             .AsNoTracking()
-            .Where(x => x.ChampionName == championName && x.LeaderboardEntry.Day >= ComecoSeason)
+            .Where(x => x.ChampionName == championName && x.LeaderboardEntry.Day.Date >= SeasonStart.Date)
             .Include(x => x.LeaderboardEntry)
             .OrderByDescending(x => x.Id)
             .ToListAsync();
