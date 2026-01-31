@@ -10,5 +10,6 @@ namespace Hiraishin.Domain.Interface.Services
         Task<List<LeaderboardEntry>> GetLastWeekLeaderboard();
         Task<List<LeaderboardEntry>> GetPastLeaderboardByUser(string puuid);
         Task<ChampionOverview> GetChampionOverview(string championName);
+        Task<string> GetLolVersion();
     }
 }

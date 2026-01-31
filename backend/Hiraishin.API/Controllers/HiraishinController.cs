@@ -35,4 +35,8 @@ public class PlayersController : ControllerBase
     [HttpGet("champion-overview")]
     public async Task<ActionResult<ChampionOverview>> GetChampionOverview([FromQuery] string championName)
         => Ok(await _hiraishinService.GetChampionOverview(championName));
+
+    [HttpGet("lol-version")]
+    public async Task<ActionResult<string>> GetLolVersion()
+        => Ok(await _hiraishinService.GetLolVersion());
 }

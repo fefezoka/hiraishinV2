@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import * as Collapsible from "@radix-ui/react-collapsible"
 import * as Tabs from "@radix-ui/react-tabs"
-import { LOL_VERSION, tiers } from "@/commons/lol-data"
+import { tiers } from "@/commons/lol-data"
 import {
   LuRefreshCw,
   LuChevronsUp,

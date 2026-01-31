@@ -1,4 +1,4 @@
-import { LOL_VERSION } from "@/commons/lol-data"
+import { useLolVersion } from "@/hooks/lol-version"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import React from "react"
@@ -16,13 +16,14 @@ export const PlayerIcon = ({
   desktopClass = "md:w-[60px] md:h-[60px]",
   children,
 }: PlayerIconProps) => {
+  const lolVersion = useLolVersion()
   const sizeClasses = cn(mobileClass, desktopClass)
 
   return (
     <div className="relative self-start">
       <div className={cn(sizeClasses, "border-2 rounded-sm shadow-lg")}>
         <Image
-          src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/profileicon/${player.profileIconId}.png`}
+          src={`http://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/profileicon/${player.profileIconId}.png`}
           alt={`Ícone de perfil do Invocador ${player.gameName}`}
           fill
           className="rounded-lg"

@@ -8,10 +8,11 @@ import {
 } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 import Image from "next/image"
-import { LOL_VERSION, spells, tiers } from "@/commons/lol-data"
+import { spells, tiers } from "@/commons/lol-data"
 import { useQuery } from "@tanstack/react-query"
 import axios from "@/service/axios"
 import { spinner } from "@/assets"
+import { useLolVersion } from "@/hooks/lol-version"
 
 interface ILeaderboardChart {
   player: Player
@@ -33,6 +34,8 @@ interface Payload {
 }
 
 export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
+  const lolVersion = useLolVersion()
+
   const { data, isLoading } = useQuery<LeaderboardEntry[]>({
     queryKey: ["last-3-months-leaderboard", player.puuid],
     queryFn: async () =>
@@ -160,7 +163,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                                   <div className="flex gap-0.5">
                                     <div className="relative sm:h-[36px] sm:w-[36px] h-[32px] w-[32px]">
                                       <Image
-                                        src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${summoner.championName}.png`}
+                                        src={`http://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${summoner.championName}.png`}
                                         alt=""
                                         fill
                                       />
@@ -178,7 +181,7 @@ export const LeaderboardChart = ({ player, queue }: ILeaderboardChart) => {
                                           className="relative sm:h-[18px] sm:w-[18px] h-[16px] w-[16px]"
                                         >
                                           <Image
-                                            src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                                            src={`https://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/spell/Summoner${spells[spell]}.png`}
                                             alt=""
                                             fill
                                           />

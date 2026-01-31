@@ -182,6 +182,17 @@ public class HiraishinService : IHiraishinService
         };
 
     }
+    public async Task<string> GetLolVersion()
+    {
+        var response = await _httpClient.GetAsync("https://ddragon.leagueoflegends.com/api/versions.json");
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var versions = JsonSerializer.Deserialize<List<string>>(json);
+
+        return versions?.FirstOrDefault() ?? "16.2.1";
+    }
+
     private async Task<T> GetWithRiotErrorHandlingAsync<T>(string url)
     {
         var response = await _httpClient.GetAsync(url);

@@ -1,5 +1,5 @@
 import { spinner } from "@/assets"
-import { LOL_VERSION, spells } from "@/commons/lol-data"
+import { spells } from "@/commons/lol-data"
 import {
   Card,
   CardContent,
@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useLolVersion } from "@/hooks/lol-version"
 import axios from "@/service/axios"
 import { diffBetweenDates } from "@/utils/diff-between-dates"
 import { useQuery } from "@tanstack/react-query"
@@ -19,6 +20,8 @@ interface IMatchHistory {
 }
 
 export const MatchHistory = ({ player, queue }: IMatchHistory) => {
+  const lolVersion = useLolVersion()
+
   const { data, isLoading } = useQuery<Match[]>({
     queryKey: ["match-history", player.puuid, queue],
     queryFn: async () =>
@@ -50,7 +53,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                 <div className="flex gap-0.5">
                   <div className="relative sm:h-[48px] sm:w-[48px] h-[40px] w-[40px]">
                     <Image
-                      src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${summoner.championName}.png`}
+                      src={`http://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${summoner.championName}.png`}
                       alt=""
                       fill
                     />
@@ -68,7 +71,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                         className="relative sm:h-[24px] sm:w-[24px] h-[20px] w-[20px]"
                       >
                         <Image
-                          src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                          src={`https://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/spell/Summoner${spells[spell]}.png`}
                           alt=""
                           fill
                         />
@@ -123,7 +126,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                     >
                       {item !== 0 && (
                         <Image
-                          src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/item/${item}.png`}
+                          src={`http://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/item/${item}.png`}
                           alt=""
                           fill
                         />
@@ -141,7 +144,7 @@ export const MatchHistory = ({ player, queue }: IMatchHistory) => {
                         <div key={participant.puuid} className="flex gap-1 items-center">
                           <Image
                             data-player={participant.puuid === player.puuid}
-                            src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${participant.championName}.png`}
+                            src={`http://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${participant.championName}.png`}
                             alt=""
                             height={14}
                             width={14}

@@ -1,7 +1,5 @@
 import { david } from "@/assets"
 
-export const LOL_VERSION = "16.2.1"
-
 // skin reference
 // https://ddragon.leagueoflegends.com/cdn/15.12.1/data/en_US/champion/Varus.json
 // https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Varus_0.jpg

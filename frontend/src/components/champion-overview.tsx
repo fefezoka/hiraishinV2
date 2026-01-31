@@ -11,7 +11,7 @@ import {
 import { RiSwordFill } from "react-icons/ri"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import axios from "@/service/axios"
-import { LOL_VERSION, spells } from "@/commons/lol-data"
+import { spells } from "@/commons/lol-data"
 import Image from "next/image"
 import {
   Dialog,
@@ -26,17 +26,19 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { amumu, spinner } from "@/assets"
 import { PlayerIcon } from "@/components/player-icon"
 import { PlayerName } from "@/components/player-name"
+import { useLolVersion } from "@/hooks/lol-version"
 
 export const ChampionOverview = () => {
   const [selectedChampion, setSelectedChampion] = useState<string | null>(null)
   const [popoverOpen, setPopoverOpen] = useState(false)
+  const lolVersion = useLolVersion()
 
   const { data: champions } = useQuery<ChampionData[]>({
     queryKey: ["champions"],
     queryFn: async () => {
       const champions = (
         await axios.get<AllChampionsData>(
-          `https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/data/pt_BR/champion.json`
+          `https://ddragon.leagueoflegends.com/cdn/${lolVersion}/data/pt_BR/champion.json`
         )
       ).data
 
@@ -72,7 +74,7 @@ export const ChampionOverview = () => {
                   }}
                 >
                   <Image
-                    src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${champion.id}.png`}
+                    src={`https://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${champion.id}.png`}
                     alt=""
                     height={32}
                     width={32}
@@ -312,6 +314,7 @@ export const ChampionOverviewDialog = ({
 
 const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
   const queryClient = useQueryClient()
+  const lolVersion = useLolVersion()
 
   const player = queryClient
     .getQueryData<Player[]>(["leaderboard"])
@@ -356,7 +359,7 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
         <div className="flex gap-0.5">
           <div className="relative sm:h-[48px] sm:w-[48px] h-[32px] w-[32px]">
             <Image
-              src={`http://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/champion/${match.championName}.png`}
+              src={`http://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${match.championName}.png`}
               alt=""
               fill
             />
@@ -374,7 +377,7 @@ const MatchFromDb = ({ match }: { match: MatchFromDB }) => {
                 className="relative sm:h-[24px] sm:w-[24px] h-[16px] w-[16px]"
               >
                 <Image
-                  src={`https://ddragon.leagueoflegends.com/cdn/${LOL_VERSION}/img/spell/Summoner${spells[spell]}.png`}
+                  src={`https://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/spell/Summoner${spells[spell]}.png`}
                   alt=""
                   fill
                 />
