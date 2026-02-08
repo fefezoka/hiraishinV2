@@ -58,19 +58,15 @@ export const ChampionOverview = () => {
       </PopoverTrigger>
       <PopoverContent>
         <Command>
-          <CommandInput placeholder="Selecione o campeão" />
+          <CommandInput placeholder="Procurar campeão" />
           <CommandList>
-            <CommandEmpty>Nenhum campeão encontrado</CommandEmpty>
+            <CommandEmpty>Nenhum campeão encontrado.</CommandEmpty>
             <CommandGroup>
               {champions?.map((champion) => (
                 <CommandItem
                   key={champion.name}
                   value={champion.name}
-                  onSelect={(currentValue) => {
-                    setSelectedChampion(
-                      currentValue === selectedChampion ? null : currentValue
-                    )
-                  }}
+                  onSelect={(currentValue) => setSelectedChampion(currentValue)}
                 >
                   <Image
                     src={`https://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${champion.id}.png`}
@@ -97,19 +93,20 @@ export const ChampionOverviewDialog = ({
   setSelectedChampion: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
   const [selectedPlayer, setSelectedPlayer] = useState<Player>()
+  const lolVersion = useLolVersion()
 
   const queryClient = useQueryClient()
   const { data: championOverview, isLoading } = useQuery({
-    queryKey: ["champion-overview", championData?.name],
+    queryKey: ["champion-overview", championData?.id],
     queryFn: async () =>
       (
         await axios.get<ChampionOverview>("hiraishin/champion-overview/", {
           params: {
-            championName: championData?.name,
+            championName: championData?.id,
           },
         })
       ).data,
-    enabled: !!championData?.name,
+    enabled: !!championData?.id,
   })
 
   const players = queryClient.getQueryData<Player[]>(["leaderboard"])!
@@ -155,20 +152,32 @@ export const ChampionOverviewDialog = ({
         }
       }}
     >
-      <DialogContent className="sm:max-w-[666px]">
-        <DialogTitle>
-          <div className="flex items-center gap-2">
-            {championData.name} - {championData.title}
-            {isLoading ? (
-              <Image src={spinner} alt="" width={20} height={20} />
-            ) : (
-              <div>
-                <span className="text-green-400">{descriptionData.totalWins}V</span>
-                <span className="text-muted-foreground"> / </span>
-                <span className="text-red-400">{descriptionData.totalLosses}D</span>
-              </div>
-            )}
+      <DialogContent className="sm:max-w-[700px] gap-6">
+        <DialogTitle className="flex items-center justify-between border-b pb-4">
+          <div className="flex items-center gap-3">
+            <Image
+              src={`https://ddragon.leagueoflegends.com/cdn/${lolVersion}/img/champion/${championData.id}.png`}
+              alt=""
+              width={44}
+              height={44}
+            />
+            <div className="flex flex-col">
+              <span className="text-lg">{championData.name}</span>
+              <span className="text-xs text-muted-foreground font-normal">
+                {championData.title}
+              </span>
+            </div>
           </div>
+
+          {isLoading ? (
+            <Image src={spinner} alt="" width={20} height={20} />
+          ) : (
+            <div className="text-sm font-mono">
+              <span className="text-green-400">{descriptionData.totalWins}V</span>
+              <span className="text-muted-foreground mx-1">/</span>
+              <span className="text-red-400">{descriptionData.totalLosses}D</span>
+            </div>
+          )}
         </DialogTitle>
 
         {championOverview && championOverview.matches.length === 0 ? (

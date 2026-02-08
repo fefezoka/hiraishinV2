@@ -115,7 +115,7 @@ public class HiraishinService : IHiraishinService
             .ToListAsync();
     }
 
-    public async Task<ChampionOverview> GetChampionOverview(string championName)
+    public async Task<ChampionOverview> GetChampionOverview(string championName) // na verdade é o id
     {
         var matches = await _hiraishinContext.Match
             .AsNoTracking()
