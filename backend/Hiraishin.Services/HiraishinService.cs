@@ -151,13 +151,13 @@ public class HiraishinService : IHiraishinService
             await GetWithRiotErrorHandlingAsync<SummonerApiModel>(
                 $"https://br1.api.riotgames.com/lol/summoner/v4/summoners/by-puuid/{puuid}");
 
-        await Task.Delay(1000);
+        await Task.Delay(2000);
 
         var account =
             await GetWithRiotErrorHandlingAsync<AccountApiModel>(
                 $"https://americas.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}");
 
-        await Task.Delay(1000);
+        await Task.Delay(2000);
 
         var leagues =
             await GetWithRiotErrorHandlingAsync<List<LeagueApiModel>>(
