@@ -139,7 +139,7 @@ namespace Hiraishin.Jobs
 
                     leaderboardEntries.Add(leaderboardEntry);
                 }
-                Thread.Sleep(10 * 1000);
+                Thread.Sleep(25 * 1000);
             }
 
             _hiraishinContext.LeaderboardEntry.AddRange(leaderboardEntries);
